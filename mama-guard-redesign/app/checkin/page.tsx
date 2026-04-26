@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ElementType } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/Header";
@@ -36,8 +36,19 @@ interface Symptom {
   id: string;
   label: string;
   description: string;
-  icon: React.ElementType;
+  icon: ElementType;
   severity: "high" | "medium" | "low";
+}
+
+interface UserData {
+  name: string;
+  dueDate: string;
+}
+
+interface CheckInRecord {
+  date: string;
+  risk: RiskLevel;
+  symptoms: string[];
 }
 
 const symptoms: Symptom[] = [
@@ -127,6 +138,7 @@ const severityQuestions: Record<string, string[]> = {
 
 export default function CheckInPage() {
   const router = useRouter();
+
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<
     "symptoms" | "severity" | "result"
@@ -135,8 +147,12 @@ export default function CheckInPage() {
   const [riskLevel, setRiskLevel] = useState<RiskLevel>("low");
   const [showAIInsights, setShowAIInsights] = useState(false);
 
-  const getUserData = () => {
+  const getUserData = (): UserData => {
     try {
+      if (typeof window === "undefined") {
+        return { name: "", dueDate: "" };
+      }
+
       const stored = localStorage.getItem("mamaguard_onboarding");
       return stored ? JSON.parse(stored) : { name: "", dueDate: "" };
     } catch {
@@ -147,15 +163,20 @@ export default function CheckInPage() {
   const userData = getUserData();
   const week = getGestationalWeek(userData.dueDate);
 
-  const toggleSymptom = (id: string) =>
+  const toggleSymptom = (id: string) => {
     setSelectedSymptoms((prev) =>
-      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((symptomId) => symptomId !== id) : [...prev, id]
     );
+  };
 
   const calculateRisk = (): RiskLevel => {
-    const selected = symptoms.filter((s) => selectedSymptoms.includes(s.id));
-    if (selected.some((s) => s.severity === "high")) return "high";
-    if (selected.some((s) => s.severity === "medium")) return "medium";
+    const selected = symptoms.filter((symptom) =>
+      selectedSymptoms.includes(symptom.id)
+    );
+
+    if (selected.some((symptom) => symptom.severity === "high")) return "high";
+    if (selected.some((symptom) => symptom.severity === "medium")) return "medium";
+
     return "low";
   };
 
@@ -163,55 +184,72 @@ export default function CheckInPage() {
     const risk = calculateRisk();
     setRiskLevel(risk);
 
-    const checkInRecord = {
+    const checkInRecord: CheckInRecord = {
       date: new Date().toISOString(),
       risk,
       symptoms: selectedSymptoms.map(
-        (id) => symptoms.find((s) => s.id === id)?.label || id
+        (id) => symptoms.find((symptom) => symptom.id === id)?.label || id
       ),
     };
 
-    const existing = JSON.parse(
-      localStorage.getItem("mamaguard_checkins") || "[]"
-    );
-    existing.push(checkInRecord);
-    localStorage.setItem("mamaguard_checkins", JSON.stringify(existing));
+    try {
+      const existingRaw = localStorage.getItem("mamaguard_checkins");
+      const existing: CheckInRecord[] = existingRaw ? JSON.parse(existingRaw) : [];
+
+      existing.push(checkInRecord);
+      localStorage.setItem("mamaguard_checkins", JSON.stringify(existing));
+    } catch {
+      localStorage.setItem("mamaguard_checkins", JSON.stringify([checkInRecord]));
+    }
 
     setCurrentStep(selectedSymptoms.length > 0 ? "severity" : "result");
   };
 
+  const getSelectedSeverityIds = () => {
+    return selectedSymptoms.filter((id) => severityQuestions[id]);
+  };
+
   const handleSeverityNext = () => {
-    const selected = selectedSymptoms.filter((id) => severityQuestions[id]);
+    const selected = getSelectedSeverityIds();
+
     if (currentSeverityIndex < selected.length - 1) {
-      setCurrentSeverityIndex(currentSeverityIndex + 1);
+      setCurrentSeverityIndex((prev) => prev + 1);
     } else {
       setCurrentStep("result");
     }
   };
 
   const getCurrentSeveritySymptom = () => {
-    const selected = selectedSymptoms.filter((id) => severityQuestions[id]);
-    return symptoms.find((s) => s.id === selected[currentSeverityIndex]);
+    const selected = getSelectedSeverityIds();
+    return symptoms.find((symptom) => symptom.id === selected[currentSeverityIndex]);
   };
 
   const getCurrentSeverityQuestions = () => {
-    const selected = selectedSymptoms.filter((id) => severityQuestions[id]);
-    return severityQuestions[selected[currentSeverityIndex]] || [];
+    const selected = getSelectedSeverityIds();
+    const currentSymptomId = selected[currentSeverityIndex];
+
+    return currentSymptomId ? severityQuestions[currentSymptomId] || [] : [];
   };
 
   const resetCheckIn = () => {
     setSelectedSymptoms([]);
     setCurrentStep("symptoms");
     setCurrentSeverityIndex(0);
+    setRiskLevel("low");
     setShowAIInsights(false);
   };
+
+  const currentSeveritySymptom = getCurrentSeveritySymptom();
+  const selectedSeverityIds = getSelectedSeverityIds();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
       <Header />
+
       <main className="pt-20 pb-28 px-5">
         <div className="flex items-center gap-2 mb-6">
           <button
+            type="button"
             onClick={() =>
               currentStep === "symptoms"
                 ? router.push("/home")
@@ -219,10 +257,7 @@ export default function CheckInPage() {
             }
             className="w-9 h-9 rounded-full bg-[var(--surface-primary)] shadow-sm border border-[var(--warm-200)] flex items-center justify-center active:scale-95"
           >
-            <ChevronLeft
-              size={18}
-              className="text-[var(--text-secondary)]"
-            />
+            <ChevronLeft size={18} className="text-[var(--text-secondary)]" />
           </button>
 
           <div className="flex-1 flex items-center gap-1.5">
@@ -269,6 +304,7 @@ export default function CheckInPage() {
 
                   return (
                     <motion.button
+                      type="button"
                       key={symptom.id}
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -295,12 +331,14 @@ export default function CheckInPage() {
                           <span className="font-semibold text-[var(--text-primary)] text-[15px]">
                             {symptom.label}
                           </span>
+
                           {symptom.severity === "high" && (
                             <span className="px-2 py-0.5 rounded-full bg-[var(--rose-100)] text-[10px] font-bold text-[var(--rose-700)] uppercase">
                               Important
                             </span>
                           )}
                         </div>
+
                         <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
                           {symptom.description}
                         </p>
@@ -321,6 +359,7 @@ export default function CheckInPage() {
               </div>
 
               <button
+                type="button"
                 onClick={() => setSelectedSymptoms([])}
                 className={`w-full py-3.5 rounded-2xl text-center font-medium text-sm transition-all mb-6 ${
                   selectedSymptoms.length === 0
@@ -332,6 +371,7 @@ export default function CheckInPage() {
               </button>
 
               <button
+                type="button"
                 onClick={handleSubmitSymptoms}
                 className="w-full py-4 rounded-2xl bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white font-semibold shadow-lg shadow-rose-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
               >
@@ -354,20 +394,23 @@ export default function CheckInPage() {
                     AI Follow-up
                   </span>
                 </div>
+
                 <h1 className="text-xl font-bold text-[var(--text-primary)] mb-2">
                   Tell us a bit more
                 </h1>
+
                 <p className="text-sm text-[var(--text-secondary)]">
                   These details help us give you better guidance
                 </p>
               </div>
 
-              {getCurrentSeveritySymptom() && (
+              {currentSeveritySymptom && (
                 <div className="bg-[var(--surface-primary)] rounded-2xl p-5 shadow-md border border-[var(--warm-200)] mb-6">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-xl bg-[var(--rose-100)] flex items-center justify-center">
                       {(() => {
-                        const SymptomIcon = getCurrentSeveritySymptom()!.icon;
+                        const SymptomIcon = currentSeveritySymptom.icon;
+
                         return (
                           <SymptomIcon
                             size={20}
@@ -376,24 +419,24 @@ export default function CheckInPage() {
                         );
                       })()}
                     </div>
+
                     <div>
                       <div className="font-semibold text-[var(--text-primary)]">
-                        {getCurrentSeveritySymptom()!.label}
+                        {currentSeveritySymptom.label}
                       </div>
+
                       <div className="text-xs text-[var(--text-tertiary)]">
                         Question {currentSeverityIndex + 1} of{" "}
-                        {
-                          selectedSymptoms.filter((id) => severityQuestions[id])
-                            .length
-                        }
+                        {selectedSeverityIds.length}
                       </div>
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    {getCurrentSeverityQuestions().map((question, i) => (
+                    {getCurrentSeverityQuestions().map((question, index) => (
                       <button
-                        key={i}
+                        type="button"
+                        key={`${question}-${index}`}
                         className="w-full text-left p-4 rounded-xl border-2 border-[var(--warm-200)] hover:border-[var(--rose-300)] hover:bg-[var(--rose-50)] transition-all active:scale-[0.98]"
                       >
                         <span className="text-sm text-[var(--text-secondary)]">
@@ -406,12 +449,11 @@ export default function CheckInPage() {
               )}
 
               <button
+                type="button"
                 onClick={handleSeverityNext}
                 className="w-full py-4 rounded-2xl bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white font-semibold shadow-lg shadow-rose-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
               >
-                {currentSeverityIndex <
-                selectedSymptoms.filter((id) => severityQuestions[id]).length -
-                  1
+                {currentSeverityIndex < selectedSeverityIds.length - 1
                   ? "Next Question"
                   : "See Results"}{" "}
                 <ChevronRight size={20} />
@@ -466,6 +508,7 @@ export default function CheckInPage() {
                     >
                       {riskLevel} Risk
                     </span>
+
                     <h2 className="text-xl font-bold text-[var(--text-primary)]">
                       {riskLevel === "high"
                         ? "Please Seek Care"
@@ -491,7 +534,8 @@ export default function CheckInPage() {
                 {selectedSymptoms.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {selectedSymptoms.map((id) => {
-                      const symptom = symptoms.find((s) => s.id === id);
+                      const symptom = symptoms.find((item) => item.id === id);
+
                       return symptom ? (
                         <span
                           key={id}
@@ -513,10 +557,17 @@ export default function CheckInPage() {
 
               {riskLevel === "high" && (
                 <div className="space-y-3 mb-5">
-                  <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                  >
                     <Phone size={20} /> Call Your Provider
                   </button>
-                  <button className="w-full py-4 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2">
+
+                  <button
+                    type="button"
+                    className="w-full py-4 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2"
+                  >
                     <MapPin size={20} /> Find Nearest ER
                   </button>
                 </div>
@@ -524,10 +575,17 @@ export default function CheckInPage() {
 
               {riskLevel === "medium" && (
                 <div className="space-y-3 mb-5">
-                  <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold shadow-lg shadow-amber-500/20 active:scale-[0.98] flex items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold shadow-lg shadow-amber-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                  >
                     <Phone size={20} /> Call Advice Line
                   </button>
-                  <button className="w-full py-4 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2">
+
+                  <button
+                    type="button"
+                    className="w-full py-4 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2"
+                  >
                     <CalendarDays size={20} /> Schedule Appointment
                   </button>
                 </div>
@@ -535,20 +593,21 @@ export default function CheckInPage() {
 
               {riskLevel === "low" && (
                 <div className="space-y-3 mb-5">
-                  <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold shadow-lg shadow-emerald-500/20 active:scale-[0.98] flex items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold shadow-lg shadow-emerald-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                  >
                     <ShieldCheck size={20} /> Log Wellness Entry
                   </button>
                 </div>
               )}
 
               <button
-                onClick={() => setShowAIInsights(!showAIInsights)}
+                type="button"
+                onClick={() => setShowAIInsights((prev) => !prev)}
                 className="w-full py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-primary)] font-medium active:scale-[0.98] flex items-center justify-center gap-2 mb-4"
               >
-                <Sparkles
-                  size={18}
-                  className="text-[var(--rose-500)]"
-                />
+                <Sparkles size={18} className="text-[var(--rose-500)]" />
                 {showAIInsights ? "Hide" : "View"} AI Insights
               </button>
 
@@ -562,10 +621,7 @@ export default function CheckInPage() {
                   >
                     <div className="rounded-2xl bg-gradient-to-br from-[var(--rose-50)] to-[var(--bg-secondary)] p-5 border border-[var(--rose-200)]">
                       <div className="flex items-center gap-2 mb-3">
-                        <Sparkles
-                          size={16}
-                          className="text-[var(--rose-500)]"
-                        />
+                        <Sparkles size={16} className="text-[var(--rose-500)]" />
                         <span className="text-sm font-semibold text-[var(--rose-700)]">
                           Personalized Context
                         </span>
@@ -580,11 +636,7 @@ export default function CheckInPage() {
                         {selectedSymptoms.includes("fever") && (
                           <p>
                             • Fever in the{" "}
-                            {week > 28
-                              ? "third"
-                              : week > 12
-                              ? "second"
-                              : "first"}{" "}
+                            {week > 28 ? "third" : week > 12 ? "second" : "first"}{" "}
                             trimester should be monitored closely. Stay hydrated
                             and track your temperature.
                           </p>
@@ -624,12 +676,15 @@ export default function CheckInPage() {
 
               <div className="flex gap-3">
                 <button
+                  type="button"
                   onClick={() => {}}
                   className="flex-1 py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-medium active:scale-[0.98] flex items-center justify-center gap-2 text-sm"
                 >
                   <Share2 size={16} /> Share
                 </button>
+
                 <button
+                  type="button"
                   onClick={resetCheckIn}
                   className="flex-1 py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-medium active:scale-[0.98] flex items-center justify-center gap-2 text-sm"
                 >
@@ -638,6 +693,7 @@ export default function CheckInPage() {
               </div>
 
               <button
+                type="button"
                 onClick={() => router.push("/home")}
                 className="w-full mt-4 py-3 text-[var(--rose-600)] font-semibold text-sm flex items-center justify-center gap-1"
               >
@@ -647,6 +703,7 @@ export default function CheckInPage() {
           )}
         </AnimatePresence>
       </main>
+
       <BottomNav />
     </div>
   );
