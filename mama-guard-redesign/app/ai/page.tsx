@@ -28,46 +28,53 @@ function generateResponse(input: string): { content: string; type: "text" | "act
 
   // Escalation for critical symptoms
   const criticalSymptoms = [
-    { keywords: ["bleed", "hemorrhage"], label: "Vaginal Bleeding" },
+    { keywords: ["bleed", "hemorrhage", "leaking", "fluid"], label: "Bleeding or Leaking" },
     { keywords: ["headache", "migraine"], label: "Severe Headache" },
     { keywords: ["vision", "blur", "spots", "flashes"], label: "Vision Changes" },
     { keywords: ["movement", "kick", "baby not moving"], label: "Decreased Movement" },
-    { keywords: ["breath", "shortness of breath", "chest pain"], label: "Breathing Difficulty" },
+    { keywords: ["breath", "shortness of breath", "chest pain", "heart racing", "fast-beating"], label: "Chest or Breathing Issues" },
     { keywords: ["fever", "temperature", "chills"], label: "Fever" },
-    { keywords: ["abdominal pain", "stomach pain", "cramp"], label: "Severe Pain" },
+    { keywords: ["abdominal pain", "stomach pain", "cramp", "severe pain"], label: "Severe Pain" },
+    { keywords: ["nausea", "vomiting", "throw up"], label: "Severe Nausea" },
+    { keywords: ["dizzy", "faint", "passed out"], label: "Dizziness" },
+    { keywords: ["harm", "suicide", "hurt myself", "hurt baby"], label: "Self-Harm Thoughts" },
   ];
 
   const matchedCritical = criticalSymptoms.find(s => s.keywords.some(k => lower.includes(k)));
 
   if (matchedCritical) {
     let specificAdvice = "";
-    if (lower.includes("bleed")) {
-      specificAdvice = "Seek immediate care if bleeding is heavy (soaking a pad in an hour), accompanied by pain, or if you feel faint.";
+    if (lower.includes("bleed") || lower.includes("leak")) {
+      specificAdvice = "Vaginal bleeding or leaking fluid during pregnancy warrants immediate clinical evaluation.";
     } else if (lower.includes("headache") || lower.includes("vision")) {
       specificAdvice = "Severe headaches and vision changes can be signs of preeclampsia. Please contact your provider or seek urgent care immediately.";
     } else if (lower.includes("movement")) {
-      specificAdvice = "If you notice a significant decrease in your baby's normal movement patterns, contact your healthcare provider right away for evaluation.";
-    } else if (lower.includes("breath")) {
-      specificAdvice = "Shortness of breath at rest or chest pain requires immediate medical evaluation.";
+      specificAdvice = "A significant decrease in your baby's movement patterns requires prompt medical evaluation.";
+    } else if (lower.includes("breath") || lower.includes("chest") || lower.includes("heart")) {
+      specificAdvice = "Chest pain, a racing heart, or trouble breathing are serious signs that require immediate medical attention.";
+    } else if (lower.includes("harm")) {
+      specificAdvice = "If you have thoughts of harming yourself or your baby, please contact a crisis line or your healthcare provider immediately. You are not alone and help is available.";
+    } else if (lower.includes("fever")) {
+      specificAdvice = "A fever of 100.4°F (38°C) or higher during pregnancy should be reported to your provider promptly.";
     }
 
     return { 
-      content: `**Urgent Warning:** You mentioned symptoms related to ${matchedCritical.label}. 
+      content: `**Urgent Notice:** You mentioned concerns related to ${matchedCritical.label}. 
 
 ${specificAdvice || "Symptoms like this during pregnancy require prompt medical evaluation to ensure the safety of you and your baby."}
 
-**Please contact your healthcare provider immediately or go to the nearest emergency center.**`, 
+**Please contact your healthcare provider immediately or go to the nearest emergency center.** This is a prototype and not a medical diagnosis.`, 
       type: "warning", 
       actions: suggestedActions 
     };
   }
 
-  if (lower.includes("normal")) return { content: `It's natural to wonder what's normal during pregnancy. Many changes are typical as your body adjusts.\n\n**Common normal symptoms:**\n• Mild stretching sensations\n• Increased fatigue\n• Breast tenderness\n• Mild morning sickness\n\n**However, always contact your provider if:**\n• Symptoms are severe or worsening\n• You have bleeding or fluid leakage\n• You experience severe headache or vision changes\n• You have concerns about fetal movement`, type: "text" };
+  if (lower.includes("normal")) return { content: `It's natural to wonder what's normal. Many changes are typical, but some require professional review.\n\n**Common normal symptoms:**\n• Mild stretching sensations\n• Increased fatigue\n• Breast tenderness\n• Mild morning sickness\n\n**However, contact your provider if:**\n• Symptoms are severe or worsening\n• You have bleeding or fluid leakage\n• You have concerns about baby's movement\n• You experience severe headache or vision changes\n\nAlways consult your healthcare provider for medical advice.`, type: "text" };
   
-  if (lower.includes("baby") && lower.includes("week")) return { content: `At this stage, your baby is reaching many exciting milestones! \n\n**Highlights:**\n• Major organs are maturing\n• Hearing development is progressing\n• Movement is becoming more rhythmic\n\n**For your health:**\n• Continue your prenatal vitamin routine\n• Maintain high hydration levels\n• Practice gentle movement like walking\n• Start tracking daily kick counts if you're in the third trimester`, type: "text" };
+  if (lower.includes("baby") && lower.includes("week")) return { content: `At this stage, your baby is reaching many milestones! \n\n**Highlights:**\n• Major organs are maturing\n• Hearing development is progressing\n• Movement is becoming more rhythmic\n\n**Health Reminders:**\n• Continue prenatal vitamins\n• Maintain high hydration\n• Monitor daily kick counts if in the third trimester\n\nPlease share any concerns about your baby's growth with your provider.`, type: "text" };
 
   return { 
-    content: `Thank you for sharing. I'm here to provide prototype guidance and support.\n\n**Important Reminders:**\n• I am a prototype assistant, not a medical professional.\n• For any urgent symptoms, contact your doctor or local emergency services immediately.\n• This guidance is for educational/prototype purposes only.\n\nHow else can I support your journey today?`, 
+    content: `Thank you for sharing. I'm here to provide supportive prototype guidance.\n\n**Important:**\n• I am a prototype, not a medical professional.\n• For any concerns or urgent symptoms, contact your provider immediately.\n• This guidance is for educational purposes only.\n\nHow else can I support you today?`, 
     type: "text" 
   };
 }
@@ -105,7 +112,7 @@ export default function AIPage() {
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--rose-400)] to-[var(--rose-600)] flex items-center justify-center"><Sparkles size={18} className="text-white" /></div>
             <div>
               <div className="font-semibold text-[var(--text-primary)] text-sm leading-tight">Mama Guard Assistant</div>
-              <div className="text-[11px] text-[var(--text-tertiary)] flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[var(--sage-500)] inline-block" />Smart guidance assistant</div>
+              <div className="text-[11px] text-[var(--text-tertiary)] flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[var(--sage-500)] inline-block" />Supportive pregnancy guidance</div>
             </div>
           </div>
         </div>

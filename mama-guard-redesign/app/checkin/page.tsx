@@ -65,8 +65,7 @@ const severityConfigs: Record<string, SeverityConfig> = {
     question: "What is your temperature?",
     options: [
       { label: "Under 100.4°F", value: "under_100", riskModifier: 0 },
-      { label: "100.4°F - 102°F", value: "100_102", riskModifier: 1 },
-      { label: "Over 102°F", value: "over_102", riskModifier: 2 },
+      { label: "100.4°F or higher", value: "over_100", riskModifier: 2 },
     ],
   },
   headache: {
@@ -74,13 +73,13 @@ const severityConfigs: Record<string, SeverityConfig> = {
     options: [
       { label: "1-3 (Mild)", value: "1_3", riskModifier: 0 },
       { label: "4-6 (Moderate)", value: "4_6", riskModifier: 1 },
-      { label: "7-10 (Severe)", value: "7_10", riskModifier: 2 },
+      { label: "7-10 (Severe or worsening)", value: "7_10", riskModifier: 2 },
     ],
   },
   vision: {
     question: "What changes are you noticing?",
     options: [
-      { label: "Slight blurriness", value: "slight", riskModifier: 0 },
+      { label: "Slight blurriness", value: "slight", riskModifier: 1 },
       { label: "Spots or flashes", value: "spots", riskModifier: 2 },
       { label: "Partial vision loss", value: "loss", riskModifier: 2 },
     ],
@@ -96,8 +95,8 @@ const severityConfigs: Record<string, SeverityConfig> = {
   bleeding: {
     question: "How would you describe the flow?",
     options: [
-      { label: "Spotting", value: "spotting", riskModifier: 0 },
-      { label: "Light (like period start)", value: "light", riskModifier: 1 },
+      { label: "Spotting", value: "spotting", riskModifier: 1 },
+      { label: "Light (like period start)", value: "light", riskModifier: 2 },
       { label: "Heavy (soaking a pad)", value: "heavy", riskModifier: 2 },
     ],
   },
@@ -118,11 +117,35 @@ const severityConfigs: Record<string, SeverityConfig> = {
     ],
   },
   breathing: {
-    question: "When do you feel short of breath?",
+    question: "What breathing concerns do you have?",
     options: [
-      { label: "Only with activity", value: "activity", riskModifier: 0 },
-      { label: "Moderate", value: "moderate", riskModifier: 1 },
-      { label: "Even at rest", value: "rest", riskModifier: 2 },
+      { label: "Short of breath with activity", value: "activity", riskModifier: 1 },
+      { label: "Short of breath at rest", value: "rest", riskModifier: 2 },
+      { label: "Chest pain or racing heart", value: "chest", riskModifier: 2 },
+    ],
+  },
+  nausea: {
+    question: "How severe is the nausea/vomiting?",
+    options: [
+      { label: "Mild / Occasional", value: "mild", riskModifier: 0 },
+      { label: "Moderate (hard to eat)", value: "moderate", riskModifier: 1 },
+      { label: "Severe (cannot keep fluid down)", value: "severe", riskModifier: 2 },
+    ],
+  },
+  leg_pain: {
+    question: "Where is the pain located?",
+    options: [
+      { label: "Generalized muscle ache", value: "muscle", riskModifier: 0 },
+      { label: "Severe pain in one leg/arm", value: "localized", riskModifier: 2 },
+      { label: "Redness or warmth in one area", value: "inflammation", riskModifier: 2 },
+    ],
+  },
+  tiredness: {
+    question: "How would you describe the fatigue?",
+    options: [
+      { label: "Normal pregnancy tiredness", value: "normal", riskModifier: 0 },
+      { label: "Overwhelming / Cannot function", value: "severe", riskModifier: 1 },
+      { label: "Accompanied by fainting/dizziness", value: "fainting", riskModifier: 2 },
     ],
   },
 };
@@ -131,7 +154,7 @@ const symptoms: Symptom[] = [
   {
     id: "fever",
     label: "Fever or chills",
-    description: "Temperature above 100.4°F / 38°C",
+    description: "100.4°F / 38°C or higher",
     icon: Thermometer,
     severity: "high",
   },
@@ -150,25 +173,46 @@ const symptoms: Symptom[] = [
     severity: "high",
   },
   {
-    id: "swelling",
-    label: "Swelling",
-    description: "In face, hands, or legs",
-    icon: Heart,
-    severity: "medium",
-  },
-  {
     id: "bleeding",
-    label: "Vaginal bleeding",
-    description: "Any amount of spotting or flow",
+    label: "Bleeding or leaking",
+    description: "Fluid or blood from vagina",
     icon: Droplets,
     severity: "high",
   },
   {
     id: "movement",
-    label: "Decreased fetal movement",
-    description: "Less kicks than usual",
+    label: "Decreased movement",
+    description: "Baby moving less than usual",
     icon: Baby,
     severity: "high",
+  },
+  {
+    id: "breathing",
+    label: "Chest or Breathing",
+    description: "Pain, racing heart, or SOB",
+    icon: Stethoscope,
+    severity: "high",
+  },
+  {
+    id: "nausea",
+    label: "Severe Nausea",
+    description: "Vomiting or cannot eat/drink",
+    icon: Activity,
+    severity: "high",
+  },
+  {
+    id: "leg_pain",
+    label: "Leg or Arm Pain",
+    description: "Severe pain, redness, or heat",
+    icon: Activity,
+    severity: "high",
+  },
+  {
+    id: "swelling",
+    label: "Swelling",
+    description: "In face, hands, or eyes",
+    icon: Heart,
+    severity: "medium",
   },
   {
     id: "cramps",
@@ -178,11 +222,11 @@ const symptoms: Symptom[] = [
     severity: "medium",
   },
   {
-    id: "breathing",
-    label: "Breathing difficulty",
-    description: "Shortness of breath at rest",
-    icon: Stethoscope,
-    severity: "high",
+    id: "tiredness",
+    label: "Extreme Fatigue",
+    description: "Overwhelming or fainting",
+    icon: Clock,
+    severity: "medium",
   },
 ];
 
@@ -339,10 +383,16 @@ export default function CheckInPage() {
                 <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
                   How are you feeling?
                 </h1>
-                <p className="text-[var(--text-secondary)]">
+                <p className="text-[var(--text-secondary)] mb-4">
                   Select any symptoms you&apos;re experiencing today. Tap again
                   to deselect.
                 </p>
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-3">
+                  <AlertTriangle size={18} className="text-amber-600 shrink-0 mt-0.5" />
+                  <p className="text-xs text-amber-800 leading-tight">
+                    <strong>Medical Disclaimer:</strong> This check-in is for prototype guidance only. If you are experiencing a medical emergency, call your local emergency number immediately.
+                  </p>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 gap-3 mb-6">
@@ -563,15 +613,15 @@ export default function CheckInPage() {
                           : "text-emerald-600"
                       }`}
                     >
-                      {riskLevel} Risk Detected
+                      {riskLevel === "high" ? "Urgent Action Recommended" : riskLevel === "medium" ? "Close Monitoring Advised" : "No Concerns Detected"}
                     </span>
 
                     <h2 className="text-xl font-bold text-[var(--text-primary)]">
                       {riskLevel === "high"
-                        ? "Urgent Care Recommended"
+                        ? "Contact Your Care Team"
                         : riskLevel === "medium"
-                        ? "Close Monitoring Needed"
-                        : "No Concerns Found"}
+                        ? "Track Symptoms Closely"
+                        : "Continue Routine Care"}
                     </h2>
                   </div>
                 </div>
@@ -653,10 +703,10 @@ export default function CheckInPage() {
                 <button
                   type="button"
                   onClick={() => {
-                    const summary = `Mama Guard Check-in Summary:\nDate: ${new Date().toLocaleDateString()}\nRisk: ${riskLevel.toUpperCase()}\nSymptoms: ${selectedSymptoms.map(id => {
+                    const summary = `Mama Guard Check-in Summary\n--------------------------\nDate: ${new Date().toLocaleDateString()}\nStatus: ${riskLevel === "high" ? "URGENT ACTION RECOMMENDED" : riskLevel === "medium" ? "MONITORING ADVISED" : "ROUTINE"}\n\nSymptoms Reported:\n${selectedSymptoms.map(id => {
                       const s = symptoms.find(item => item.id === id);
-                      return s ? `${s.label}${followUpAnswers[id] ? ` (${followUpAnswers[id]})` : ""}` : id;
-                    }).join(", ")}\nSuggested Next Step: ${riskLevel === "high" ? "Contact healthcare provider immediately" : riskLevel === "medium" ? "Monitor and consult provider" : "Continue routine care"}\n\nThis is prototype guidance and not a medical diagnosis.`;
+                      return `• ${s ? s.label : id}${followUpAnswers[id] ? `: ${followUpAnswers[id]}` : ""}`;
+                    }).join("\n")}\n\nClinical Guidance:\n${riskLevel === "high" ? "Seek immediate medical evaluation from your healthcare provider or emergency department." : riskLevel === "medium" ? "Monitor symptoms closely and consult your healthcare provider for guidance." : "Continue standard prenatal care and routine check-ins."}\n\n--------------------------\nNote: This is a prototype summary generated by Mama Guard. It is not a medical diagnosis or clinical record.`;
                     
                     if (navigator.clipboard) {
                       navigator.clipboard.writeText(summary).then(() => alert("Summary copied to clipboard!")).catch(() => alert("Failed to copy. Please take a screenshot."));

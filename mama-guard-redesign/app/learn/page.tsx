@@ -55,11 +55,13 @@ const articles: Article[] = [
         "Keep your provider's after-hours number saved."
       ],
       whenToSeekCare: [
-        "Vaginal bleeding (bright red or heavy flow)",
-        "Severe abdominal pain or constant cramping",
-        "Loss of fluid (water breaking before 37 weeks)",
-        "Severe headache or vision changes",
-        "Significant decrease in fetal movement"
+        "Vaginal bleeding or leaking fluid",
+        "Severe headache that won't go away",
+        "Fever of 100.4°F (38°C) or higher",
+        "Chest pain or fast-beating heart",
+        "Significant decrease in baby's movement",
+        "Severe nausea, vomiting, or abdominal pain",
+        "Severe swelling or pain in one limb"
       ]
     }
   },
@@ -228,7 +230,7 @@ export default function LearnPage() {
             <span className="text-xs font-bold uppercase tracking-widest">Emergency Signs</span>
           </div>
           <p className="text-xs font-medium leading-relaxed text-rose-50">
-            Severe bleeding, breathing difficulty, seizures, severe headache with vision changes, or reduced baby movement require urgent medical care.
+            Bleeding, leaking fluid, fever of 100.4°F+, severe headache, chest pain, or reduced movement require urgent medical care.
           </p>
         </motion.div>
 

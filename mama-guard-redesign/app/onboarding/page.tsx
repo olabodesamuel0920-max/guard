@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Baby, Sparkles, ChevronRight, ChevronLeft, Calendar, User, Shield, Check } from "lucide-react";
+import { Heart, Baby, Sparkles, ChevronRight, ChevronLeft, Calendar, User, Shield, Check, Activity } from "lucide-react";
 import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
 
@@ -58,7 +58,49 @@ export default function OnboardingPage() {
       <div className="flex-1 px-6 flex flex-col justify-center">
         <AnimatePresence mode="wait">
           <motion.div key={step} initial={{ opacity: 0, x: direction > 0 ? 60 : -60 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: direction > 0 ? -60 : 60 }} transition={{ duration: 0.35 }}>
-            {step <= 2 ? (
+            {step === 0 ? (
+              <div className="text-left">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center mb-6 shadow-lg shadow-rose-500/20">
+                  <Heart size={32} className="text-white" />
+                </div>
+                <h1 className="text-4xl font-extrabold text-[var(--text-primary)] leading-tight mb-4">
+                  Welcome to <br />
+                  <span className="text-rose-500">Mama Guard</span>
+                </h1>
+                <p className="text-[var(--text-secondary)] text-lg mb-8 leading-relaxed">
+                  Supportive guidance for your maternal health journey.
+                </p>
+
+                <div className="space-y-4 mb-8">
+                  {[
+                    { title: "Track Symptoms", desc: "Daily check-ins for your well-being.", icon: Activity },
+                    { title: "Know Warning Signs", desc: "Learn what signs require urgent care.", icon: Shield },
+                    { title: "Prepare Your Plan", desc: "Keep your care team details ready.", icon: Baby }
+                  ].map((card, i) => (
+                    <motion.div 
+                      key={i}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 + i * 0.1 }}
+                      className="flex items-center gap-4 p-4 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] shadow-sm"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-rose-500 shrink-0">
+                        <card.icon size={20} />
+                      </div>
+                      <div>
+                        <div className="font-bold text-[var(--text-primary)] text-sm">{card.title}</div>
+                        <div className="text-xs text-[var(--text-tertiary)]">{card.desc}</div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-800 text-[11px] font-medium leading-tight">
+                  <Shield size={14} className="shrink-0" />
+                  <span>Privacy First: All data is stored locally on this device only. This is a medical prototype.</span>
+                </div>
+              </div>
+            ) : step === 1 || step === 2 ? (
               <div className="text-center">
                 <div className={`w-24 h-24 rounded-3xl bg-gradient-to-br ${slides[step].color} flex items-center justify-center mx-auto mb-8 shadow-xl`}>{SlideIcon && <SlideIcon size={40} className="text-white" />}</div>
                 <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-3">{slides[step].title}</h1>
