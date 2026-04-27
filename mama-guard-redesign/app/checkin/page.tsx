@@ -54,6 +54,78 @@ interface CheckInRecord {
   followUpAnswers?: Record<string, string>;
 }
 
+interface SeverityConfig {
+  question: string;
+  options: { label: string; value: string; riskModifier?: number }[];
+}
+
+const severityConfigs: Record<string, SeverityConfig> = {
+  fever: {
+    question: "What is your temperature?",
+    options: [
+      { label: "Under 100.4°F", value: "under_100", riskModifier: 0 },
+      { label: "100.4°F - 102°F", value: "100_102", riskModifier: 1 },
+      { label: "Over 102°F", value: "over_102", riskModifier: 2 },
+    ],
+  },
+  headache: {
+    question: "How severe is the pain (1-10)?",
+    options: [
+      { label: "1-3 (Mild)", value: "1_3", riskModifier: 0 },
+      { label: "4-6 (Moderate)", value: "4_6", riskModifier: 1 },
+      { label: "7-10 (Severe)", value: "7_10", riskModifier: 2 },
+    ],
+  },
+  vision: {
+    question: "What changes are you noticing?",
+    options: [
+      { label: "Slight blurriness", value: "slight", riskModifier: 0 },
+      { label: "Spots or flashes", value: "spots", riskModifier: 2 },
+      { label: "Partial vision loss", value: "loss", riskModifier: 2 },
+    ],
+  },
+  swelling: {
+    question: "Where is the swelling most prominent?",
+    options: [
+      { label: "Legs / Ankles", value: "legs", riskModifier: 0 },
+      { label: "Hands / Fingers", value: "hands", riskModifier: 1 },
+      { label: "Face / Eyes", value: "face", riskModifier: 2 },
+    ],
+  },
+  bleeding: {
+    question: "How would you describe the flow?",
+    options: [
+      { label: "Spotting", value: "spotting", riskModifier: 0 },
+      { label: "Light (like period start)", value: "light", riskModifier: 1 },
+      { label: "Heavy (soaking a pad)", value: "heavy", riskModifier: 2 },
+    ],
+  },
+  movement: {
+    question: "When did you last feel movement?",
+    options: [
+      { label: "Normal (frequent)", value: "normal", riskModifier: 0 },
+      { label: "Less than usual", value: "reduced", riskModifier: 1 },
+      { label: "None for 2+ hours", value: "none", riskModifier: 2 },
+    ],
+  },
+  cramps: {
+    question: "How intense is the cramping?",
+    options: [
+      { label: "Mild (like period)", value: "mild", riskModifier: 0 },
+      { label: "Strong / Regular", value: "strong", riskModifier: 1 },
+      { label: "Severe / Constant", value: "severe", riskModifier: 2 },
+    ],
+  },
+  breathing: {
+    question: "When do you feel short of breath?",
+    options: [
+      { label: "Only with activity", value: "activity", riskModifier: 0 },
+      { label: "Moderate", value: "moderate", riskModifier: 1 },
+      { label: "Even at rest", value: "rest", riskModifier: 2 },
+    ],
+  },
+};
+
 const symptoms: Symptom[] = [
   {
     id: "fever",
@@ -113,31 +185,7 @@ const symptoms: Symptom[] = [
   },
 ];
 
-const severityQuestions: Record<string, string[]> = {
-  fever: [
-    "How high is your temperature?",
-    "When did it start?",
-    "Are you taking any medication?",
-  ],
-  headache: [
-    "On a scale of 1-10, how severe?",
-    "Is it accompanied by vision changes?",
-    "Have you had these before?",
-  ],
-  vision: ["When did you first notice changes?", "Is it in one eye or both?"],
-  swelling: ["Where is the swelling?", "Did it come on suddenly?"],
-  bleeding: [
-    "How much bleeding? (spotting/light/heavy)",
-    "Any pain with the bleeding?",
-    "When did it start?",
-  ],
-  movement: [
-    "When did you last feel movement?",
-    "Have you tried drinking cold water?",
-  ],
-  cramps: ["How frequent are the cramps?", "Are they getting stronger?"],
-  breathing: ["Does it happen at rest or with activity?", "Any chest pain?"],
-};
+// Removed old severityQuestions record in favor of severityConfigs
 
 export default function CheckInPage() {
   const router = useRouter();
@@ -151,8 +199,8 @@ export default function CheckInPage() {
   const [showAIInsights, setShowAIInsights] = useState(false);
   const [followUpAnswers, setFollowUpAnswers] = useState<Record<string, string>>({});
 
-  const getUserData = (): UserData => {
-    return safeStorage.get(STORAGE_KEYS.ONBOARDING, { name: "", dueDate: "" });
+  const getUserData = () => {
+    return safeStorage.get(STORAGE_KEYS.ONBOARDING, { name: "", dueDate: "", providerPhone: "", nearestHospital: "" });
   };
 
   const userData = getUserData();
@@ -178,11 +226,13 @@ export default function CheckInPage() {
   const handleSubmitSymptoms = () => {
     const risk = calculateRisk();
     setRiskLevel(risk);
-    setCurrentStep(selectedSymptoms.length > 0 ? "severity" : "result");
     
-    // If no severity questions, save now
-    if (selectedSymptoms.length === 0 || getSelectedSeverityIds().length === 0) {
+    const followUpIds = getSelectedSeverityIds();
+    if (followUpIds.length > 0) {
+      setCurrentStep("severity");
+    } else {
       saveCheckIn(risk, {});
+      setCurrentStep("result");
     }
   };
 
@@ -202,7 +252,7 @@ export default function CheckInPage() {
   };
 
   const getSelectedSeverityIds = () => {
-    return selectedSymptoms.filter((id) => severityQuestions[id]);
+    return selectedSymptoms.filter((id) => severityConfigs[id]);
   };
 
   const handleSeverityNext = () => {
@@ -221,11 +271,10 @@ export default function CheckInPage() {
     return symptoms.find((symptom) => symptom.id === selected[currentSeverityIndex]);
   };
 
-  const getCurrentSeverityQuestions = () => {
+  const getCurrentSeverityConfig = () => {
     const selected = getSelectedSeverityIds();
-    const currentSymptomId = selected[currentSeverityIndex];
-
-    return currentSymptomId ? severityQuestions[currentSymptomId] || [] : [];
+    const id = selected[currentSeverityIndex];
+    return id ? severityConfigs[id] : null;
   };
 
   const resetCheckIn = () => {
@@ -431,15 +480,14 @@ export default function CheckInPage() {
                   </div>
 
                   <div className="space-y-3">
-                    {getCurrentSeverityQuestions().map((question, index) => {
-                      const answerKey = `${currentSeveritySymptom?.id}-${index}`;
-                      const isSelected = followUpAnswers[answerKey] === question;
+                    {getCurrentSeverityConfig()?.options.map((option) => {
+                      const isSelected = followUpAnswers[currentSeveritySymptom.id] === option.label;
                       
                       return (
                         <button
                           type="button"
-                          key={`${question}-${index}`}
-                          onClick={() => setFollowUpAnswers(prev => ({ ...prev, [answerKey]: question }))}
+                          key={option.value}
+                          onClick={() => setFollowUpAnswers(prev => ({ ...prev, [currentSeveritySymptom.id]: option.label }))}
                           className={`w-full text-left p-4 rounded-xl border-2 transition-all active:scale-[0.98] ${
                             isSelected 
                               ? "border-[var(--rose-400)] bg-[var(--rose-50)] shadow-sm" 
@@ -447,7 +495,7 @@ export default function CheckInPage() {
                           }`}
                         >
                           <span className={`text-sm ${isSelected ? "text-[var(--rose-700)] font-medium" : "text-[var(--text-secondary)]"}`}>
-                            {question}
+                            {option.label}
                           </span>
                         </button>
                       );
@@ -567,15 +615,26 @@ export default function CheckInPage() {
 
               {riskLevel === "high" && (
                 <div className="space-y-3 mb-5">
-                  <button
-                    type="button"
-                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
-                  >
-                    <Phone size={20} /> Call Your Provider
-                  </button>
+                  {userData.providerPhone ? (
+                    <a
+                      href={`tel:${userData.providerPhone}`}
+                      className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                    >
+                      <Phone size={20} /> Call Provider ({userData.providerPhone})
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => router.push("/profile")}
+                      className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2 opacity-90"
+                    >
+                      <Phone size={20} /> Add Provider Phone in Profile
+                    </button>
+                  )}
 
                   <button
                     type="button"
+                    onClick={() => alert("Prototype Notice: In a real version, this would show nearby emergency centers. For now, please contact your local emergency service or nearest hospital.")}
                     className="w-full py-4 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2"
                   >
                     <MapPin size={20} /> Find Nearest ER

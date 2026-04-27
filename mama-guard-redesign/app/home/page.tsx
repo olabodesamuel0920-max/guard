@@ -112,7 +112,7 @@ export default function HomePage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }} className="grid grid-cols-2 gap-3 mb-5">
           <button onClick={() => router.push("/ai")} className="rounded-2xl bg-[var(--surface-primary)] p-4 text-left shadow-md border border-[var(--warm-200)]/60 active:scale-[0.97] transition-transform">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--rose-100)] to-[var(--rose-200)] flex items-center justify-center mb-3"><Sparkles size={20} className="text-[var(--rose-600)]" /></div>
-            <div className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">Ask AI</div>
+            <div className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">Assistant</div>
             <div className="text-xs text-[var(--text-tertiary)]">Get personalized guidance</div>
           </button>
           <button onClick={() => router.push("/learn")} className="rounded-2xl bg-[var(--surface-primary)] p-4 text-left shadow-md border border-[var(--warm-200)]/60 active:scale-[0.97] transition-transform">
@@ -159,7 +159,7 @@ export default function HomePage() {
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }} className="mt-6 flex items-center justify-center gap-2 py-4">
           <Shield size={14} className="text-[var(--sage-500)]" />
-          <span className="text-[11px] text-[var(--text-muted)]">Your information is stored privately on this device</span>
+          <span className="text-[11px] text-[var(--text-muted)]">Your information is stored privately on this device for this prototype.</span>
         </motion.div>
       </main>
       <AIFloatingButton /><BottomNav />

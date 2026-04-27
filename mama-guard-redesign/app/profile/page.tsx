@@ -27,6 +27,8 @@ interface UserProfile {
   name: string;
   status: "pregnant" | "postpartum";
   dueDate: string;
+  providerPhone?: string;
+  nearestHospital?: string;
 }
 
 type ActionMenuItem = {
@@ -61,9 +63,13 @@ export default function ProfilePage() {
 
   const [user, setUser] = useState<UserProfile | null>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [editData, setEditData] = useState<UserProfile | null>(null);
   const [notifications, setNotifications] = useState(true);
   const [dataSharing, setDataSharing] = useState(false);
   const [stats, setStats] = useState({ checkins: 0, articles: 0, streak: 0 });
+  const [history, setHistory] = useState<any[]>([]);
 
   useEffect(() => {
     const stored = safeStorage.get<UserProfile | null>(STORAGE_KEYS.ONBOARDING, null);
@@ -77,6 +83,7 @@ export default function ProfilePage() {
 
     // Calculate stats
     const checkins = safeStorage.get<any[]>(STORAGE_KEYS.CHECKINS, []);
+    setHistory(checkins.reverse()); // Latest first
     const articlesRead = safeStorage.get<string[]>(STORAGE_KEYS.ARTICLES_READ, []);
     
     // Simple streak calculation (consecutive days)
@@ -110,6 +117,19 @@ export default function ProfilePage() {
     });
   }, []);
 
+  const handleEditProfile = () => {
+    setEditData(user);
+    setShowEditProfile(true);
+  };
+
+  const handleSaveProfile = () => {
+    if (editData) {
+      setUser(editData);
+      safeStorage.set(STORAGE_KEYS.ONBOARDING, editData);
+      setShowEditProfile(false);
+    }
+  };
+
   const handleToggleNotifications = () => {
     const newVal = !notifications;
     setNotifications(newVal);
@@ -133,7 +153,7 @@ export default function ProfilePage() {
           icon: User,
           label: "Personal Information",
           desc: user?.name || "Not set",
-          action: () => {},
+          action: handleEditProfile,
         },
         {
           icon: Baby,
@@ -141,19 +161,30 @@ export default function ProfilePage() {
           desc: user?.dueDate
             ? `Due ${new Date(user.dueDate).toLocaleDateString()} · ${trimester}`
             : "Not set",
-          action: () => {},
-        },
-        {
-          icon: Calendar,
-          label: "Appointments",
-          desc: "0 upcoming",
-          action: () => {},
+          action: handleEditProfile,
         },
         {
           icon: Heart,
           label: "Health History",
-          desc: "View your check-ins",
-          action: () => router.push("/home"),
+          desc: `${stats.checkins} check-ins recorded`,
+          action: () => setShowHistory(true),
+        },
+      ],
+    },
+    {
+      title: "Medical Provider",
+      items: [
+        {
+          icon: Shield,
+          label: "Doctor/Midwife",
+          desc: user?.providerPhone || "Add contact info",
+          action: handleEditProfile,
+        },
+        {
+          icon: FileText,
+          label: "Nearest Hospital",
+          desc: user?.nearestHospital || "Add facility name",
+          action: handleEditProfile,
         },
       ],
     },
@@ -460,6 +491,122 @@ export default function ProfilePage() {
               >
                 Cancel
               </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {showHistory && (
+        <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm flex items-end justify-center">
+          <motion.div
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            className="bg-[var(--bg-primary)] rounded-t-[32px] w-full max-w-lg h-[85vh] overflow-hidden flex flex-col shadow-2xl"
+          >
+            <div className="p-6 border-b border-[var(--warm-200)] flex items-center justify-between bg-[var(--surface-primary)]">
+              <div>
+                <h3 className="text-xl font-bold text-[var(--text-primary)]">Health History</h3>
+                <p className="text-xs text-[var(--text-tertiary)]">Your past check-ins</p>
+              </div>
+              <button onClick={() => setShowHistory(false)} className="w-10 h-10 rounded-full bg-[var(--warm-100)] flex items-center justify-center text-[var(--text-secondary)]">✕</button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5 space-y-4">
+              {history.length > 0 ? (
+                history.map((entry, i) => (
+                  <div key={i} className="bg-[var(--surface-primary)] rounded-2xl p-4 border border-[var(--warm-200)] shadow-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
+                        {new Date(entry.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest ${
+                        entry.risk === 'high' ? 'bg-rose-100 text-rose-600' : 
+                        entry.risk === 'medium' ? 'bg-amber-100 text-amber-600' : 
+                        'bg-emerald-100 text-emerald-600'
+                      }`}>
+                        {entry.risk} Risk
+                      </span>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      {entry.symptoms.length > 0 ? (
+                        entry.symptoms.map((s: string) => (
+                          <span key={s} className="px-2 py-1 bg-[var(--warm-100)] rounded-lg text-[10px] text-[var(--text-secondary)] border border-[var(--warm-200)]">{s}</span>
+                        ))
+                      ) : (
+                        <span className="text-xs text-[var(--text-muted)] italic">No symptoms reported</span>
+                      )}
+                    </div>
+
+                    {entry.followUpAnswers && Object.keys(entry.followUpAnswers).length > 0 && (
+                      <div className="pt-3 border-t border-[var(--warm-100)] space-y-1">
+                        {Object.entries(entry.followUpAnswers).map(([key, val]) => (
+                          <div key={key} className="flex justify-between text-[10px]">
+                            <span className="text-[var(--text-tertiary)] capitalize">{key}:</span>
+                            <span className="font-semibold text-[var(--text-secondary)]">{val as string}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-20">
+                  <div className="w-16 h-16 rounded-full bg-[var(--warm-100)] flex items-center justify-center mx-auto mb-4">
+                    <Heart size={24} className="text-[var(--warm-300)]" />
+                  </div>
+                  <p className="text-[var(--text-tertiary)] text-sm">No check-ins yet.</p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {showEditProfile && editData && (
+        <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm flex items-center justify-center p-5">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-[var(--surface-primary)] rounded-3xl p-6 max-w-sm w-full shadow-2xl"
+          >
+            <h3 className="text-lg font-bold text-[var(--text-primary)] mb-5">Edit Profile</h3>
+            
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase ml-1">Full Name</label>
+                <input 
+                  type="text" 
+                  value={editData.name} 
+                  onChange={e => setEditData({...editData, name: e.target.value})}
+                  className="w-full mt-1 bg-[var(--bg-secondary)] border border-[var(--warm-200)] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--rose-400)]"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase ml-1">Provider Phone</label>
+                <input 
+                  type="tel" 
+                  value={editData.providerPhone || ""} 
+                  onChange={e => setEditData({...editData, providerPhone: e.target.value})}
+                  placeholder="+1 (555) 000-0000"
+                  className="w-full mt-1 bg-[var(--bg-secondary)] border border-[var(--warm-200)] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--rose-400)]"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase ml-1">Nearest Hospital</label>
+                <input 
+                  type="text" 
+                  value={editData.nearestHospital || ""} 
+                  onChange={e => setEditData({...editData, nearestHospital: e.target.value})}
+                  placeholder="e.g. City General"
+                  className="w-full mt-1 bg-[var(--bg-secondary)] border border-[var(--warm-200)] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--rose-400)]"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button onClick={() => setShowEditProfile(false)} className="flex-1 py-3 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] font-medium text-sm">Cancel</button>
+              <button onClick={handleSaveProfile} className="flex-1 py-3 rounded-xl bg-[var(--rose-500)] text-white font-semibold text-sm">Save</button>
             </div>
           </motion.div>
         </div>

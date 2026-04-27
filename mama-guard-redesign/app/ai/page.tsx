@@ -25,17 +25,56 @@ const suggestedActions = [
 
 function generateResponse(input: string): { content: string; type: "text" | "action" | "warning"; actions?: typeof suggestedActions } {
   const lower = input.toLowerCase();
-  if (lower.includes("cramp") || lower.includes("pain")) return { content: `Mild cramping can be normal as your uterus stretches, especially in the second trimester. However, severe or persistent cramping, especially with bleeding, requires immediate medical attention.\n\n**Watch for these warning signs:**\n• Severe pain that doesn't subside\n• Pain with bleeding or fluid loss\n• Regular, rhythmic contractions before 37 weeks\n• Pain with fever or chills`, type: "warning", actions: suggestedActions };
-  if (lower.includes("normal")) return { content: `It's completely natural to wonder what's normal during pregnancy. Many symptoms that feel concerning are actually typical as your body changes.\n\n**Common normal symptoms include:**\n• Mild cramping and stretching sensations\n• Increased fatigue\n• Breast tenderness and changes\n• Mild nausea (especially in first trimester)\n• Increased vaginal discharge\n\n**However, always contact your provider if:**\n• Symptoms are severe or worsening\n• You have bleeding or fluid leakage\n• You experience severe headache or vision changes\n• You have concerns about fetal movement`, type: "text" };
-  if (lower.includes("bleed")) return { content: `**Any vaginal bleeding during pregnancy should be reported to your healthcare provider.**\n\nWhile light spotting can sometimes occur (especially after intercourse or a cervical exam), it's important to get evaluated to rule out any complications.\n\n**Seek immediate care if:**\n• Bleeding is heavy (soaking a pad in an hour)\n• Bleeding is accompanied by pain or cramping\n• You pass tissue or clots\n• You feel dizzy or faint`, type: "warning", actions: suggestedActions };
-  if (lower.includes("baby") && lower.includes("week")) return { content: `At this stage of your pregnancy, your baby is growing rapidly! Here's what's typically happening:\n\n**Development highlights:**\n• Major organs are fully formed and continuing to mature\n• Your baby can hear sounds from outside the womb\n• Movements become more coordinated and frequent\n• Fat deposits are developing under the skin\n\n**For your health:**\n• Continue taking prenatal vitamins\n• Stay hydrated with at least 8 glasses of water\n• Aim for 30 minutes of light exercise daily\n• Monitor fetal movements daily after 28 weeks`, type: "text" };
-  if (lower.includes("headache")) return { content: `Headaches are common during pregnancy, especially in the first and third trimesters due to hormonal changes.\n\n**Safe relief methods:**\n• Rest in a dark, quiet room\n• Apply a cold or warm compress\n• Stay hydrated\n• Practice relaxation techniques\n• Use acetaminophen if needed (consult your provider first)\n\n**⚠️ Seek immediate care if your headache is:**\n• Severe or "worst ever"\n• Accompanied by vision changes, swelling, or upper abdominal pain\n• These could be signs of preeclampsia`, type: "warning", actions: suggestedActions };
-  return { content: `Thank you for sharing that with me. I'm here to support you throughout your pregnancy journey.\n\n**A few important reminders:**\n• I'm an AI assistant, not a replacement for your healthcare provider\n• For any urgent or emergency symptoms, please contact your provider or call emergency services\n• Regular prenatal visits are essential for monitoring your and your baby's health\n\nWould you like me to help you with symptom checking, finding educational resources, or connecting you with your care team?`, type: "text" };
+
+  // Escalation for critical symptoms
+  const criticalSymptoms = [
+    { keywords: ["bleed", "hemorrhage"], label: "Vaginal Bleeding" },
+    { keywords: ["headache", "migraine"], label: "Severe Headache" },
+    { keywords: ["vision", "blur", "spots", "flashes"], label: "Vision Changes" },
+    { keywords: ["movement", "kick", "baby not moving"], label: "Decreased Movement" },
+    { keywords: ["breath", "shortness of breath", "chest pain"], label: "Breathing Difficulty" },
+    { keywords: ["fever", "temperature", "chills"], label: "Fever" },
+    { keywords: ["abdominal pain", "stomach pain", "cramp"], label: "Severe Pain" },
+  ];
+
+  const matchedCritical = criticalSymptoms.find(s => s.keywords.some(k => lower.includes(k)));
+
+  if (matchedCritical) {
+    let specificAdvice = "";
+    if (lower.includes("bleed")) {
+      specificAdvice = "Seek immediate care if bleeding is heavy (soaking a pad in an hour), accompanied by pain, or if you feel faint.";
+    } else if (lower.includes("headache") || lower.includes("vision")) {
+      specificAdvice = "Severe headaches and vision changes can be signs of preeclampsia. Please contact your provider or seek urgent care immediately.";
+    } else if (lower.includes("movement")) {
+      specificAdvice = "If you notice a significant decrease in your baby's normal movement patterns, contact your healthcare provider right away for evaluation.";
+    } else if (lower.includes("breath")) {
+      specificAdvice = "Shortness of breath at rest or chest pain requires immediate medical evaluation.";
+    }
+
+    return { 
+      content: `**Urgent Warning:** You mentioned symptoms related to ${matchedCritical.label}. 
+
+${specificAdvice || "Symptoms like this during pregnancy require prompt medical evaluation to ensure the safety of you and your baby."}
+
+**Please contact your healthcare provider immediately or go to the nearest emergency center.**`, 
+      type: "warning", 
+      actions: suggestedActions 
+    };
+  }
+
+  if (lower.includes("normal")) return { content: `It's natural to wonder what's normal during pregnancy. Many changes are typical as your body adjusts.\n\n**Common normal symptoms:**\n• Mild stretching sensations\n• Increased fatigue\n• Breast tenderness\n• Mild morning sickness\n\n**However, always contact your provider if:**\n• Symptoms are severe or worsening\n• You have bleeding or fluid leakage\n• You experience severe headache or vision changes\n• You have concerns about fetal movement`, type: "text" };
+  
+  if (lower.includes("baby") && lower.includes("week")) return { content: `At this stage, your baby is reaching many exciting milestones! \n\n**Highlights:**\n• Major organs are maturing\n• Hearing development is progressing\n• Movement is becoming more rhythmic\n\n**For your health:**\n• Continue your prenatal vitamin routine\n• Maintain high hydration levels\n• Practice gentle movement like walking\n• Start tracking daily kick counts if you're in the third trimester`, type: "text" };
+
+  return { 
+    content: `Thank you for sharing. I'm here to provide prototype guidance and support.\n\n**Important Reminders:**\n• I am a prototype assistant, not a medical professional.\n• For any urgent symptoms, contact your doctor or local emergency services immediately.\n• This guidance is for educational/prototype purposes only.\n\nHow else can I support your journey today?`, 
+    type: "text" 
+  };
 }
 
 export default function AIPage() {
   const router = useRouter();
-  const [messages, setMessages] = useState<Message[]>([{ id: "welcome", role: "assistant", content: "Hello! I'm your Mama Guard Assistant. I'm here to provide supportive guidance during your pregnancy journey. How can I help you today?", type: "text" }]);
+  const [messages, setMessages] = useState<Message[]>([{ id: "welcome", role: "assistant", content: "Hello! I'm your Mama Guard Assistant. I'm a prototype here to provide supportive guidance during your pregnancy journey. How can I help you today?", type: "text" }]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -80,7 +119,12 @@ export default function AIPage() {
                 {msg.role === "assistant" && <div className="flex items-center gap-1.5 mb-2"><Sparkles size={12} className={msg.type === "warning" ? "text-amber-500" : "text-[var(--rose-500)]"} /><span className={`text-[10px] font-semibold uppercase tracking-wider ${msg.type === "warning" ? "text-amber-600" : "text-[var(--rose-600)]"}`}>{msg.type === "warning" ? "Important" : "Assistant"}</span></div>}
                 <div className={`text-sm whitespace-pre-wrap leading-relaxed ${msg.role === "user" ? "text-white" : msg.type === "warning" ? "text-amber-900" : "text-[var(--text-secondary)]"}`}>{msg.content}</div>
                 {msg.role === "assistant" && msg.id === "welcome" && <MedicalDisclaimer className="mt-4 mb-0" />}
-                {msg.actions && <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[var(--warm-200)]">{msg.actions.map((action) => { const ActionIcon = action.icon; return <button key={action.action} onClick={() => { if (action.action === "checkin") router.push("/checkin"); if (action.action === "learn") router.push("/learn"); if (action.action === "call") { const onboarding = safeStorage.get(STORAGE_KEYS.ONBOARDING, { providerPhone: "" }); if (onboarding.providerPhone) { window.location.href = `tel:${onboarding.providerPhone}`; } else { alert("Please add your provider's phone number in your profile first."); } } }} className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white border border-[var(--warm-200)] text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--warm-50)] transition-colors"><ActionIcon size={14} className="text-[var(--rose-500)]" />{action.label}</button>; })}</div>}
+                {msg.actions && <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[var(--warm-200)]">{msg.actions.map((action) => { const ActionIcon = action.icon; return <button key={action.action} onClick={() => { 
+                  if (action.action === "checkin") router.push("/checkin"); 
+                  if (action.action === "learn") router.push("/learn"); 
+                  if (action.action === "er") alert("Prototype Notice: In a real version, this would show nearby emergency centers. For now, please contact your local emergency service or nearest hospital.");
+                  if (action.action === "call") { const onboarding = safeStorage.get(STORAGE_KEYS.ONBOARDING, { providerPhone: "" }); if (onboarding.providerPhone) { window.location.href = `tel:${onboarding.providerPhone}`; } else { alert("Please add your provider's phone number in your profile first."); } } 
+                }} className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white border border-[var(--warm-200)] text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--warm-50)] transition-colors"><ActionIcon size={14} className="text-[var(--rose-500)]" />{action.label}</button>; })}</div>}
               </div>
             </motion.div>
           ))}

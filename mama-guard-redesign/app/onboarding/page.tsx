@@ -8,20 +8,26 @@ import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
 
 const slides = [
-  { id: "welcome", title: "Welcome to Mama Guard", subtitle: "Your AI-powered maternal health companion", icon: Heart, color: "from-rose-400 to-rose-600" },
-  { id: "features", title: "Personalized Care", subtitle: "Daily check-ins, smart insights, and trusted guidance", icon: Sparkles, color: "from-violet-400 to-violet-600" },
-  { id: "safety", title: "Safe & Private", subtitle: "Your information is stored privately on this device for now.", icon: Shield, color: "from-emerald-400 to-emerald-600" },
+  { id: "welcome", title: "Welcome to Mama Guard", subtitle: "A supportive prototype for your maternal health journey", icon: Heart, color: "from-rose-400 to-rose-600" },
+  { id: "features", title: "Personalized Support", subtitle: "Daily check-ins and educational resources tailored to your week", icon: Sparkles, color: "from-violet-400 to-violet-600" },
+  { id: "safety", title: "Safe & Private", subtitle: "Your information is stored privately on this device for this prototype.", icon: Shield, color: "from-emerald-400 to-emerald-600" },
 ];
 
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [data, setData] = useState({ name: "", status: "pregnant" as "pregnant" | "postpartum", dueDate: "" });
+  const [data, setData] = useState({ 
+    name: "", 
+    status: "pregnant" as "pregnant" | "postpartum", 
+    dueDate: "",
+    providerPhone: "",
+    nearestHospital: ""
+  });
   const [direction, setDirection] = useState(1);
 
   const handleNext = () => {
     setDirection(1);
-    if (step < 5) { setStep(step + 1); }
+    if (step < 7) { setStep(step + 1); }
     else {
       safeStorage.set(STORAGE_KEYS.ONBOARDING, data);
       safeStorage.set(STORAGE_KEYS.ONBOARDED_DATE, new Date().toISOString());
@@ -30,14 +36,18 @@ export default function OnboardingPage() {
   };
 
   const handleBack = () => { if (step > 0) { setDirection(-1); setStep(step - 1); } };
-  const canProceed = () => { if (step === 3) return data.name.trim().length > 0; if (step === 5) return data.dueDate.length > 0; return true; };
+  const canProceed = () => { 
+    if (step === 3) return data.name.trim().length > 0; 
+    if (step === 5) return data.dueDate.length > 0; 
+    return true; 
+  };
   const SlideIcon = slides[step]?.icon;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)] flex flex-col">
       <div className="pt-6 px-6">
         <div className="flex items-center gap-2 mb-8">
-          {[0, 1, 2, 3, 4, 5].map((i) => <div key={i} className={`h-1 flex-1 rounded-full transition-all duration-300 ${i <= step ? "bg-[var(--rose-500)]" : "bg-[var(--warm-200)]"}`} />)}
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => <div key={i} className={`h-1 flex-1 rounded-full transition-all duration-300 ${i <= step ? "bg-[var(--rose-500)]" : "bg-[var(--warm-200)]"}`} />)}
         </div>
       </div>
       {step > 0 && (
@@ -77,12 +87,51 @@ export default function OnboardingPage() {
                   ))}
                 </div>
               </div>
-            ) : (
+            ) : step === 5 ? (
               <div>
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--rose-400)] to-[var(--rose-600)] flex items-center justify-center mb-6 shadow-lg"><Calendar size={28} className="text-white" /></div>
                 <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">When is your due date?</h1>
                 <p className="text-[var(--text-secondary)] mb-8">We&apos;ll calculate your week and milestones</p>
                 <input type="date" value={data.dueDate} onChange={(e) => setData({ ...data, dueDate: e.target.value })} className="w-full text-lg font-medium bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] rounded-2xl px-5 py-4 text-[var(--text-primary)] focus:border-[var(--rose-400)] focus:outline-none transition-colors shadow-sm mb-6" />
+              </div>
+            ) : step === 6 ? (
+              <div>
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--rose-400)] to-[var(--rose-600)] flex items-center justify-center mb-6 shadow-lg"><Shield size={28} className="text-white" /></div>
+                <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">Provider Contact</h1>
+                <p className="text-[var(--text-secondary)] mb-8">Optional info for your safety plan</p>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase ml-1 mb-1.5 block">Doctor/Midwife Phone</label>
+                    <input 
+                      type="tel" 
+                      value={data.providerPhone} 
+                      onChange={(e) => setData({ ...data, providerPhone: e.target.value })} 
+                      placeholder="+1 (555) 000-0000" 
+                      className="w-full bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] rounded-2xl px-5 py-3.5 text-[var(--text-primary)] focus:border-[var(--rose-400)] focus:outline-none transition-colors shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-[var(--text-tertiary)] uppercase ml-1 mb-1.5 block">Nearest Hospital/Facility</label>
+                    <input 
+                      type="text" 
+                      value={data.nearestHospital} 
+                      onChange={(e) => setData({ ...data, nearestHospital: e.target.value })} 
+                      placeholder="e.g. City General Hospital" 
+                      className="w-full bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] rounded-2xl px-5 py-3.5 text-[var(--text-primary)] focus:border-[var(--rose-400)] focus:outline-none transition-colors shadow-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center">
+                <div className="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-6">
+                  <Check size={40} className="text-emerald-500" />
+                </div>
+                <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-4">You&apos;re all set!</h1>
+                <p className="text-[var(--text-secondary)] mb-8 text-sm leading-relaxed">
+                  Remember: Mama Guard stores data <strong>on this device only</strong>. This is a prototype and not a substitute for professional medical care.
+                </p>
                 <MedicalDisclaimer />
               </div>
             )}
@@ -91,7 +140,7 @@ export default function OnboardingPage() {
       </div>
       <div className="px-6 pb-10 pt-4">
         <button onClick={handleNext} disabled={!canProceed()} className={`w-full py-4 rounded-2xl font-semibold text-base transition-all duration-200 flex items-center justify-center gap-2 ${canProceed() ? "bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-lg shadow-rose-500/25 active:scale-[0.98]" : "bg-[var(--warm-200)] text-[var(--text-muted)] cursor-not-allowed"}`}>
-          {step === 5 ? "Get Started" : "Continue"}<ChevronRight size={20} />
+          {step === 7 ? "Get Started" : "Continue"}<ChevronRight size={20} />
         </button>
       </div>
     </div>

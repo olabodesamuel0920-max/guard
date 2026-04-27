@@ -60,6 +60,10 @@ export default function WorkerPage() {
         </div>
       </header>
 
+      <div className="bg-[var(--text-primary)] text-white text-[10px] py-1.5 px-5 text-center font-bold tracking-widest uppercase">
+        Prototype preview only. No real patient data is stored or transmitted.
+      </div>
+
       <main className="px-5 py-4 pb-10">
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-5 flex items-center gap-3">
           <ShieldAlert size={18} className="text-amber-600 flex-shrink-0" />
@@ -119,8 +123,8 @@ export default function WorkerPage() {
               </div>
               {patient.symptoms.length > 0 && <div className="flex flex-wrap gap-1.5">{patient.symptoms.map((symptom) => <span key={symptom} className="px-2 py-0.5 rounded-full bg-[var(--warm-100)] text-[11px] text-[var(--text-secondary)] border border-[var(--warm-200)]">{symptom}</span>)}</div>}
               <div className="flex gap-2 mt-3 pt-3 border-t border-[var(--warm-100)]">
-                <button onClick={(e) => { e.stopPropagation(); window.location.href = `tel:${patient.phone}`; }} className="flex-1 py-2 rounded-lg bg-[var(--sage-100)] text-[var(--sage-700)] text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98]"><Phone size={13} />Call</button>
-                <button onClick={(e) => e.stopPropagation()} className="flex-1 py-2 rounded-lg bg-[var(--rose-100)] text-[var(--rose-700)] text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98]"><MessageSquare size={13} />Message</button>
+                <button onClick={(e) => { e.stopPropagation(); alert("Prototype Notice: In a real version, this would initiate a phone call to " + patient.phone); }} className="flex-1 py-2 rounded-lg bg-[var(--sage-100)] text-[var(--sage-700)] text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98]"><Phone size={13} />Call</button>
+                <button onClick={(e) => { e.stopPropagation(); alert("Prototype Notice: In a real version, this would open a secure messaging thread."); }} className="flex-1 py-2 rounded-lg bg-[var(--rose-100)] text-[var(--rose-700)] text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98]"><MessageSquare size={13} />Message</button>
                 <button onClick={(e) => e.stopPropagation()} className="flex-1 py-2 rounded-lg bg-[var(--warm-100)] text-[var(--text-secondary)] text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98]"><FileText size={13} />Notes</button>
               </div>
             </motion.div>
@@ -148,7 +152,7 @@ export default function WorkerPage() {
               </div>
               <div className="p-5 space-y-5">
                 <div className="grid grid-cols-2 gap-3">
-                  <button onClick={() => window.location.href = `tel:${selectedPatient.phone}`} className="rounded-xl bg-[var(--sage-100)] p-3 text-left active:scale-[0.98]"><Phone size={16} className="text-[var(--sage-600)] mb-1.5" /><div className="text-xs font-semibold text-[var(--sage-800)]">Call Patient</div><div className="text-[10px] text-[var(--sage-600)]">{selectedPatient.phone}</div></button>
+                  <button onClick={() => alert("Prototype Notice: In a real version, this would initiate a phone call to " + selectedPatient.phone)} className="rounded-xl bg-[var(--sage-100)] p-3 text-left active:scale-[0.98]"><Phone size={16} className="text-[var(--sage-600)] mb-1.5" /><div className="text-xs font-semibold text-[var(--sage-800)]">Call Patient</div><div className="text-[10px] text-[var(--sage-600)]">{selectedPatient.phone}</div></button>
                   <div className="rounded-xl bg-[var(--warm-100)] p-3"><MapPin size={16} className="text-[var(--warm-600)] mb-1.5" /><div className="text-xs font-semibold text-[var(--warm-800)]">Location</div><div className="text-[10px] text-[var(--warm-600)]">{selectedPatient.location}</div></div>
                 </div>
                 <div>
@@ -163,8 +167,8 @@ export default function WorkerPage() {
                 {selectedPatient.symptoms.length > 0 && <div><h3 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3">Reported Symptoms</h3><div className="flex flex-wrap gap-2">{selectedPatient.symptoms.map((symptom) => <span key={symptom} className="px-3 py-1.5 rounded-full bg-[var(--rose-100)] text-xs font-medium text-[var(--rose-700)] border border-[var(--rose-200)]">{symptom}</span>)}</div></div>}
                 <div><h3 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3">Worker Notes</h3><div className="bg-[var(--surface-primary)] rounded-2xl p-4 border border-[var(--warm-200)]/60"><p className="text-sm text-[var(--text-secondary)]">{selectedPatient.notes}</p></div></div>
                 <div className="space-y-2.5 pt-2">
-                  <button className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[var(--sage-500)] to-[var(--sage-600)] text-white font-semibold shadow-lg shadow-sage-500/20 active:scale-[0.98] flex items-center justify-center gap-2"><CheckCircle2 size={18} />Mark as Resolved</button>
-                  <button className="w-full py-3.5 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2"><Calendar size={18} />Schedule Follow-up</button>
+                  <button onClick={() => alert("Prototype Notice: Patient marked as resolved in demo portal.")} className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[var(--sage-500)] to-[var(--sage-600)] text-white font-semibold shadow-lg shadow-sage-500/20 active:scale-[0.98] flex items-center justify-center gap-2"><CheckCircle2 size={18} />Mark as Resolved</button>
+                  <button onClick={() => alert("Prototype Notice: Follow-up scheduled in demo portal.")} className="w-full py-3.5 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2"><Calendar size={18} />Schedule Follow-up</button>
                 </div>
               </div>
             </motion.div>

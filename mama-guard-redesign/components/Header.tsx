@@ -47,7 +47,7 @@ export function Header({ showAIButton = true }: { showAIButton?: boolean }) {
           {showAIButton && (
             <button onClick={() => router.push("/ai")} className="flex items-center gap-1.5 pl-3 pr-3.5 py-1.5 rounded-full bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-md active:scale-95 transition-all">
               <Sparkles size={14} strokeWidth={2.5} />
-              <span className="text-[12px] font-semibold">AI</span>
+              <span className="text-[12px] font-semibold">Assistant</span>
             </button>
           )}
         </div>

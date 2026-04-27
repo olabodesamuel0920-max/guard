@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/Header";
 import { BottomNav } from "@/components/BottomNav";
 import { getGestationalWeek } from "@/lib/utils";
-import { Search, Bookmark, Clock, ChevronRight, Play, Filter, X, AlertCircle } from "lucide-react";
+import { Search, Bookmark, Clock, ChevronRight, Play, Filter, X, AlertCircle, Shield } from "lucide-react";
 import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
 
@@ -73,6 +73,10 @@ export default function LearnPage() {
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1">Learn</h1>
           <p className="text-sm text-[var(--text-secondary)]">Trusted guidance for your pregnancy journey</p>
+          <div className="mt-4 px-3 py-1.5 rounded-lg bg-[var(--warm-100)] border border-[var(--warm-200)] inline-flex items-center gap-2">
+            <Shield size={12} className="text-[var(--text-muted)]" />
+            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Educational content only — not medical advice</span>
+          </div>
         </div>
         <div className="relative mb-5">
           <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
@@ -86,7 +90,27 @@ export default function LearnPage() {
             </button>
           ))}
         </div>
-        {userWeek > 0 && <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl bg-gradient-to-r from-[var(--rose-50)] to-[var(--bg-secondary)] p-4 mb-5 border border-[var(--rose-200)]/40 flex items-center gap-3"><Filter size={16} className="text-[var(--rose-500)] flex-shrink-0" /><p className="text-xs text-[var(--text-secondary)]">Showing content relevant to <span className="font-semibold text-[var(--rose-700)]">Week {userWeek}</span> first</p></motion.div>}
+
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          className="rounded-2xl bg-gradient-to-br from-rose-500 to-rose-600 p-4 mb-6 text-white shadow-lg shadow-rose-500/20"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <AlertCircle size={18} />
+            <span className="text-xs font-bold uppercase tracking-widest">Emergency Warning</span>
+          </div>
+          <p className="text-xs font-medium leading-relaxed text-rose-50">
+            Severe bleeding, breathing difficulty, seizures, fainting, severe headache with vision changes, or reduced baby movement may need urgent care.
+          </p>
+        </motion.div>
+
+        {userWeek > 0 && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl bg-gradient-to-r from-[var(--rose-50)] to-[var(--bg-secondary)] p-4 mb-5 border border-[var(--rose-200)]/40 flex items-center gap-3">
+            <Filter size={16} className="text-[var(--rose-500)] flex-shrink-0" />
+            <p className="text-xs text-[var(--text-secondary)]">Showing content relevant to <span className="font-semibold text-[var(--rose-700)]">Week {userWeek}</span> first</p>
+          </motion.div>
+        )}
         <div className="grid grid-cols-1 gap-4">
           {sortedArticles.map((article, index) => {
             const isRelevant = article.weekRelevance && userWeek >= article.weekRelevance[0] && userWeek <= article.weekRelevance[1];
