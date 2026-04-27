@@ -62,14 +62,16 @@ export default function ProfilePage() {
   const router = useRouter();
 
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [showResetConfirm, setShowResetConfirm] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
-  const [showEditProfile, setShowEditProfile] = useState(false);
-  const [editData, setEditData] = useState<UserProfile | null>(null);
+  const [showHelp, setShowHelp] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [dataSharing, setDataSharing] = useState(false);
   const [stats, setStats] = useState({ checkins: 0, articles: 0, streak: 0 });
   const [history, setHistory] = useState<any[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [editData, setEditData] = useState<UserProfile | null>(null);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   useEffect(() => {
     const stored = safeStorage.get<UserProfile | null>(STORAGE_KEYS.ONBOARDING, null);
@@ -83,7 +85,7 @@ export default function ProfilePage() {
 
     // Calculate stats
     const checkins = safeStorage.get<any[]>(STORAGE_KEYS.CHECKINS, []);
-    setHistory(checkins.reverse()); // Latest first
+    setHistory([...checkins].reverse()); // Latest first
     const articlesRead = safeStorage.get<string[]>(STORAGE_KEYS.ARTICLES_READ, []);
     
     // Simple streak calculation (consecutive days)
@@ -172,8 +174,14 @@ export default function ProfilePage() {
       ],
     },
     {
-      title: "Medical Provider",
+      title: "Medical & Safety",
       items: [
+        {
+          icon: Shield,
+          label: "Safety Plan",
+          desc: "Emergency contacts & info",
+          action: () => router.push("/safety"),
+        },
         {
           icon: Shield,
           label: "Doctor/Midwife",
@@ -216,13 +224,13 @@ export default function ProfilePage() {
           icon: HelpCircle,
           label: "Help Center",
           desc: "FAQs and support",
-          action: () => {},
+          action: () => setShowHelp(true),
         },
         {
           icon: FileText,
           label: "Terms & Privacy",
           desc: "Legal information",
-          action: () => {},
+          action: () => setShowTerms(true),
         },
       ],
     },
@@ -233,11 +241,21 @@ export default function ProfilePage() {
     router.push("/onboarding");
   };
 
+  const handleCopyHistoryItem = (entry: any) => {
+    const summary = `Mama Guard Check-in Summary:\nDate: ${new Date(entry.date).toLocaleDateString()}\nRisk: ${entry.risk.toUpperCase()}\nSymptoms: ${entry.symptoms.join(", ")}\nSuggested Next Step: ${entry.risk === "high" ? "Contact healthcare provider immediately" : entry.risk === "medium" ? "Monitor and consult provider" : "Continue routine care"}\n\nThis is prototype guidance and not a medical diagnosis.`;
+    
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(summary).then(() => alert("Summary copied to clipboard!")).catch(() => alert("Failed to copy."));
+    } else {
+      alert("Clipboard not available.");
+    }
+  };
+
   if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
-      <Header showAIButton={false} />
+      <Header showAssistantButton={false} />
 
       <main className="pt-20 pb-28 px-5">
         <motion.div
@@ -255,6 +273,7 @@ export default function ProfilePage() {
 
               <button
                 type="button"
+                onClick={handleEditProfile}
                 className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] flex items-center justify-center shadow-sm"
               >
                 <Edit3 size={12} className="text-[var(--text-tertiary)]" />
@@ -298,7 +317,7 @@ export default function ProfilePage() {
                 {stats.articles}
               </div>
               <div className="text-[11px] text-[var(--text-tertiary)]">
-                Articles Read
+                Articles
               </div>
             </div>
 
@@ -306,8 +325,8 @@ export default function ProfilePage() {
               <div className="text-2xl font-bold text-[var(--text-primary)]">
                 {stats.streak}
               </div>
-              <div className="text-[11px] text-[var(--text-tertiary)]">
-                Day Streak
+              <div className="text-[11px] text-[var(--text-tertiary)] uppercase font-bold tracking-tighter">
+                Streak
               </div>
             </div>
           </div>
@@ -355,7 +374,7 @@ export default function ProfilePage() {
                         {item.label}
                       </div>
 
-                      <div className="text-xs text-[var(--text-tertiary)]">
+                      <div className="text-xs text-[var(--text-tertiary)] truncate pr-4">
                         {item.desc}
                       </div>
                     </div>
@@ -419,10 +438,10 @@ export default function ProfilePage() {
 
               <div className="flex-1">
                 <div className="font-semibold text-[var(--sage-800)] text-sm">
-                  Community Health Worker Portal
+                  Worker Portal Demo
                 </div>
                 <div className="text-xs text-[var(--sage-600)]">
-                  View patient caseload and alerts
+                  Mock patient alerts & caseload
                 </div>
               </div>
 
@@ -440,15 +459,15 @@ export default function ProfilePage() {
           <button
             type="button"
             onClick={() => setShowResetConfirm(true)}
-            className="w-full py-3.5 rounded-2xl bg-[var(--warm-100)] text-[var(--warm-600)] font-medium text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
+            className="w-full py-3.5 rounded-2xl bg-rose-50 text-rose-600 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 border-2 border-rose-100 active:scale-[0.98] transition-all"
           >
             <LogOut size={16} /> Reset Account Data
           </button>
         </motion.div>
 
         <div className="text-center pb-4">
-          <p className="text-[11px] text-[var(--text-muted)]">
-            Mama Guard v2.0
+          <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+            Mama Guard Prototype v3.0
           </p>
         </div>
       </main>
@@ -456,30 +475,30 @@ export default function ProfilePage() {
       <BottomNav />
 
       {showResetConfirm && (
-        <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm flex items-center justify-center p-5">
+        <div className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm flex items-center justify-center p-5">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             className="bg-[var(--surface-primary)] rounded-3xl p-6 max-w-sm w-full shadow-2xl"
           >
-            <div className="w-12 h-12 rounded-2xl bg-[var(--rose-100)] flex items-center justify-center mx-auto mb-4">
-              <Trash2 size={24} className="text-[var(--rose-600)]" />
+            <div className="w-12 h-12 rounded-2xl bg-rose-100 flex items-center justify-center mx-auto mb-4">
+              <Trash2 size={24} className="text-rose-600" />
             </div>
 
             <h3 className="text-lg font-bold text-[var(--text-primary)] text-center mb-2">
               Reset All Data?
             </h3>
 
-            <p className="text-sm text-[var(--text-secondary)] text-center mb-6">
+            <p className="text-sm text-[var(--text-secondary)] text-center mb-6 leading-relaxed">
               This will erase your profile, check-in history, and all saved
-              data. This action cannot be undone.
+              prototype data. This action cannot be undone.
             </p>
 
             <div className="space-y-2.5">
               <button
                 type="button"
                 onClick={handleReset}
-                className="w-full py-3.5 rounded-2xl bg-[var(--rose-500)] text-white font-semibold active:scale-[0.98] transition-all"
+                className="w-full py-3.5 rounded-2xl bg-rose-600 text-white font-bold active:scale-[0.98] transition-all shadow-lg shadow-rose-600/20"
               >
                 Yes, Reset Everything
               </button>
@@ -487,7 +506,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setShowResetConfirm(false)}
-                className="w-full py-3.5 rounded-2xl bg-[var(--warm-100)] text-[var(--text-secondary)] font-medium active:scale-[0.98] transition-all"
+                className="w-full py-3.5 rounded-2xl bg-[var(--warm-100)] text-[var(--text-secondary)] font-bold active:scale-[0.98] transition-all"
               >
                 Cancel
               </button>
@@ -497,7 +516,7 @@ export default function ProfilePage() {
       )}
 
       {showHistory && (
-        <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm flex items-end justify-center">
+        <div className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm flex items-end justify-center">
           <motion.div
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
@@ -506,32 +525,37 @@ export default function ProfilePage() {
             <div className="p-6 border-b border-[var(--warm-200)] flex items-center justify-between bg-[var(--surface-primary)]">
               <div>
                 <h3 className="text-xl font-bold text-[var(--text-primary)]">Health History</h3>
-                <p className="text-xs text-[var(--text-tertiary)]">Your past check-ins</p>
+                <p className="text-xs text-[var(--text-tertiary)] font-medium">Recorded on this device</p>
               </div>
-              <button onClick={() => setShowHistory(false)} className="w-10 h-10 rounded-full bg-[var(--warm-100)] flex items-center justify-center text-[var(--text-secondary)]">✕</button>
+              <button onClick={() => setShowHistory(false)} className="w-10 h-10 rounded-full bg-[var(--warm-100)] flex items-center justify-center text-[var(--text-secondary)] active:scale-90 transition-transform">✕</button>
             </div>
 
             <div className="flex-1 overflow-y-auto p-5 space-y-4">
               {history.length > 0 ? (
                 history.map((entry, i) => (
-                  <div key={i} className="bg-[var(--surface-primary)] rounded-2xl p-4 border border-[var(--warm-200)] shadow-sm">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
-                        {new Date(entry.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                      </span>
-                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest ${
-                        entry.risk === 'high' ? 'bg-rose-100 text-rose-600' : 
-                        entry.risk === 'medium' ? 'bg-amber-100 text-amber-600' : 
-                        'bg-emerald-100 text-emerald-600'
+                  <div key={i} className="bg-[var(--surface-primary)] rounded-2xl p-5 border border-[var(--warm-200)] shadow-sm">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-0.5">
+                          {new Date(entry.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </span>
+                        <span className="text-[10px] text-[var(--text-tertiary)]">
+                          {new Date(entry.date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      <span className={`px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-widest ${
+                        entry.risk === 'high' ? 'bg-rose-100 text-rose-600 border border-rose-200' : 
+                        entry.risk === 'medium' ? 'bg-amber-100 text-amber-600 border border-amber-200' : 
+                        'bg-emerald-100 text-emerald-600 border border-emerald-200'
                       }`}>
                         {entry.risk} Risk
                       </span>
                     </div>
                     
-                    <div className="flex flex-wrap gap-1.5 mb-3">
+                    <div className="flex flex-wrap gap-1.5 mb-4">
                       {entry.symptoms.length > 0 ? (
                         entry.symptoms.map((s: string) => (
-                          <span key={s} className="px-2 py-1 bg-[var(--warm-100)] rounded-lg text-[10px] text-[var(--text-secondary)] border border-[var(--warm-200)]">{s}</span>
+                          <span key={s} className="px-2.5 py-1 bg-[var(--warm-50)] rounded-lg text-[10px] font-medium text-[var(--text-secondary)] border border-[var(--warm-100)]">{s}</span>
                         ))
                       ) : (
                         <span className="text-xs text-[var(--text-muted)] italic">No symptoms reported</span>
@@ -539,15 +563,22 @@ export default function ProfilePage() {
                     </div>
 
                     {entry.followUpAnswers && Object.keys(entry.followUpAnswers).length > 0 && (
-                      <div className="pt-3 border-t border-[var(--warm-100)] space-y-1">
+                      <div className="pt-3 border-t border-[var(--warm-100)] space-y-1.5 mb-4">
                         {Object.entries(entry.followUpAnswers).map(([key, val]) => (
-                          <div key={key} className="flex justify-between text-[10px]">
+                          <div key={key} className="flex justify-between text-[11px]">
                             <span className="text-[var(--text-tertiary)] capitalize">{key}:</span>
-                            <span className="font-semibold text-[var(--text-secondary)]">{val as string}</span>
+                            <span className="font-bold text-[var(--text-secondary)]">{val as string}</span>
                           </div>
                         ))}
                       </div>
                     )}
+
+                    <button 
+                      onClick={() => handleCopyHistoryItem(entry)}
+                      className="w-full py-2.5 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 active:scale-[0.98]"
+                    >
+                      <FileText size={14} /> Copy Summary
+                    </button>
                   </div>
                 ))
               ) : (
@@ -555,7 +586,7 @@ export default function ProfilePage() {
                   <div className="w-16 h-16 rounded-full bg-[var(--warm-100)] flex items-center justify-center mx-auto mb-4">
                     <Heart size={24} className="text-[var(--warm-300)]" />
                   </div>
-                  <p className="text-[var(--text-tertiary)] text-sm">No check-ins yet.</p>
+                  <p className="text-[var(--text-tertiary)] text-sm font-medium">No check-ins yet.</p>
                 </div>
               )}
             </div>
@@ -564,7 +595,7 @@ export default function ProfilePage() {
       )}
 
       {showEditProfile && editData && (
-        <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm flex items-center justify-center p-5">
+        <div className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm flex items-center justify-center p-5">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -574,7 +605,7 @@ export default function ProfilePage() {
             
             <div className="space-y-4 mb-6">
               <div>
-                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase ml-1">Full Name</label>
+                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase ml-1 tracking-widest">Full Name</label>
                 <input 
                   type="text" 
                   value={editData.name} 
@@ -583,7 +614,7 @@ export default function ProfilePage() {
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase ml-1">Provider Phone</label>
+                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase ml-1 tracking-widest">Provider Phone</label>
                 <input 
                   type="tel" 
                   value={editData.providerPhone || ""} 
@@ -593,7 +624,7 @@ export default function ProfilePage() {
                 />
               </div>
               <div>
-                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase ml-1">Nearest Hospital</label>
+                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase ml-1 tracking-widest">Nearest Hospital</label>
                 <input 
                   type="text" 
                   value={editData.nearestHospital || ""} 
@@ -605,9 +636,47 @@ export default function ProfilePage() {
             </div>
 
             <div className="flex gap-3">
-              <button onClick={() => setShowEditProfile(false)} className="flex-1 py-3 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] font-medium text-sm">Cancel</button>
-              <button onClick={handleSaveProfile} className="flex-1 py-3 rounded-xl bg-[var(--rose-500)] text-white font-semibold text-sm">Save</button>
+              <button onClick={() => setShowEditProfile(false)} className="flex-1 py-3.5 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] font-bold text-xs uppercase tracking-widest">Cancel</button>
+              <button onClick={handleSaveProfile} className="flex-1 py-3.5 rounded-xl bg-rose-600 text-white font-bold text-xs uppercase tracking-widest shadow-lg shadow-rose-600/20">Save</button>
             </div>
+          </motion.div>
+        </div>
+      )}
+
+      {showHelp && (
+        <div className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm flex items-center justify-center p-5">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[var(--surface-primary)] rounded-3xl p-6 max-w-sm w-full shadow-2xl max-h-[80vh] overflow-y-auto">
+            <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">Help Center</h3>
+            <div className="space-y-4 text-sm text-[var(--text-secondary)] leading-relaxed">
+              <div>
+                <p className="font-bold text-[var(--text-primary)] mb-1">What is Mama Guard?</p>
+                <p>A supportive prototype designed to help track maternal health symptoms and provide educational guidance.</p>
+              </div>
+              <div>
+                <p className="font-bold text-[var(--text-primary)] mb-1">Is this a medical app?</p>
+                <p>No. This is a technology prototype. It does not provide medical diagnoses, clinical review, or emergency dispatch.</p>
+              </div>
+              <div>
+                <p className="font-bold text-[var(--text-primary)] mb-1">How do I share my data?</p>
+                <p>Use the "Copy Summary" feature in your health history to copy a text summary that you can share with your doctor.</p>
+              </div>
+            </div>
+            <button onClick={() => setShowHelp(false)} className="w-full mt-6 py-3.5 rounded-xl bg-rose-600 text-white font-bold text-xs uppercase tracking-widest">Close</button>
+          </motion.div>
+        </div>
+      )}
+
+      {showTerms && (
+        <div className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm flex items-center justify-center p-5">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[var(--surface-primary)] rounded-3xl p-6 max-w-sm w-full shadow-2xl max-h-[80vh] overflow-y-auto">
+            <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">Terms & Privacy</h3>
+            <div className="space-y-4 text-[11px] text-[var(--text-tertiary)] leading-relaxed uppercase tracking-tight font-bold">
+              <p>1. PROTOTYPE ONLY: This application is for demonstration purposes. Do not rely on it for medical decisions.</p>
+              <p>2. LOCAL STORAGE: Your data is stored only on this browser/device. We do not transmit or backup your data to any server.</p>
+              <p>3. NO EMERGENCY SERVICES: Mama Guard does not contact 911 or any emergency responders. Always call emergency services yourself in urgent cases.</p>
+              <p>4. NO WARRANTY: This prototype is provided "as is" without any guarantees of accuracy or uptime.</p>
+            </div>
+            <button onClick={() => setShowTerms(false)} className="w-full mt-6 py-3.5 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] font-bold text-xs uppercase tracking-widest">Close</button>
           </motion.div>
         </div>
       )}

@@ -6,7 +6,7 @@ import { getGestationalWeek, getTrimester, cn } from "@/lib/utils";
 import { Sparkles, Shield } from "lucide-react";
 import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 
-export function Header({ showAIButton = true }: { showAIButton?: boolean }) {
+export function Header({ showAssistantButton = true }: { showAssistantButton?: boolean }) {
   const router = useRouter();
   const [user, setUser] = useState<{ name: string; dueDate: string } | null>(null);
   const [scrolled, setScrolled] = useState(false);
@@ -44,8 +44,12 @@ export function Header({ showAIButton = true }: { showAIButton?: boolean }) {
             <Shield size={12} className="text-[var(--sage-600)]" />
             <span className="text-[10px] font-semibold text-[var(--sage-700)] uppercase tracking-wider">Safe</span>
           </div>
-          {showAIButton && (
-            <button onClick={() => router.push("/ai")} className="flex items-center gap-1.5 pl-3 pr-3.5 py-1.5 rounded-full bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-md active:scale-95 transition-all">
+          {showAssistantButton && (
+            <button 
+              onClick={() => router.push("/ai")} 
+              className="flex items-center gap-1.5 pl-3 pr-3.5 py-1.5 rounded-full bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-md active:scale-95 transition-all"
+              aria-label="Open Mama Guard Assistant"
+            >
               <Sparkles size={14} strokeWidth={2.5} />
               <span className="text-[12px] font-semibold">Assistant</span>
             </button>

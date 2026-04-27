@@ -30,6 +30,7 @@ import {
   Clock,
   ThumbsUp,
   ShieldCheck,
+  ShieldAlert,
   Sparkles,
   CalendarDays,
 } from "lucide-react";
@@ -196,7 +197,7 @@ export default function CheckInPage() {
   >("symptoms");
   const [currentSeverityIndex, setCurrentSeverityIndex] = useState(0);
   const [riskLevel, setRiskLevel] = useState<RiskLevel>("low");
-  const [showAIInsights, setShowAIInsights] = useState(false);
+  const [showAssistantInsights, setShowAssistantInsights] = useState(false);
   const [followUpAnswers, setFollowUpAnswers] = useState<Record<string, string>>({});
 
   const getUserData = () => {
@@ -282,7 +283,7 @@ export default function CheckInPage() {
     setCurrentStep("symptoms");
     setCurrentSeverityIndex(0);
     setRiskLevel("low");
-    setShowAIInsights(false);
+    setShowAssistantInsights(false);
     setFollowUpAnswers({});
   };
 
@@ -438,7 +439,7 @@ export default function CheckInPage() {
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles size={16} className="text-[var(--rose-500)]" />
                   <span className="text-xs font-semibold text-[var(--rose-600)] uppercase tracking-wider">
-                    AI Follow-up
+                    Assistant Follow-up
                   </span>
                 </div>
 
@@ -535,7 +536,7 @@ export default function CheckInPage() {
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div
-                    className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
+                    className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${
                       riskLevel === "high"
                         ? "bg-rose-500"
                         : riskLevel === "medium"
@@ -554,7 +555,7 @@ export default function CheckInPage() {
 
                   <div>
                     <span
-                      className={`text-xs font-bold uppercase tracking-wider ${
+                      className={`text-xs font-bold uppercase tracking-widest ${
                         riskLevel === "high"
                           ? "text-rose-600"
                           : riskLevel === "medium"
@@ -562,23 +563,42 @@ export default function CheckInPage() {
                           : "text-emerald-600"
                       }`}
                     >
-                      {riskLevel} Risk
+                      {riskLevel} Risk Detected
                     </span>
 
                     <h2 className="text-xl font-bold text-[var(--text-primary)]">
                       {riskLevel === "high"
-                        ? "Please Seek Care"
+                        ? "Urgent Care Recommended"
                         : riskLevel === "medium"
-                        ? "Monitor Closely"
-                        : "Looking Good"}
+                        ? "Close Monitoring Needed"
+                        : "No Concerns Found"}
                     </h2>
+                  </div>
+                </div>
+
+                <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 mb-4 border border-white/40">
+                  <h3 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">Summary of Symptoms</h3>
+                  <div className="space-y-2">
+                    {selectedSymptoms.map((id) => {
+                      const symptom = symptoms.find((item) => item.id === id);
+                      const answer = followUpAnswers[id];
+                      return symptom ? (
+                        <div key={id} className="flex items-center justify-between text-sm">
+                          <span className="text-[var(--text-secondary)] font-medium">{symptom.label}</span>
+                          {answer && <span className="text-[var(--text-primary)] font-bold">{answer}</span>}
+                        </div>
+                      ) : null;
+                    })}
+                    {selectedSymptoms.length === 0 && (
+                      <div className="text-sm text-[var(--text-tertiary)] italic">No symptoms reported today.</div>
+                    )}
                   </div>
                 </div>
 
                 <p
                   className={`text-sm leading-relaxed mb-4 ${
                     riskLevel === "high"
-                      ? "text-rose-800"
+                      ? "text-rose-800 font-medium"
                       : riskLevel === "medium"
                       ? "text-amber-800"
                       : "text-emerald-800"
@@ -587,101 +607,80 @@ export default function CheckInPage() {
                   {getRiskAdvice(riskLevel, week)}
                 </p>
 
-                {selectedSymptoms.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {selectedSymptoms.map((id) => {
-                      const symptom = symptoms.find((item) => item.id === id);
-
-                      return symptom ? (
-                        <span
-                          key={id}
-                          className={`px-3 py-1.5 rounded-full text-xs font-medium ${
-                            riskLevel === "high"
-                              ? "bg-rose-200 text-rose-800"
-                              : riskLevel === "medium"
-                              ? "bg-amber-200 text-amber-800"
-                              : "bg-emerald-200 text-emerald-800"
-                          }`}
-                        >
-                          {symptom.label}
-                        </span>
-                      ) : null;
-                    })}
-                  </div>
-                )}
-
                 <MedicalDisclaimer variant={riskLevel === "high" ? "emergency" : "normal"} className="mt-6 mb-0 bg-white/50" />
               </div>
 
-              {riskLevel === "high" && (
-                <div className="space-y-3 mb-5">
-                  {userData.providerPhone ? (
-                    <a
-                      href={`tel:${userData.providerPhone}`}
-                      className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
-                    >
-                      <Phone size={20} /> Call Provider ({userData.providerPhone})
-                    </a>
-                  ) : (
+              <div className="space-y-3 mb-5">
+                {riskLevel === "high" && (
+                  <>
+                    {userData.providerPhone ? (
+                      <a
+                        href={`tel:${userData.providerPhone}`}
+                        className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                      >
+                        <Phone size={20} /> Call Provider ({userData.providerPhone})
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => router.push("/profile")}
+                        className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                      >
+                        <Phone size={20} /> Add Provider Phone
+                      </button>
+                    )}
+
                     <button
                       type="button"
-                      onClick={() => router.push("/profile")}
-                      className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2 opacity-90"
+                      onClick={() => alert("Prototype Notice: In a real version, this would show nearby emergency centers. Please contact local emergency services or go to the nearest hospital.")}
+                      className="w-full py-4 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2"
                     >
-                      <Phone size={20} /> Add Provider Phone in Profile
+                      <MapPin size={20} /> Find Nearest ER
                     </button>
-                  )}
+                  </>
+                )}
 
+                {riskLevel === "medium" && (
                   <button
                     type="button"
-                    onClick={() => alert("Prototype Notice: In a real version, this would show nearby emergency centers. For now, please contact your local emergency service or nearest hospital.")}
-                    className="w-full py-4 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2"
-                  >
-                    <MapPin size={20} /> Find Nearest ER
-                  </button>
-                </div>
-              )}
-
-              {riskLevel === "medium" && (
-                <div className="space-y-3 mb-5">
-                  <button
-                    type="button"
+                    onClick={() => router.push("/safety")}
                     className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold shadow-lg shadow-amber-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
                   >
-                    <Phone size={20} /> Call Advice Line
+                    <ShieldAlert size={20} /> View Safety Plan
                   </button>
+                )}
 
-                  <button
-                    type="button"
-                    className="w-full py-4 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2"
-                  >
-                    <CalendarDays size={20} /> Schedule Appointment
-                  </button>
-                </div>
-              )}
-
-              {riskLevel === "low" && (
-                <div className="space-y-3 mb-5">
-                  <button
-                    type="button"
-                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold shadow-lg shadow-emerald-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
-                  >
-                    <ShieldCheck size={20} /> Log Wellness Entry
-                  </button>
-                </div>
-              )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const summary = `Mama Guard Check-in Summary:\nDate: ${new Date().toLocaleDateString()}\nRisk: ${riskLevel.toUpperCase()}\nSymptoms: ${selectedSymptoms.map(id => {
+                      const s = symptoms.find(item => item.id === id);
+                      return s ? `${s.label}${followUpAnswers[id] ? ` (${followUpAnswers[id]})` : ""}` : id;
+                    }).join(", ")}\nSuggested Next Step: ${riskLevel === "high" ? "Contact healthcare provider immediately" : riskLevel === "medium" ? "Monitor and consult provider" : "Continue routine care"}\n\nThis is prototype guidance and not a medical diagnosis.`;
+                    
+                    if (navigator.clipboard) {
+                      navigator.clipboard.writeText(summary).then(() => alert("Summary copied to clipboard!")).catch(() => alert("Failed to copy. Please take a screenshot."));
+                    } else {
+                      alert("Clipboard not available. Please take a screenshot of this result.");
+                    }
+                  }}
+                  className="w-full py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-medium active:scale-[0.98] flex items-center justify-center gap-2"
+                >
+                  <Share2 size={18} /> Copy Summary for Provider
+                </button>
+              </div>
 
               <button
                 type="button"
-                onClick={() => setShowAIInsights((prev) => !prev)}
+                onClick={() => setShowAssistantInsights((prev) => !prev)}
                 className="w-full py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-primary)] font-medium active:scale-[0.98] flex items-center justify-center gap-2 mb-4"
               >
                 <Sparkles size={18} className="text-[var(--rose-500)]" />
-                {showAIInsights ? "Hide" : "View"} AI Insights
+                {showAssistantInsights ? "Hide" : "View"} Assistant Insights
               </button>
 
               <AnimatePresence>
-                {showAIInsights && (
+                {showAssistantInsights && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
@@ -692,7 +691,7 @@ export default function CheckInPage() {
                       <div className="flex items-center gap-2 mb-3">
                         <Sparkles size={16} className="text-[var(--rose-500)]" />
                         <span className="text-sm font-semibold text-[var(--rose-700)]">
-                          Personalized Context
+                          Assistant Context
                         </span>
                       </div>
 
@@ -743,23 +742,13 @@ export default function CheckInPage() {
                 )}
               </AnimatePresence>
 
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => {}}
-                  className="flex-1 py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-medium active:scale-[0.98] flex items-center justify-center gap-2 text-sm"
-                >
-                  <Share2 size={16} /> Share
-                </button>
-
-                <button
-                  type="button"
-                  onClick={resetCheckIn}
-                  className="flex-1 py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-medium active:scale-[0.98] flex items-center justify-center gap-2 text-sm"
-                >
-                  <RotateCcw size={16} /> Check In Again
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={resetCheckIn}
+                className="w-full py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-medium active:scale-[0.98] flex items-center justify-center gap-2 text-sm"
+              >
+                <RotateCcw size={16} /> Start New Check-in
+              </button>
 
               <button
                 type="button"

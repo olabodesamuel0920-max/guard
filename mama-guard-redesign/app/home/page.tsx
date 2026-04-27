@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BottomNav } from "@/components/BottomNav";
 import { Header } from "@/components/Header";
-import { AIFloatingButton } from "@/components/AIFloatingButton";
+import { AssistantFloatingButton } from "@/components/AssistantFloatingButton";
 import { getGestationalWeek, getTrimester, getBabySize, getGreeting, getRelativeTime } from "@/lib/utils";
 import { Heart, Activity, BookOpen, ChevronRight, Calendar, Sparkles, Shield, CheckCircle2, Clock, Baby, Zap, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
@@ -113,12 +113,12 @@ export default function HomePage() {
           <button onClick={() => router.push("/ai")} className="rounded-2xl bg-[var(--surface-primary)] p-4 text-left shadow-md border border-[var(--warm-200)]/60 active:scale-[0.97] transition-transform">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--rose-100)] to-[var(--rose-200)] flex items-center justify-center mb-3"><Sparkles size={20} className="text-[var(--rose-600)]" /></div>
             <div className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">Assistant</div>
-            <div className="text-xs text-[var(--text-tertiary)]">Get personalized guidance</div>
+            <div className="text-xs text-[var(--text-tertiary)]">Personalized support</div>
           </button>
-          <button onClick={() => router.push("/learn")} className="rounded-2xl bg-[var(--surface-primary)] p-4 text-left shadow-md border border-[var(--warm-200)]/60 active:scale-[0.97] transition-transform">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--sage-100)] to-[var(--sage-200)] flex items-center justify-center mb-3"><BookOpen size={20} className="text-[var(--sage-600)]" /></div>
-            <div className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">Learn</div>
-            <div className="text-xs text-[var(--text-tertiary)]">Tips for week {week}</div>
+          <button onClick={() => router.push("/safety")} className="rounded-2xl bg-[var(--surface-primary)] p-4 text-left shadow-md border border-[var(--warm-200)]/60 active:scale-[0.97] transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-100 to-rose-200 flex items-center justify-center mb-3"><Shield size={20} className="text-rose-600" /></div>
+            <div className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">Safety Plan</div>
+            <div className="text-xs text-[var(--text-tertiary)]">Emergency guidance</div>
           </button>
         </motion.div>
 
@@ -132,37 +132,70 @@ export default function HomePage() {
 
         {lastCheckIn && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }} className="rounded-2xl bg-[var(--surface-primary)] p-5 mb-5 shadow-md border border-[var(--warm-200)]/60">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2"><Heart size={15} className={lastCheckIn.risk === "high" ? "text-[var(--rose-500)]" : lastCheckIn.risk === "medium" ? "text-amber-500" : "text-[var(--sage-500)]"} /><span className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">Recent Status</span></div>
-              <span className={`badge ${lastCheckIn.risk === "high" ? "badge-high" : lastCheckIn.risk === "medium" ? "badge-medium" : "badge-low"}`}>{lastCheckIn.risk.toUpperCase()} RISK</span>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2"><Heart size={16} className={lastCheckIn.risk === "high" ? "text-rose-500" : lastCheckIn.risk === "medium" ? "text-amber-500" : "text-emerald-500"} /><span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest">Latest Check-in</span></div>
+              <div className="text-[10px] font-bold text-[var(--text-tertiary)] bg-[var(--warm-100)] px-2 py-0.5 rounded-full uppercase">{getRelativeTime(lastCheckIn.date)}</div>
             </div>
-            {lastCheckIn.symptoms.length > 0 && <div className="flex flex-wrap gap-2 mb-3">{lastCheckIn.symptoms.map((s) => <span key={s} className="px-3 py-1 rounded-full bg-[var(--warm-100)] text-xs text-[var(--text-secondary)] border border-[var(--warm-200)]">{s}</span>)}</div>}
-            <button onClick={() => router.push("/checkin")} className="text-xs font-semibold text-[var(--rose-600)] flex items-center gap-1">Check in again <ArrowRight size={12} /></button>
+            
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <div className={`text-lg font-bold ${lastCheckIn.risk === "high" ? "text-rose-600" : lastCheckIn.risk === "medium" ? "text-amber-600" : "text-emerald-600"}`}>
+                  {lastCheckIn.risk.charAt(0).toUpperCase() + lastCheckIn.risk.slice(1)} Risk
+                </div>
+                <div className="text-xs text-[var(--text-tertiary)]">Reported on {new Date(lastCheckIn.date).toLocaleDateString()}</div>
+              </div>
+              <button 
+                onClick={() => router.push("/profile")}
+                className="p-2 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] active:scale-95"
+              >
+                <Clock size={18} />
+              </button>
+            </div>
+
+            {lastCheckIn.symptoms.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                {lastCheckIn.symptoms.slice(0, 3).map((s) => (
+                  <span key={s} className="px-2.5 py-1 rounded-lg bg-[var(--warm-50)] text-[10px] font-medium text-[var(--text-secondary)] border border-[var(--warm-100)]">{s}</span>
+                ))}
+                {lastCheckIn.symptoms.length > 3 && <span className="px-2.5 py-1 rounded-lg bg-[var(--warm-50)] text-[10px] font-medium text-[var(--text-tertiary)]">+{lastCheckIn.symptoms.length - 3} more</span>}
+              </div>
+            )}
+            
+            <div className="flex gap-2">
+              <button onClick={() => router.push("/checkin")} className="flex-1 py-2.5 rounded-xl bg-[var(--rose-100)] text-[var(--rose-700)] text-xs font-bold active:scale-[0.98]">New Check-in</button>
+              <button onClick={() => router.push("/profile")} className="flex-1 py-2.5 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] text-xs font-bold active:scale-[0.98]">View History</button>
+            </div>
           </motion.div>
         )}
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className="rounded-2xl bg-[var(--surface-primary)] p-5 shadow-md border border-[var(--warm-200)]/60">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[var(--amber-100)] flex items-center justify-center"><CheckCircle2 size={20} className="text-[var(--amber-600)]" /></div>
+              <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center border border-amber-100"><CheckCircle2 size={20} className="text-amber-600" /></div>
               <div>
                 <div className="font-semibold text-[var(--text-primary)] text-sm">Wellness Streak</div>
-                <div className="text-xs text-[var(--text-tertiary)]">{lastCheckIn ? "Keep checking in daily for better insights" : "Start your first check-in to begin tracking"}</div>
+                <div className="text-xs text-[var(--text-tertiary)]">{lastCheckIn ? "Consistency builds better insights" : "Check in daily to track your progress"}</div>
               </div>
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold text-[var(--text-primary)]">{streak}</div>
-              <div className="text-[10px] text-[var(--text-tertiary)]">days</div>
+              <div className="text-[10px] text-[var(--text-tertiary)] uppercase font-bold tracking-tighter">Days</div>
             </div>
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }} className="mt-6 flex items-center justify-center gap-2 py-4">
-          <Shield size={14} className="text-[var(--sage-500)]" />
-          <span className="text-[11px] text-[var(--text-muted)]">Your information is stored privately on this device for this prototype.</span>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }} className="mt-8 flex flex-col items-center gap-2 py-4">
+          <div className="flex items-center gap-2">
+            <Shield size={14} className="text-[var(--sage-500)]" />
+            <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Prototype Guidance</span>
+          </div>
+          <p className="text-[10px] text-[var(--text-muted)] text-center px-6 leading-tight">
+            Mama Guard is a supportive prototype. Your data is stored locally on this device.
+            This is not a medical diagnosis or monitoring service.
+          </p>
         </motion.div>
       </main>
-      <AIFloatingButton /><BottomNav />
+      <AssistantFloatingButton /><BottomNav />
     </div>
   );
 }

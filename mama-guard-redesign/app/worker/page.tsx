@@ -65,36 +65,48 @@ export default function WorkerPage() {
       </div>
 
       <main className="px-5 py-4 pb-10">
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-5 flex items-center gap-3">
-          <ShieldAlert size={18} className="text-amber-600 flex-shrink-0" />
-          <p className="text-[10px] text-amber-800 leading-tight">
-            <strong>Security Notice:</strong> In a production environment, this portal would require professional authentication and role-based access control. All data shown here is for demonstration only.
-          </p>
+        <div className="bg-[var(--surface-primary)] rounded-2xl p-4 mb-5 border border-[var(--warm-200)] shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-2 opacity-5">
+            <ShieldAlert size={60} />
+          </div>
+          <div className="flex items-start gap-3 relative z-10">
+            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0 text-amber-600">
+              <ShieldAlert size={20} />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-amber-800 uppercase tracking-widest mb-1">Safety & Demo Notice</h3>
+              <p className="text-[11px] text-amber-700 leading-relaxed font-medium">
+                This portal demonstrates how health workers could monitor alerts. 
+                In a real deployment, this would be behind secure hospital VPNs and encrypted medical logins.
+              </p>
+            </div>
+          </div>
         </div>
+
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-2 gap-3 mb-5">
           <div className="rounded-2xl bg-[var(--surface-primary)] p-4 shadow-sm border border-[var(--warm-200)]/60">
             <div className="flex items-center gap-2 mb-2"><Users size={16} className="text-[var(--text-tertiary)]" /><span className="text-[11px] font-semibold text-[var(--text-muted)] uppercase">Caseload</span></div>
             <div className="text-2xl font-bold text-[var(--text-primary)]">{stats.total}</div>
-            <div className="text-[11px] text-[var(--text-tertiary)]">{stats.todayCheckins} checked in today</div>
+            <div className="text-[11px] text-[var(--text-tertiary)] font-medium">{stats.todayCheckins} checked in today</div>
           </div>
           <div className="rounded-2xl bg-gradient-to-br from-rose-50 to-red-50 p-4 shadow-sm border border-rose-200/60">
             <div className="flex items-center gap-2 mb-2"><ShieldAlert size={16} className="text-rose-500" /><span className="text-[11px] font-semibold text-rose-600 uppercase">High Risk</span></div>
             <div className="text-2xl font-bold text-rose-700">{stats.highRisk}</div>
-            <div className="text-[11px] text-rose-500">{stats.followUp} need follow-up</div>
+            <div className="text-[11px] text-rose-500 font-medium">{stats.followUp} need follow-up</div>
           </div>
         </motion.div>
 
-        {stats.highRisk > 0 && <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="rounded-2xl bg-gradient-to-r from-rose-500 to-red-500 p-4 mb-5 shadow-lg shadow-rose-500/20 text-white"><div className="flex items-center gap-3"><AlertTriangle size={22} className="flex-shrink-0" /><div><div className="font-semibold text-sm">{stats.highRisk} urgent patient{stats.highRisk > 1 ? "s" : ""} need{stats.highRisk === 1 ? "s" : ""} attention</div><div className="text-white/80 text-xs">Review high-risk cases immediately</div></div></div></motion.div>}
+        {stats.highRisk > 0 && <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="rounded-2xl bg-gradient-to-r from-rose-500 to-red-500 p-4 mb-5 shadow-lg shadow-rose-500/20 text-white"><div className="flex items-center gap-3"><AlertTriangle size={22} className="flex-shrink-0" /><div><div className="font-bold text-sm">{stats.highRisk} urgent patient{stats.highRisk > 1 ? "s" : ""} need{stats.highRisk === 1 ? "s" : ""} attention</div><div className="text-white/80 text-xs font-medium">Review red-flag symptoms immediately</div></div></div></motion.div>}
 
         <div className="flex gap-2 mb-4">
           <div className="flex-1 relative"><Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" /><input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search patients..." className="w-full bg-[var(--surface-primary)] border border-[var(--warm-200)] rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-[var(--rose-400)] focus:outline-none shadow-sm" /></div>
-          <button className="w-10 h-10 rounded-xl bg-[var(--surface-primary)] border border-[var(--warm-200)] flex items-center justify-center shadow-sm"><Filter size={16} className="text-[var(--text-tertiary)]" /></button>
+          <button className="w-10 h-10 rounded-xl bg-[var(--surface-primary)] border border-[var(--warm-200)] flex items-center justify-center shadow-sm active:scale-95 transition-transform"><Filter size={16} className="text-[var(--text-tertiary)]" /></button>
         </div>
 
         <div className="flex gap-2 overflow-x-auto hide-scrollbar mb-5 -mx-1 px-1">
           {(["all", "high", "medium", "low"] as const).map((risk) => (
-            <button key={risk} onClick={() => setFilterRisk(risk)} className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${filterRisk === risk ? risk === "high" ? "bg-rose-500 text-white" : risk === "medium" ? "bg-amber-500 text-white" : risk === "low" ? "bg-emerald-500 text-white" : "bg-[var(--text-primary)] text-white" : "bg-[var(--surface-primary)] text-[var(--text-secondary)] border border-[var(--warm-200)]"}`}>
-              {risk === "all" ? "All" : `${risk.charAt(0).toUpperCase() + risk.slice(1)} Risk`}
+            <button key={risk} onClick={() => setFilterRisk(risk)} className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest whitespace-nowrap transition-all ${filterRisk === risk ? risk === "high" ? "bg-rose-500 text-white shadow-md shadow-rose-500/20" : risk === "medium" ? "bg-amber-500 text-white shadow-md shadow-amber-500/20" : risk === "low" ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20" : "bg-[var(--text-primary)] text-white shadow-md shadow-black/20" : "bg-[var(--surface-primary)] text-[var(--text-secondary)] border border-[var(--warm-200)]"}`}>
+              {risk === "all" ? "All Patients" : `${risk} Risk`}
               {risk !== "all" && <span className="ml-1 opacity-70">({mockPatients.filter((p) => p.risk === risk).length})</span>}
             </button>
           ))}
@@ -102,73 +114,109 @@ export default function WorkerPage() {
 
         <div className="space-y-3">
           {filteredPatients.map((patient, index) => (
-            <motion.div key={patient.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} onClick={() => setSelectedPatient(patient)} className="bg-[var(--surface-primary)] rounded-2xl p-4 shadow-sm border border-[var(--warm-200)]/60 active:scale-[0.98] transition-transform cursor-pointer">
+            <motion.div key={patient.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} onClick={() => setSelectedPatient(patient)} className="bg-[var(--surface-primary)] rounded-2xl p-4 shadow-sm border border-[var(--warm-200)]/60 active:scale-[0.98] transition-transform cursor-pointer hover:border-[var(--rose-200)] group">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold ${patient.risk === "high" ? "bg-gradient-to-br from-rose-400 to-rose-600" : patient.risk === "medium" ? "bg-gradient-to-br from-amber-400 to-amber-600" : "bg-gradient-to-br from-emerald-400 to-emerald-600"}`}>{patient.name.charAt(0)}</div>
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-sm ${patient.risk === "high" ? "bg-gradient-to-br from-rose-400 to-rose-600" : patient.risk === "medium" ? "bg-gradient-to-br from-amber-400 to-amber-600" : "bg-gradient-to-br from-emerald-400 to-emerald-600"}`}>{patient.name.charAt(0)}</div>
                   <div>
-                    <div className="font-semibold text-[var(--text-primary)] text-[15px]">{patient.name} (Demo)</div>
-                    <div className="text-[11px] text-[var(--text-tertiary)]">Age {patient.age} · G{patient.gravida}P{patient.parity} · Mock Record</div>
+                    <div className="font-bold text-[var(--text-primary)] text-[15px] group-hover:text-[var(--rose-600)] transition-colors">{patient.name}</div>
+                    <div className="text-[11px] text-[var(--text-tertiary)] font-medium">Age {patient.age} · G{patient.gravida}P{patient.parity} · District {patient.location.split(' ')[1]}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${patient.risk === "high" ? "bg-rose-100 text-rose-700" : patient.risk === "medium" ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"}`}>{patient.risk}</span>
+                  <span className={`px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-widest ${patient.risk === "high" ? "bg-rose-100 text-rose-700 border border-rose-200" : patient.risk === "medium" ? "bg-amber-100 text-amber-700 border border-amber-200" : "bg-emerald-100 text-emerald-700 border border-emerald-200"}`}>{patient.risk} Risk</span>
                   {patient.status === "follow-up" && <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />}
                 </div>
               </div>
-              <div className="flex items-center gap-4 text-[11px] text-[var(--text-tertiary)] mb-3">
-                <span className="flex items-center gap-1"><Calendar size={11} />Week {patient.week}</span>
-                <span className="flex items-center gap-1"><Clock size={11} />{getRelativeTime(patient.lastCheckIn)}</span>
-                <span className="flex items-center gap-1"><MapPin size={11} />{patient.location}</span>
+              <div className="flex items-center gap-4 text-[11px] text-[var(--text-tertiary)] mb-3 font-medium">
+                <span className="flex items-center gap-1.5"><Calendar size={13} className="text-[var(--warm-400)]" />Week {patient.week}</span>
+                <span className="flex items-center gap-1.5"><Clock size={13} className="text-[var(--warm-400)]" />{getRelativeTime(patient.lastCheckIn)}</span>
+                <span className="flex items-center gap-1.5"><MapPin size={13} className="text-[var(--warm-400)]" />{patient.location}</span>
               </div>
-              {patient.symptoms.length > 0 && <div className="flex flex-wrap gap-1.5">{patient.symptoms.map((symptom) => <span key={symptom} className="px-2 py-0.5 rounded-full bg-[var(--warm-100)] text-[11px] text-[var(--text-secondary)] border border-[var(--warm-200)]">{symptom}</span>)}</div>}
+              {patient.symptoms.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {patient.symptoms.map((symptom) => (
+                    <span key={symptom} className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-tight border ${patient.risk === 'high' ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-[var(--warm-100)] text-[var(--text-secondary)] border-[var(--warm-200)]'}`}>
+                      {symptom}
+                    </span>
+                  ))}
+                </div>
+              )}
               <div className="flex gap-2 mt-3 pt-3 border-t border-[var(--warm-100)]">
-                <button onClick={(e) => { e.stopPropagation(); alert("Prototype Notice: In a real version, this would initiate a phone call to " + patient.phone); }} className="flex-1 py-2 rounded-lg bg-[var(--sage-100)] text-[var(--sage-700)] text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98]"><Phone size={13} />Call</button>
-                <button onClick={(e) => { e.stopPropagation(); alert("Prototype Notice: In a real version, this would open a secure messaging thread."); }} className="flex-1 py-2 rounded-lg bg-[var(--rose-100)] text-[var(--rose-700)] text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98]"><MessageSquare size={13} />Message</button>
-                <button onClick={(e) => e.stopPropagation()} className="flex-1 py-2 rounded-lg bg-[var(--warm-100)] text-[var(--text-secondary)] text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98]"><FileText size={13} />Notes</button>
+                <button onClick={(e) => { e.stopPropagation(); alert("DEMO NOTICE: In a real deployment, this would initiate a VOIP call to the patient via a secure gateway."); }} className="flex-1 py-2 rounded-xl bg-sage-50 text-sage-700 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5 active:scale-95 transition-transform"><Phone size={13} />Call</button>
+                <button onClick={(e) => { e.stopPropagation(); alert("DEMO NOTICE: This would open a secure, encrypted messaging interface compliant with medical data standards."); }} className="flex-1 py-2 rounded-xl bg-rose-50 text-rose-700 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5 active:scale-95 transition-transform"><MessageSquare size={13} />Message</button>
+                <button onClick={(e) => e.stopPropagation()} className="flex-1 py-2 rounded-xl bg-[var(--warm-50)] text-[var(--text-tertiary)] text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5 active:scale-95 transition-transform"><FileText size={13} />History</button>
               </div>
             </motion.div>
           ))}
         </div>
-        {filteredPatients.length === 0 && <div className="text-center py-16"><Search size={48} className="text-[var(--warm-300)] mx-auto mb-4" /><p className="text-[var(--text-tertiary)] font-medium">No patients match your criteria</p></div>}
+        {filteredPatients.length === 0 && <div className="text-center py-20"><div className="w-16 h-16 rounded-full bg-[var(--warm-100)] flex items-center justify-center mx-auto mb-4"><Search size={24} className="text-[var(--warm-300)]" /></div><p className="text-[var(--text-tertiary)] font-bold text-sm uppercase tracking-widest">No patients found</p></div>}
       </main>
 
       <AnimatePresence>
         {selectedPatient && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm" onClick={() => setSelectedPatient(null)}>
-            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 300 }} className="absolute bottom-0 left-0 right-0 bg-[var(--bg-primary)] rounded-t-3xl max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-              <div className="sticky top-0 bg-[var(--bg-primary)] rounded-t-3xl border-b border-[var(--warm-200)] px-5 py-4 flex items-center justify-between z-10">
-                <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold ${selectedPatient.risk === "high" ? "bg-gradient-to-br from-rose-400 to-rose-600" : selectedPatient.risk === "medium" ? "bg-gradient-to-br from-amber-400 to-amber-600" : "bg-gradient-to-br from-emerald-400 to-emerald-600"}`}>{selectedPatient.name.charAt(0)}</div>
+            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 300 }} className="absolute bottom-0 left-0 right-0 bg-[var(--bg-primary)] rounded-t-[32px] max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
+              <div className="sticky top-0 bg-[var(--bg-primary)] rounded-t-[32px] border-b border-[var(--warm-200)] px-6 py-5 flex items-center justify-between z-10">
+                <div className="flex items-center gap-4">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-sm ${selectedPatient.risk === "high" ? "bg-gradient-to-br from-rose-400 to-rose-600" : selectedPatient.risk === "medium" ? "bg-gradient-to-br from-amber-400 to-amber-600" : "bg-gradient-to-br from-emerald-400 to-emerald-600"}`}>{selectedPatient.name.charAt(0)}</div>
                   <div>
-                    <h2 className="font-bold text-[var(--text-primary)] text-lg">{selectedPatient.name}</h2>
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${selectedPatient.risk === "high" ? "bg-rose-100 text-rose-700" : selectedPatient.risk === "medium" ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"}`}>{selectedPatient.risk} risk</span>
-                      <span className="text-xs text-[var(--text-tertiary)]">Week {selectedPatient.week}</span>
+                    <h2 className="font-bold text-[var(--text-primary)] text-xl">{selectedPatient.name}</h2>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-widest ${selectedPatient.risk === "high" ? "bg-rose-100 text-rose-700 border border-rose-200" : selectedPatient.risk === "medium" ? "bg-amber-100 text-amber-700 border border-amber-200" : "bg-emerald-100 text-emerald-700 border border-emerald-200"}`}>{selectedPatient.risk} Risk</span>
+                      <span className="text-xs text-[var(--text-tertiary)] font-medium">Week {selectedPatient.week}</span>
                     </div>
                   </div>
                 </div>
-                <button onClick={() => setSelectedPatient(null)} className="w-8 h-8 rounded-full bg-[var(--warm-100)] flex items-center justify-center"><XIcon size={16} className="text-[var(--text-secondary)]" /></button>
+                <button onClick={() => setSelectedPatient(null)} className="w-10 h-10 rounded-full bg-[var(--warm-100)] flex items-center justify-center text-[var(--text-secondary)] active:scale-90 transition-transform">✕</button>
               </div>
-              <div className="p-5 space-y-5">
+              
+              <div className="p-6 space-y-6 pb-12">
                 <div className="grid grid-cols-2 gap-3">
-                  <button onClick={() => alert("Prototype Notice: In a real version, this would initiate a phone call to " + selectedPatient.phone)} className="rounded-xl bg-[var(--sage-100)] p-3 text-left active:scale-[0.98]"><Phone size={16} className="text-[var(--sage-600)] mb-1.5" /><div className="text-xs font-semibold text-[var(--sage-800)]">Call Patient</div><div className="text-[10px] text-[var(--sage-600)]">{selectedPatient.phone}</div></button>
-                  <div className="rounded-xl bg-[var(--warm-100)] p-3"><MapPin size={16} className="text-[var(--warm-600)] mb-1.5" /><div className="text-xs font-semibold text-[var(--warm-800)]">Location</div><div className="text-[10px] text-[var(--warm-600)]">{selectedPatient.location}</div></div>
+                  <button onClick={() => alert("DEMO NOTICE: Calling " + selectedPatient.phone)} className="rounded-2xl bg-sage-50 p-4 text-left border border-sage-100 active:scale-95 transition-transform"><Phone size={20} className="text-sage-600 mb-2" /><div className="text-xs font-bold text-sage-800 uppercase tracking-widest">Call Patient</div><div className="text-[10px] text-sage-600 font-bold mt-1">{selectedPatient.phone}</div></button>
+                  <div className="rounded-2xl bg-[var(--warm-50)] p-4 border border-[var(--warm-100)]"><MapPin size={20} className="text-[var(--text-tertiary)] mb-2" /><div className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-widest">District</div><div className="text-[10px] text-[var(--text-tertiary)] font-bold mt-1">{selectedPatient.location}</div></div>
                 </div>
+
+                <div className="bg-amber-50 rounded-2xl p-4 border border-amber-100 flex gap-3">
+                  <ShieldAlert size={18} className="text-amber-600 flex-shrink-0" />
+                  <p className="text-[11px] text-amber-800 font-medium leading-relaxed italic">
+                    This is a DEMO view. No real actions are taken. Do not use for actual patient triage.
+                  </p>
+                </div>
+
                 <div>
-                  <h3 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3">Pregnancy Details</h3>
-                  <div className="bg-[var(--surface-primary)] rounded-2xl p-4 border border-[var(--warm-200)]/60 space-y-3">
-                    <div className="flex justify-between"><span className="text-sm text-[var(--text-tertiary)]">Gestational Age</span><span className="text-sm font-semibold text-[var(--text-primary)]">Week {selectedPatient.week}</span></div>
-                    <div className="flex justify-between"><span className="text-sm text-[var(--text-tertiary)]">Due Date</span><span className="text-sm font-semibold text-[var(--text-primary)]">{new Date(selectedPatient.dueDate).toLocaleDateString()}</span></div>
-                    <div className="flex justify-between"><span className="text-sm text-[var(--text-tertiary)]">Gravida / Para</span><span className="text-sm font-semibold text-[var(--text-primary)]">G{selectedPatient.gravida}P{selectedPatient.parity}</span></div>
-                    <div className="flex justify-between"><span className="text-sm text-[var(--text-tertiary)]">Last Check-in</span><span className="text-sm font-semibold text-[var(--text-primary)]">{getRelativeTime(selectedPatient.lastCheckIn)}</span></div>
+                  <h3 className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-3 px-1">Patient Vitals & Info</h3>
+                  <div className="bg-[var(--surface-primary)] rounded-2xl p-5 border border-[var(--warm-200)]/60 space-y-4 shadow-sm">
+                    <div className="flex justify-between items-center"><span className="text-xs font-medium text-[var(--text-tertiary)]">Gestational Age</span><span className="text-xs font-bold text-[var(--text-primary)] uppercase">Week {selectedPatient.week}</span></div>
+                    <div className="flex justify-between items-center"><span className="text-xs font-medium text-[var(--text-tertiary)]">Estimated Due Date</span><span className="text-xs font-bold text-[var(--text-primary)] uppercase">{new Date(selectedPatient.dueDate).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}</span></div>
+                    <div className="flex justify-between items-center"><span className="text-xs font-medium text-[var(--text-tertiary)]">Gravida / Para Status</span><span className="text-xs font-bold text-[var(--text-primary)] uppercase">G{selectedPatient.gravida} P{selectedPatient.parity}</span></div>
+                    <div className="flex justify-between items-center"><span className="text-xs font-medium text-[var(--text-tertiary)]">Last Automated Check-in</span><span className="text-xs font-bold text-[var(--text-primary)] uppercase">{getRelativeTime(selectedPatient.lastCheckIn)}</span></div>
                   </div>
                 </div>
-                {selectedPatient.symptoms.length > 0 && <div><h3 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3">Reported Symptoms</h3><div className="flex flex-wrap gap-2">{selectedPatient.symptoms.map((symptom) => <span key={symptom} className="px-3 py-1.5 rounded-full bg-[var(--rose-100)] text-xs font-medium text-[var(--rose-700)] border border-[var(--rose-200)]">{symptom}</span>)}</div></div>}
-                <div><h3 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3">Worker Notes</h3><div className="bg-[var(--surface-primary)] rounded-2xl p-4 border border-[var(--warm-200)]/60"><p className="text-sm text-[var(--text-secondary)]">{selectedPatient.notes}</p></div></div>
-                <div className="space-y-2.5 pt-2">
-                  <button onClick={() => alert("Prototype Notice: Patient marked as resolved in demo portal.")} className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[var(--sage-500)] to-[var(--sage-600)] text-white font-semibold shadow-lg shadow-sage-500/20 active:scale-[0.98] flex items-center justify-center gap-2"><CheckCircle2 size={18} />Mark as Resolved</button>
-                  <button onClick={() => alert("Prototype Notice: Follow-up scheduled in demo portal.")} className="w-full py-3.5 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2"><Calendar size={18} />Schedule Follow-up</button>
+
+                {selectedPatient.symptoms.length > 0 && (
+                  <div>
+                    <h3 className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-3 px-1">Critical Symptoms Reported</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedPatient.symptoms.map((symptom) => (
+                        <span key={symptom} className="px-4 py-2 rounded-xl bg-rose-50 text-xs font-bold text-rose-700 border border-rose-100 shadow-sm uppercase tracking-tight">
+                          {symptom}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <h3 className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-3 px-1">Clinician / Worker Notes</h3>
+                  <div className="bg-[var(--surface-primary)] rounded-2xl p-5 border border-[var(--warm-200)]/60 shadow-sm">
+                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed font-medium">{selectedPatient.notes}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-3 pt-2">
+                  <button onClick={() => alert("DEMO: Marked as resolved.")} className="w-full py-4 rounded-2xl bg-gradient-to-r from-sage-500 to-sage-600 text-white font-bold text-xs uppercase tracking-widest shadow-lg shadow-sage-500/20 active:scale-95 transition-transform flex items-center justify-center gap-2"><CheckCircle2 size={18} /> Resolve Alert</button>
+                  <button onClick={() => alert("DEMO: Follow-up scheduled.")} className="w-full py-4 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-bold text-xs uppercase tracking-widest active:scale-95 transition-transform flex items-center justify-center gap-2"><Calendar size={18} /> Schedule Follow-up Visit</button>
                 </div>
               </div>
             </motion.div>
