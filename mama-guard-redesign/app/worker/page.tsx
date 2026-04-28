@@ -77,7 +77,7 @@ export default function WorkerPage() {
               <h3 className="text-xs font-bold text-amber-800 uppercase tracking-widest mb-1">Safety & Demo Notice</h3>
               <p className="text-[11px] text-amber-700 leading-relaxed font-medium">
                 This portal demonstrates how health workers could monitor alerts. 
-                In a real deployment, this would be behind secure hospital VPNs and encrypted medical logins.
+                In a real deployment, this would be behind secure hospital networks and professional clinician authentication.
               </p>
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function WorkerPage() {
               )}
               <div className="flex gap-2 mt-3 pt-3 border-t border-[var(--warm-100)]">
                 <button onClick={(e) => { e.stopPropagation(); alert("DEMO NOTICE: In a real deployment, this would initiate a VOIP call to the patient via a secure gateway."); }} className="flex-1 py-2 rounded-xl bg-sage-50 text-sage-700 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5 active:scale-95 transition-transform"><Phone size={13} />Call</button>
-                <button onClick={(e) => { e.stopPropagation(); alert("DEMO NOTICE: This would open a secure, encrypted messaging interface compliant with medical data standards."); }} className="flex-1 py-2 rounded-xl bg-rose-50 text-rose-700 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5 active:scale-95 transition-transform"><MessageSquare size={13} />Message</button>
+                <button onClick={(e) => { e.stopPropagation(); alert("DEMO NOTICE: This would open a professional messaging interface compliant with medical data standards."); }} className="flex-1 py-2 rounded-xl bg-rose-50 text-rose-700 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5 active:scale-95 transition-transform"><MessageSquare size={13} />Message</button>
                 <button onClick={(e) => e.stopPropagation()} className="flex-1 py-2 rounded-xl bg-[var(--warm-50)] text-[var(--text-tertiary)] text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-1.5 active:scale-95 transition-transform"><FileText size={13} />History</button>
               </div>
             </motion.div>
