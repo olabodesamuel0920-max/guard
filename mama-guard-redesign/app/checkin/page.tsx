@@ -392,36 +392,49 @@ function CheckInContent() {
                 <motion.div 
                   initial={{ opacity: 0, y: -10 }} 
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-gradient-to-r from-[var(--rose-50)] to-[var(--bg-secondary)] border border-[var(--rose-200)] rounded-2xl p-4 mb-6 shadow-sm flex gap-3 items-start"
+                  className="bg-gradient-to-br from-rose-50 to-white border border-rose-100 rounded-3xl p-5 mb-8 shadow-sm flex gap-4 items-start relative overflow-hidden group"
                 >
-                  <Sparkles size={20} className="text-[var(--rose-500)] shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-[13px] font-semibold text-[var(--rose-900)] leading-snug mb-1.5">
-                      You came from Mama Guard Assistant. Complete a structured check-in to organize your symptoms and prepare clearer information for your healthcare provider.
+                  <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <Sparkles size={40} className="text-rose-500" />
+                  </div>
+                  <div className="w-10 h-10 rounded-2xl bg-rose-100 flex items-center justify-center shrink-0 shadow-inner">
+                    <Sparkles size={20} className="text-rose-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-[13px] font-bold text-rose-950 leading-tight mb-1">
+                      Mama Guard Assistant Handoff
                     </p>
-                    <p className="text-[11px] text-[var(--rose-700)] leading-tight font-medium">
-                      Check-in provides supportive risk guidance only. It does not diagnose or replace medical care.
+                    <p className="text-[11px] text-rose-800/80 leading-relaxed font-medium">
+                      Select what you shared with the Assistant. This check-in organizes your symptoms to help you prepare clearer information for your healthcare provider.
                     </p>
+                    <div className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-bold text-rose-600 uppercase tracking-wider bg-white/60 px-2 py-0.5 rounded-full border border-rose-100">
+                      Supportive guidance only
+                    </div>
                   </div>
                 </motion.div>
               )}
-              <div className="mb-6">
-                <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
-                  How are you feeling?
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-2 text-[var(--rose-600)]">
+                  <Activity size={16} />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Safety Check-in</span>
+                </div>
+                <h1 className="text-3xl font-extrabold text-[var(--text-primary)] mb-3 leading-tight">
+                  Check in with your symptoms
                 </h1>
-                <p className="text-[var(--text-secondary)] mb-4">
-                  Select any symptoms you&apos;re experiencing today. Tap again
-                  to deselect.
+                <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-6">
+                  Select what you are experiencing so Mama Guard can help organize your symptoms and prepare supportive next-step guidance.
                 </p>
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-3">
-                  <AlertTriangle size={18} className="text-amber-600 shrink-0 mt-0.5" />
-                  <p className="text-xs text-amber-800 leading-tight">
-                    <strong>Medical Disclaimer:</strong> This check-in is for prototype guidance only. If you are experiencing a medical emergency, call your local emergency number immediately.
+                <div className="bg-[var(--bg-secondary)] border border-[var(--warm-200)] rounded-2xl p-4 flex gap-3 shadow-sm">
+                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
+                    <AlertTriangle size={16} className="text-amber-500" />
+                  </div>
+                  <p className="text-[10px] text-[var(--text-muted)] leading-tight font-medium">
+                    <strong>Medical Disclaimer:</strong> This tool provides supportive risk guidance only and is not a medical diagnosis. If you feel unsafe or symptoms are severe, contact emergency care immediately.
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 gap-3 mb-6">
+              <div className="grid grid-cols-1 gap-3 mb-8">
                 {symptoms.map((symptom, index) => {
                   const isSelected = selectedSymptoms.includes(symptom.id);
                   const Icon = symptom.icon;
@@ -430,77 +443,106 @@ function CheckInContent() {
                     <motion.button
                       type="button"
                       key={symptom.id}
-                      initial={{ opacity: 0, y: 16 }}
+                      initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.04 }}
+                      transition={{ delay: index * 0.03 }}
                       onClick={() => toggleSymptom(symptom.id)}
-                      className={`relative flex items-center gap-4 p-4 rounded-2xl text-left transition-all duration-200 border-2 ${
+                      className={`relative flex items-center gap-4 p-5 rounded-3xl text-left transition-all duration-300 border-2 ${
                         isSelected
-                          ? "border-[var(--rose-400)] bg-[var(--rose-50)] shadow-md"
-                          : "border-[var(--warm-200)] bg-[var(--surface-primary)] shadow-sm"
+                          ? "border-[var(--rose-400)] bg-[var(--rose-50)] shadow-md shadow-rose-200/20"
+                          : "border-[var(--warm-200)] bg-white hover:border-[var(--warm-300)] shadow-sm"
                       }`}
                     >
                       <div
-                        className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${
+                        className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all shadow-inner ${
                           isSelected
-                            ? "bg-[var(--rose-500)] text-white"
-                            : "bg-[var(--warm-100)] text-[var(--text-tertiary)]"
+                            ? "bg-[var(--rose-500)] text-white scale-105"
+                            : "bg-[var(--bg-secondary)] text-[var(--text-tertiary)]"
                         }`}
                       >
-                        <Icon size={20} />
+                        <Icon size={24} />
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-[var(--text-primary)] text-[15px]">
+                        <div className="flex items-center flex-wrap gap-2 mb-0.5">
+                          <span className="font-bold text-[var(--text-primary)] text-base">
                             {symptom.label}
                           </span>
 
                           {symptom.severity === "high" && (
-                            <span className="px-2 py-0.5 rounded-full bg-[var(--rose-100)] text-[10px] font-bold text-[var(--rose-700)] uppercase">
+                            <span className="px-1.5 py-0.5 rounded-full bg-rose-100 text-[9px] font-bold text-rose-700 uppercase tracking-wider">
                               Important
                             </span>
                           )}
                         </div>
 
-                        <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
+                        <p className="text-xs text-[var(--text-tertiary)] leading-snug">
                           {symptom.description}
                         </p>
                       </div>
 
-                      {isSelected && (
+                      {isSelected ? (
                         <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="w-6 h-6 rounded-full bg-[var(--rose-500)] flex items-center justify-center flex-shrink-0"
+                          initial={{ scale: 0, rotate: -45 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          className="w-7 h-7 rounded-full bg-[var(--rose-500)] flex items-center justify-center flex-shrink-0 shadow-lg shadow-rose-500/30"
                         >
-                          <Check size={14} className="text-white" />
+                          <Check size={16} className="text-white" strokeWidth={3} />
                         </motion.div>
+                      ) : (
+                        <div className="w-7 h-7 rounded-full border-2 border-[var(--warm-200)] flex-shrink-0 transition-colors group-hover:border-[var(--rose-200)]" />
                       )}
                     </motion.button>
                   );
                 })}
               </div>
 
-              <button
-                type="button"
-                onClick={() => setSelectedSymptoms([])}
-                className={`w-full py-3.5 rounded-2xl text-center font-medium text-sm transition-all mb-6 ${
-                  selectedSymptoms.length === 0
-                    ? "bg-[var(--sage-100)] text-[var(--sage-700)] border-2 border-[var(--sage-300)]"
-                    : "bg-transparent text-[var(--text-tertiary)] border-2 border-dashed border-[var(--warm-200)]"
-                }`}
-              >
-                I&apos;m feeling fine today — no symptoms
-              </button>
+              {selectedSymptoms.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6 p-4 rounded-2xl bg-white border border-[var(--warm-200)] shadow-sm"
+                >
+                  <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">Selected Symptoms</div>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedSymptoms.map(id => {
+                      const symptom = symptoms.find(s => s.id === id);
+                      return (
+                        <span key={id} className="px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-primary)] text-[11px] font-medium border border-[var(--warm-200)]">
+                          {symptom?.label}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
 
-              <button
-                type="button"
-                onClick={handleSubmitSymptoms}
-                className="w-full py-4 rounded-2xl bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white font-semibold shadow-lg shadow-rose-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-              >
-                Continue <ChevronRight size={20} />
-              </button>
+              <div className="sticky bottom-24 left-0 right-0 pt-4 bg-gradient-to-t from-[var(--bg-cream)] via-[var(--bg-cream)] to-transparent">
+                <button
+                  type="button"
+                  onClick={() => setSelectedSymptoms([])}
+                  className={`w-full py-4 rounded-3xl text-center font-bold text-xs uppercase tracking-widest transition-all mb-4 ${
+                    selectedSymptoms.length === 0
+                      ? "bg-white text-[var(--sage-600)] border-2 border-[var(--sage-200)] shadow-sm"
+                      : "bg-transparent text-[var(--text-tertiary)] border-2 border-dashed border-[var(--warm-200)] hover:border-[var(--rose-200)]"
+                  }`}
+                >
+                  {selectedSymptoms.length === 0 ? "✅ I'm feeling fine — no symptoms" : "Clear All Selection"}
+                </button>
+
+                <button
+                  type="button"
+                  disabled={selectedSymptoms.length === 0}
+                  onClick={handleSubmitSymptoms}
+                  className={`w-full py-5 rounded-3xl font-bold text-base transition-all flex items-center justify-center gap-2 shadow-xl ${
+                    selectedSymptoms.length > 0
+                      ? "bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-rose-500/30 active:scale-[0.98]"
+                      : "bg-[var(--warm-200)] text-[var(--text-muted)] cursor-not-allowed grayscale"
+                  }`}
+                >
+                  Continue to Guidance <ChevronRight size={20} strokeWidth={3} />
+                </button>
+              </div>
             </motion.div>
           )}
 
