@@ -708,7 +708,7 @@ function CheckInContent() {
 
                     <button
                       type="button"
-                      onClick={() => alert("Prototype Notice: In a real version, this would show nearby emergency centers. Please contact local emergency services or go to the nearest emergency care center.")}
+                      onClick={() => alert("Prototype Notice: In a real version, this would show nearby emergency care centers. Please contact local emergency services or go to the nearest emergency care center.")}
                       className="w-full py-4 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2"
                     >
                       <MapPin size={20} /> Find emergency care

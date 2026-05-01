@@ -176,7 +176,7 @@ export default function SafetyPlanPage() {
             </div>
             <div className="flex gap-4">
               <div className="w-8 h-8 rounded-full bg-[var(--rose-100)] text-[var(--rose-700)] flex items-center justify-center shrink-0 font-bold text-sm">2</div>
-              <p className="text-sm text-[var(--text-secondary)] leading-relaxed"><span className="font-bold text-[var(--text-primary)]">Go to nearest emergency care</span> if symptoms are severe, worsening, or life-threatening.</p>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed"><span className="font-bold text-[var(--text-primary)]">Go to nearest emergency care center</span> if symptoms are severe, worsening, or life-threatening.</p>
             </div>
             <div className="flex gap-4">
               <div className="w-8 h-8 rounded-full bg-[var(--rose-100)] text-[var(--rose-700)] flex items-center justify-center shrink-0 font-bold text-sm">3</div>
