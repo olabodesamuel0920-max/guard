@@ -6,12 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Sparkles, Send, Loader2, Heart, Baby, Activity, Shield, AlertTriangle, CheckCircle2, Stethoscope, BookOpen, Phone, X, FileText, User } from "lucide-react";
 import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
+import { getGestationalWeek, getTrimester } from "@/lib/utils";
 
 interface Message { 
   id: string; 
   role: "user" | "assistant"; 
   content: string; 
-  type?: "text" | "action" | "warning" | "safety"; 
+  type?: "text" | "action" | "warning" | "safety" | "summary"; 
   actions?: { label: string; icon: React.ElementType; action: string }[]; 
   structuredWarning?: {
     title: string;
@@ -23,6 +24,7 @@ interface Message {
     hospital?: string;
     contact?: string;
   };
+  summaryData?: string;
 }
 
 interface UserProfile {
@@ -175,40 +177,53 @@ export default function AIPage() {
 
   useEffect(() => { scrollRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
-  const handleProviderSummary = () => {
+  const handleProviderSummary = (isSilent = false) => {
     const onboarding = safeStorage.get<UserProfile | null>(STORAGE_KEYS.ONBOARDING, null);
     const checkins = safeStorage.get<any[]>(STORAGE_KEYS.CHECKINS, []);
     const latestCheckin = checkins.length > 0 ? checkins[checkins.length - 1] : null;
+    const week = onboarding?.dueDate ? getGestationalWeek(onboarding.dueDate) : 0;
+    const trimester = week > 0 ? getTrimester(week) : "N/A";
     
     const summary = `
-Mama Guard - Provider Care Summary
-----------------------------------
+MAMA GUARD PROVIDER SUMMARY
 Generated: ${new Date().toLocaleString()}
+----------------------------------
 
-Patient: ${onboarding?.name || "User"}
+USER INFORMATION
+Name: ${onboarding?.name || "User"}
 Status: ${onboarding?.status === "pregnant" ? "Pregnant" : onboarding?.status === "postpartum" ? "Postpartum" : "Not set"}
-Details: ${onboarding?.dueDate ? "Due: " + onboarding.dueDate : "N/A"}
+Stage: ${week > 0 ? `Week ${week} (${trimester})` : "N/A"}
+${onboarding?.dueDate ? "Estimated Due Date: " + new Date(onboarding.dueDate).toLocaleDateString() : ""}
 
-Latest Check-in:
-- Date: ${latestCheckin ? new Date(latestCheckin.date).toLocaleDateString() : "None"}
-- Risk: ${latestCheckin ? latestCheckin.risk.toUpperCase() : "N/A"}
-- Symptoms: ${latestCheckin ? latestCheckin.symptoms.join(", ") : "None"}
+CURRENT CONCERN
+"${messages[messages.length - 1]?.role === "user" ? messages[messages.length - 1].content : "Care tracking and summary preparation."}"
 
-Current Concerns logged in Assistant:
-"${input || messages[messages.length-1]?.content || "Current session query"}"
+LATEST CHECK-IN DATA
+Date: ${latestCheckin ? new Date(latestCheckin.date).toLocaleDateString() : "No recent check-ins"}
+Risk Level: ${latestCheckin ? latestCheckin.risk.toUpperCase() : "N/A"}
+Symptoms: ${latestCheckin ? latestCheckin.symptoms.join(", ") : "None reported"}
+${latestCheckin?.followUpAnswers ? "Details:\n" + Object.entries(latestCheckin.followUpAnswers).map(([k, v]) => `• ${k}: ${v}`).join("\n") : ""}
 
-Disclaimer:
-This is supportive guidance from Mama Guard, not a medical diagnosis.
+CARE TEAM & FACILITY
+Provider Phone: ${onboarding?.providerPhone || "Not provided"}
+Nearest Hospital: ${onboarding?.nearestHospital || "Not provided"}
+
+SAFETY NOTE
+This summary was prepared by Mama Guard to help organize information. It is supportive guidance only and not a medical diagnosis. Mama Guard does not replace medical care.
 ----------------------------------
     `.trim();
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(summary)
-        .then(() => alert("Provider summary copied to clipboard! You can now paste it into a message or email to your provider."))
-        .catch(() => alert("Could not copy automatically. You can find your history in the Profile page to share."));
-    } else {
-      alert("Summary prepared (Clipboard not available):\n\n" + summary);
+        .then(() => {
+          if (!isSilent) alert("Provider summary copied to clipboard! You can paste it into a message or show it to your healthcare provider.");
+        })
+        .catch(() => {
+          if (!isSilent) alert("Clipboard access denied. You can see the summary below.");
+        });
     }
+
+    return summary;
   };
 
   const handleSend = async (text?: string) => {
@@ -221,14 +236,15 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
       setInput("");
       setIsLoading(true);
       setTimeout(() => {
-        handleProviderSummary();
+        const summary = handleProviderSummary(true);
         const assistantMsg: Message = { 
           id: (Date.now() + 1).toString(), 
           role: "assistant", 
-          content: "I've prepared a care summary based on your profile and latest check-ins. It has been copied to your clipboard. You can share this with your healthcare provider.", 
-          type: "text",
+          content: "I've prepared a professional summary of your current symptoms and care details. I've attempted to copy it to your clipboard for you.", 
+          type: "summary",
+          summaryData: summary,
           actions: [
-            { label: "Copy Again", icon: FileText, action: "summary" },
+            { label: "Copy Summary", icon: FileText, action: "summary" },
             { label: "Call Provider", icon: Phone, action: "call" }
           ]
         };
@@ -279,7 +295,25 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
               <div className={`max-w-[85%] ${msg.role === "user" ? "bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] text-white rounded-2xl rounded-tr-sm px-4 py-3" : msg.type === "warning" ? "bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl rounded-tl-sm px-4 py-3" : "bg-[var(--surface-primary)] border border-[var(--warm-200)] rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm"}`}>
                 {msg.role === "assistant" && <div className="flex items-center gap-1.5 mb-2"><Sparkles size={12} className={msg.type === "warning" ? "text-amber-500" : "text-[var(--rose-500)]"} /><span className={`text-[10px] font-semibold uppercase tracking-wider ${msg.type === "warning" ? "text-amber-600" : "text-[var(--rose-600)]"}`}>{msg.type === "warning" ? "Urgent Information" : "Assistant Guidance"}</span></div>}
                 
-                {msg.type === "safety" && msg.safetyCard ? (
+                {msg.type === "summary" && msg.summaryData ? (
+                  <div className="space-y-3">
+                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                      {msg.content}
+                    </p>
+                    <div className="bg-white/80 rounded-xl p-3 border border-[var(--warm-200)] shadow-inner">
+                      <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-[var(--warm-100)]">
+                        <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Summary Preview</span>
+                        <CheckCircle2 size={12} className="text-emerald-500" />
+                      </div>
+                      <pre className="text-[10px] text-[var(--text-primary)] font-mono whitespace-pre-wrap leading-tight max-h-40 overflow-y-auto">
+                        {msg.summaryData}
+                      </pre>
+                    </div>
+                    <p className="text-[10px] text-[var(--text-tertiary)] italic">
+                      Tip: You can show this screen directly to your provider or paste the copied text into a message.
+                    </p>
+                  </div>
+                ) : msg.type === "safety" && msg.safetyCard ? (
                   <div className="space-y-4">
                     <div className="bg-white/50 rounded-2xl p-4 border border-[var(--rose-100)] space-y-3">
                       <div className="flex items-center gap-2 mb-1">
