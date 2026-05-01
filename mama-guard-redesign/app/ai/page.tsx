@@ -46,7 +46,7 @@ const suggestedActions = [
 function generateResponse(input: string): { 
   content: string; 
   type: "text" | "action" | "warning"; 
-  actions?: typeof suggestedActions;
+  actions?: { label: string; icon: React.ElementType; action: string }[];
   structuredWarning?: Message["structuredWarning"];
 } {
   const lower = input.toLowerCase();
@@ -93,7 +93,12 @@ function generateResponse(input: string): {
     return { 
       content: matchedCritical.label,
       type: "warning", 
-      actions: suggestedActions,
+      actions: [
+        { label: "Call Provider", icon: Phone, action: "call" },
+        { label: "Find ER", icon: AlertTriangle, action: "er" },
+        { label: "Provider Summary", icon: FileText, action: "summary" },
+        { label: "Start Check-in", icon: Activity, action: "checkin" },
+      ],
       structuredWarning: {
         title: `Urgent Notice: ${matchedCritical.label}`,
         subtitle: "This may need urgent medical attention. Mama Guard cannot diagnose this.",
@@ -108,7 +113,20 @@ function generateResponse(input: string): {
     };
   }
 
-  if (lower.includes("normal")) return { content: `It's natural to wonder what's normal. Many changes are typical, but some require professional review.\n\nCommon normal symptoms:\n• Mild stretching sensations\n• Increased fatigue\n• Breast tenderness\n• Mild morning sickness\n\nHowever, contact your provider if:\n• Symptoms are severe or worsening\n• You have bleeding or fluid leakage\n• You have concerns about baby's movement\n• You experience severe headache or vision changes\n\nAlways consult your healthcare provider for medical advice.`, type: "text" };
+  if (lower.includes("normal") || lower.includes("symptom") || lower.includes("feel") || lower.includes("pain")) {
+    const isNormal = lower.includes("normal");
+    return { 
+      content: isNormal 
+        ? `It's natural to wonder what's normal. Many changes are typical, but some require professional review.\n\nCommon normal symptoms:\n• Mild stretching sensations\n• Increased fatigue\n• Breast tenderness\n• Mild morning sickness\n\nHowever, contact your provider if:\n• Symptoms are severe or worsening\n• You have bleeding or fluid leakage\n• You have concerns about baby's movement\n• You experience severe headache or vision changes\n\nAlways consult your healthcare provider for medical advice.`
+        : `Thank you for sharing how you're feeling. I can provide supportive guidance, but it's important to track these symptoms formally to share with your provider.\n\nWould you like to log this in a structured check-in?`, 
+      type: "text",
+      actions: [
+        { label: "Log in Check-in", icon: Activity, action: "checkin" },
+        { label: "Provider Summary", icon: FileText, action: "summary" },
+        { label: "Read Article", icon: BookOpen, action: "learn" },
+      ]
+    };
+  }
   
   if (lower.includes("baby") && lower.includes("week")) return { content: `At this stage, your baby is reaching many milestones! \n\nHighlights:\n• Major organs are maturing\n• Hearing development is progressing\n• Movement is becoming more rhythmic\n\nHealth Reminders:\n• Continue prenatal vitamins\n• Maintain high hydration\n• Monitor daily kick counts if in the third trimester\n\nPlease share any concerns about your baby's growth with your provider.`, type: "text" };
 
@@ -258,13 +276,46 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
                 )}
 
                 {msg.role === "assistant" && msg.id === "welcome" && <MedicalDisclaimer className="mt-4 mb-0" />}
-                {msg.actions && <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-[var(--warm-200)]">{msg.actions.map((action) => { const ActionIcon = action.icon; return <button key={action.action} onClick={() => { 
-                  if (action.action === "checkin") router.push("/checkin"); 
-                  if (action.action === "learn") router.push("/learn"); 
-                  if (action.action === "summary") handleProviderSummary();
-                  if (action.action === "er") alert("Emergency Notice: Please contact your local emergency services or go to the nearest hospital immediately. Mama Guard does not dispatch emergency services.");
-                  if (action.action === "call") { const onboarding = safeStorage.get(STORAGE_KEYS.ONBOARDING, { providerPhone: "" }); if (onboarding.providerPhone) { window.location.href = `tel:${onboarding.providerPhone}`; } else { alert("Please add your provider's phone number in your profile first."); } } 
-                }} className={`flex items-center gap-2 px-3 py-3 rounded-xl border text-[11px] font-bold uppercase tracking-wider transition-all active:scale-[0.98] ${action.action === "er" ? "bg-rose-600 text-white border-rose-700" : "bg-white border-[var(--warm-200)] text-[var(--text-primary)] hover:bg-[var(--warm-50)]"}`}><ActionIcon size={14} className={action.action === "er" ? "text-white" : "text-[var(--rose-500)]"} />{action.label}</button>; })}</div>}
+                {msg.actions && (
+                  <div className="mt-4 pt-4 border-t border-[var(--warm-200)]">
+                    <div className="grid grid-cols-2 gap-2 mb-3">
+                      {msg.actions.map((action) => { 
+                        const ActionIcon = action.icon; 
+                        return (
+                          <button 
+                            key={action.action} 
+                            onClick={() => { 
+                              if (action.action === "checkin") router.push("/checkin?from=assistant"); 
+                              if (action.action === "learn") router.push("/learn"); 
+                              if (action.action === "summary") handleProviderSummary();
+                              if (action.action === "er") alert("Emergency Notice: Please contact your local emergency services or go to the nearest hospital immediately. Mama Guard does not dispatch emergency services.");
+                              if (action.action === "call") { 
+                                const onboarding = safeStorage.get(STORAGE_KEYS.ONBOARDING, { providerPhone: "" }); 
+                                if (onboarding.providerPhone) { window.location.href = `tel:${onboarding.providerPhone}`; } 
+                                else { alert("Please add your provider's phone number in your profile first."); } 
+                              } 
+                            }} 
+                            className={`flex items-center gap-2 px-3 py-3 rounded-xl border text-[11px] font-bold uppercase tracking-wider transition-all active:scale-[0.98] ${
+                              action.action === "er" || action.action === "checkin" && msg.type === "warning"
+                                ? "bg-rose-600 text-white border-rose-700 shadow-sm" 
+                                : action.action === "checkin"
+                                  ? "bg-[var(--rose-50)] text-[var(--rose-700)] border-[var(--rose-200)]"
+                                  : "bg-white border-[var(--warm-200)] text-[var(--text-primary)] hover:bg-[var(--warm-50)]"
+                            }`}
+                          >
+                            <ActionIcon size={14} className={action.action === "er" || action.action === "checkin" && msg.type === "warning" ? "text-white" : "text-[var(--rose-500)]"} />
+                            {action.label}
+                          </button>
+                        ); 
+                      })}
+                    </div>
+                    {msg.actions.some(a => a.action === "checkin") && (
+                      <p className="text-[10px] text-[var(--text-tertiary)] italic leading-tight">
+                        Check-in helps organize your symptoms, but it does not diagnose or replace medical care.
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}
