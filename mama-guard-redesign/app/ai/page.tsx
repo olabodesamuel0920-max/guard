@@ -36,12 +36,32 @@ interface UserProfile {
   emergencyContact?: string;
 }
 
-const quickPrompts = [
-  { label: "Safety plan help", icon: Shield, prompt: "Help me build my safety plan" },
-  { label: "Severe headache", icon: AlertTriangle, prompt: "I have a severe headache" },
-  { label: "Baby moving less", icon: Baby, prompt: "My baby is moving less" },
-  { label: "Provider summary", icon: FileText, prompt: "Help me prepare a provider summary" },
-  { label: "Warning signs", icon: Shield, prompt: "What warning signs should I watch for?" },
+const quickPromptGroups = [
+  {
+    category: "Urgent symptoms",
+    prompts: [
+      { label: "Severe headache", icon: AlertTriangle, prompt: "I have a severe headache" },
+      { label: "Baby moving less", icon: Baby, prompt: "My baby is moving less" },
+      { label: "Dizzy or faint", icon: Activity, prompt: "I feel dizzy or faint" },
+      { label: "Bleeding or Fluid", icon: Shield, prompt: "I have bleeding or fluid leaking" },
+    ]
+  },
+  {
+    category: "Prepare care",
+    prompts: [
+      { label: "Build Safety Plan", icon: Shield, prompt: "Help me build my safety plan" },
+      { label: "Provider Summary", icon: FileText, prompt: "Help me prepare a provider summary" },
+      { label: "What to tell Dr.", icon: Stethoscope, prompt: "What should I tell my provider?" },
+    ]
+  },
+  {
+    category: "Learn",
+    prompts: [
+      { label: "Warning signs", icon: Shield, prompt: "What warning signs should I watch for?" },
+      { label: "Movement meaning", icon: Activity, prompt: "What does reduced movement mean?" },
+      { label: "Urgent care timing", icon: Heart, prompt: "When should I seek urgent care?" },
+    ]
+  }
 ];
 
 const suggestedActions = [
@@ -435,7 +455,37 @@ This summary was prepared by Mama Guard to help organize information. It is supp
         </AnimatePresence>
         {isLoading && <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start"><div className="bg-[var(--surface-primary)] border border-[var(--warm-200)] rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm"><div className="flex items-center gap-2"><Loader2 size={16} className="text-[var(--rose-500)] animate-spin" /><span className="text-sm text-[var(--text-tertiary)]">Thinking...</span></div></div></motion.div>}
         <div ref={scrollRef} />
-        {messages.length <= 1 && !isLoading && <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-2"><p className="text-xs text-[var(--text-muted)] mb-2 px-1">Quick questions</p><div className="grid grid-cols-2 gap-2">{quickPrompts.map((prompt) => { const Icon = prompt.icon; return <button key={prompt.label} onClick={() => handleSend(prompt.prompt)} className="flex items-center gap-2 p-3 rounded-xl bg-[var(--surface-primary)] border border-[var(--warm-200)] shadow-sm text-left hover:bg-[var(--warm-50)] active:scale-[0.98] transition-all"><Icon size={16} className="text-[var(--rose-500)] flex-shrink-0" /><span className="text-xs font-medium text-[var(--text-secondary)]">{prompt.label}</span></button>; })}</div></motion.div>}
+        {messages.length <= 1 && !isLoading && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-2 space-y-5">
+            {quickPromptGroups.map((group) => (
+              <div key={group.category} className="space-y-2">
+                <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest px-1">{group.category}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {group.prompts.map((prompt) => {
+                    const Icon = prompt.icon;
+                    const isUrgent = group.category === "Urgent symptoms";
+                    return (
+                      <button 
+                        key={prompt.label} 
+                        onClick={() => handleSend(prompt.prompt)} 
+                        className={`flex items-center gap-2 p-3 rounded-2xl border shadow-sm text-left active:scale-[0.98] transition-all ${
+                          isUrgent 
+                            ? "bg-rose-50/50 border-rose-100 hover:bg-rose-50" 
+                            : "bg-[var(--surface-primary)] border-[var(--warm-200)] hover:bg-[var(--warm-50)]"
+                        }`}
+                      >
+                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isUrgent ? "bg-rose-100" : "bg-[var(--warm-100)]"}`}>
+                          <Icon size={14} className={isUrgent ? "text-rose-600" : "text-[var(--rose-500)]"} />
+                        </div>
+                        <span className={`text-[11px] font-semibold ${isUrgent ? "text-rose-900" : "text-[var(--text-secondary)]"} leading-tight`}>{prompt.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        )}
       </div>
 
       <div className="shrink-0 bg-[var(--surface-glass)] backdrop-blur-xl border-t border-[var(--warm-200)]/50 px-5 py-3 pb-[calc(12px+env(safe-area-inset-bottom,0px))]">
