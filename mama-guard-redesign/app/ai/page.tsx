@@ -7,7 +7,18 @@ import { ArrowLeft, Sparkles, Send, Loader2, Heart, Baby, Activity, Shield, Aler
 import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
 
-interface Message { id: string; role: "user" | "assistant"; content: string; type?: "text" | "action" | "warning"; actions?: { label: string; icon: React.ElementType; action: string }[]; }
+interface Message { 
+  id: string; 
+  role: "user" | "assistant"; 
+  content: string; 
+  type?: "text" | "action" | "warning"; 
+  actions?: { label: string; icon: React.ElementType; action: string }[]; 
+  structuredWarning?: {
+    title: string;
+    subtitle: string;
+    sections: { label: string; content: string }[];
+  };
+}
 
 interface UserProfile {
   name: string;
@@ -32,7 +43,12 @@ const suggestedActions = [
   { label: "Read Article", icon: BookOpen, action: "learn" },
 ];
 
-function generateResponse(input: string): { content: string; type: "text" | "action" | "warning"; actions?: typeof suggestedActions } {
+function generateResponse(input: string): { 
+  content: string; 
+  type: "text" | "action" | "warning"; 
+  actions?: typeof suggestedActions;
+  structuredWarning?: Message["structuredWarning"];
+} {
   const lower = input.toLowerCase();
 
   // Escalation for critical symptoms
@@ -75,25 +91,20 @@ function generateResponse(input: string): { content: string; type: "text" | "act
     }
 
     return { 
-      content: `### Urgent Notice: ${matchedCritical.label}
-This may need urgent medical attention. Mama Guard cannot diagnose this.
-
-**What you shared:**
-You mentioned concerns related to ${matchedCritical.label.toLowerCase()}.
-
-**Why it matters:**
-${whyItMatters}
-
-**Suggested next step:**
-${nextStep}
-
-**What to tell your provider:**
-${whatToTell}
-
-**Safety note:**
-Always trust your maternal intuition. If something feels wrong, seek care regardless of symptoms.`, 
+      content: matchedCritical.label,
       type: "warning", 
-      actions: suggestedActions 
+      actions: suggestedActions,
+      structuredWarning: {
+        title: `Urgent Notice: ${matchedCritical.label}`,
+        subtitle: "This may need urgent medical attention. Mama Guard cannot diagnose this.",
+        sections: [
+          { label: "What you shared", content: `You mentioned concerns related to ${matchedCritical.label.toLowerCase()}.` },
+          { label: "Why it matters", content: whyItMatters },
+          { label: "Suggested next step", content: nextStep },
+          { label: "What to tell your provider", content: whatToTell },
+          { label: "Safety note", content: "Always trust your maternal intuition. If something feels wrong, seek care regardless of symptoms." }
+        ]
+      }
     };
   }
 
@@ -109,7 +120,12 @@ Always trust your maternal intuition. If something feels wrong, seek care regard
 
 export default function AIPage() {
   const router = useRouter();
-  const [messages, setMessages] = useState<Message[]>([{ id: "welcome", role: "assistant", content: "Hello! I'm your Mama Guard Assistant. I'm a prototype here to provide supportive guidance during your pregnancy journey. How can I help you today?", type: "text" }]);
+  const [messages, setMessages] = useState<Message[]>([{ 
+    id: "welcome", 
+    role: "assistant", 
+    content: "I’m here to provide supportive pregnancy guidance. I can help you understand warning signs, organize symptoms, and prepare questions for your healthcare provider.", 
+    type: "text" 
+  }]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -185,7 +201,14 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
     setIsLoading(true);
     setTimeout(() => {
       const response = generateResponse(content);
-      const assistantMsg: Message = { id: (Date.now() + 1).toString(), role: "assistant", content: response.content, type: response.type, actions: response.actions };
+      const assistantMsg: Message = { 
+        id: (Date.now() + 1).toString(), 
+        role: "assistant", 
+        content: response.content, 
+        type: response.type, 
+        actions: response.actions,
+        structuredWarning: response.structuredWarning
+      };
       setMessages((prev) => [...prev, assistantMsg]);
       setIsLoading(false);
     }, 1200);
@@ -211,8 +234,29 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
           {messages.map((msg) => (
             <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-[85%] ${msg.role === "user" ? "bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] text-white rounded-2xl rounded-tr-sm px-4 py-3" : msg.type === "warning" ? "bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl rounded-tl-sm px-4 py-3" : "bg-[var(--surface-primary)] border border-[var(--warm-200)] rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm"}`}>
-                {msg.role === "assistant" && <div className="flex items-center gap-1.5 mb-2"><Sparkles size={12} className={msg.type === "warning" ? "text-amber-500" : "text-[var(--rose-500)]"} /><span className={`text-[10px] font-semibold uppercase tracking-wider ${msg.type === "warning" ? "text-amber-600" : "text-[var(--rose-600)]"}`}>{msg.type === "warning" ? "Important" : "Assistant"}</span></div>}
-                <div className={`text-sm whitespace-pre-wrap leading-relaxed ${msg.role === "user" ? "text-white" : msg.type === "warning" ? "text-amber-900" : "text-[var(--text-secondary)]"}`}>{msg.content}</div>
+                {msg.role === "assistant" && <div className="flex items-center gap-1.5 mb-2"><Sparkles size={12} className={msg.type === "warning" ? "text-amber-500" : "text-[var(--rose-500)]"} /><span className={`text-[10px] font-semibold uppercase tracking-wider ${msg.type === "warning" ? "text-amber-600" : "text-[var(--rose-600)]"}`}>{msg.type === "warning" ? "Urgent Information" : "Assistant Guidance"}</span></div>}
+                
+                {msg.type === "warning" && msg.structuredWarning ? (
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-base font-bold text-amber-900 leading-tight mb-1">{msg.structuredWarning.title}</h3>
+                      <p className="text-xs text-amber-800/80 font-medium">{msg.structuredWarning.subtitle}</p>
+                    </div>
+                    <div className="space-y-3">
+                      {msg.structuredWarning.sections.map((section, idx) => (
+                        <div key={idx} className="bg-white/40 rounded-xl p-3 border border-amber-200/50">
+                          <h4 className="text-[10px] font-bold text-amber-700 uppercase tracking-wider mb-1">{section.label}</h4>
+                          <p className="text-sm text-amber-900 leading-relaxed">{section.content}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className={`text-sm whitespace-pre-wrap leading-relaxed ${msg.role === "user" ? "text-white" : "text-[var(--text-secondary)]"}`}>
+                    {msg.content}
+                  </div>
+                )}
+
                 {msg.role === "assistant" && msg.id === "welcome" && <MedicalDisclaimer className="mt-4 mb-0" />}
                 {msg.actions && <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-[var(--warm-200)]">{msg.actions.map((action) => { const ActionIcon = action.icon; return <button key={action.action} onClick={() => { 
                   if (action.action === "checkin") router.push("/checkin"); 
@@ -237,7 +281,7 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
           </div>
           <button onClick={() => handleSend()} disabled={!input.trim() || isLoading} className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${input.trim() && !isLoading ? "bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-md" : "bg-[var(--warm-200)] text-[var(--text-muted)]"}`}><Send size={18} /></button>
         </div>
-        <p className="text-[10px] text-[var(--text-muted)] text-center mt-2 font-medium">Mama Guard Assistant — Prototype Guidance Only</p>
+        <p className="text-[10px] text-[var(--text-muted)] text-center mt-2 font-medium">Supportive guidance only · Not a diagnosis</p>
       </div>
     </div>
   );
