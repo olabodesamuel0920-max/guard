@@ -239,13 +239,13 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
                 {msg.type === "warning" && msg.structuredWarning ? (
                   <div className="space-y-4">
                     <div>
-                      <h3 className="text-base font-bold text-amber-900 leading-tight mb-1">{msg.structuredWarning.title}</h3>
+                      <div className="text-base font-bold text-amber-900 leading-tight mb-1">{msg.structuredWarning.title}</div>
                       <p className="text-xs text-amber-800/80 font-medium">{msg.structuredWarning.subtitle}</p>
                     </div>
                     <div className="space-y-3">
                       {msg.structuredWarning.sections.map((section, idx) => (
                         <div key={idx} className="bg-white/40 rounded-xl p-3 border border-amber-200/50">
-                          <h4 className="text-[10px] font-bold text-amber-700 uppercase tracking-wider mb-1">{section.label}</h4>
+                          <div className="text-[10px] font-bold text-amber-700 uppercase tracking-wider mb-1">{section.label}</div>
                           <p className="text-sm text-amber-900 leading-relaxed">{section.content}</p>
                         </div>
                       ))}
