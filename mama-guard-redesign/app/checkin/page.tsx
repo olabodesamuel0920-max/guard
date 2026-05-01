@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, type ElementType } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState, type ElementType } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/Header";
 import { BottomNav } from "@/components/BottomNav";
@@ -232,8 +232,10 @@ const symptoms: Symptom[] = [
 
 // Removed old severityQuestions record in favor of severityConfigs
 
-export default function CheckInPage() {
+function CheckInContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const fromAssistant = searchParams.get("from") === "assistant";
 
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<
@@ -379,6 +381,23 @@ export default function CheckInPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
             >
+              {fromAssistant && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }} 
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-gradient-to-r from-[var(--rose-50)] to-[var(--bg-secondary)] border border-[var(--rose-200)] rounded-2xl p-4 mb-6 shadow-sm flex gap-3 items-start"
+                >
+                  <Sparkles size={20} className="text-[var(--rose-500)] shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-[13px] font-semibold text-[var(--rose-900)] leading-snug mb-1.5">
+                      You came from Mama Guard Assistant. Complete a structured check-in to organize your symptoms and prepare clearer information for your healthcare provider.
+                    </p>
+                    <p className="text-[11px] text-[var(--rose-700)] leading-tight font-medium">
+                      Check-in provides supportive risk guidance only. It does not diagnose or replace medical care.
+                    </p>
+                  </div>
+                </motion.div>
+              )}
               <div className="mb-6">
                 <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
                   How are you feeling?
@@ -814,5 +833,13 @@ export default function CheckInPage() {
 
       <BottomNav />
     </div>
+  );
+}
+
+export default function CheckInPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center"><Activity className="text-[var(--rose-500)] animate-pulse" size={32} /></div>}>
+      <CheckInContent />
+    </Suspense>
   );
 }
