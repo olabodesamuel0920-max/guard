@@ -108,12 +108,12 @@ function generateResponse(input: string): {
     };
   }
 
-  if (lower.includes("normal")) return { content: `It's natural to wonder what's normal. Many changes are typical, but some require professional review.\n\n**Common normal symptoms:**\n• Mild stretching sensations\n• Increased fatigue\n• Breast tenderness\n• Mild morning sickness\n\n**However, contact your provider if:**\n• Symptoms are severe or worsening\n• You have bleeding or fluid leakage\n• You have concerns about baby's movement\n• You experience severe headache or vision changes\n\nAlways consult your healthcare provider for medical advice.`, type: "text" };
+  if (lower.includes("normal")) return { content: `It's natural to wonder what's normal. Many changes are typical, but some require professional review.\n\nCommon normal symptoms:\n• Mild stretching sensations\n• Increased fatigue\n• Breast tenderness\n• Mild morning sickness\n\nHowever, contact your provider if:\n• Symptoms are severe or worsening\n• You have bleeding or fluid leakage\n• You have concerns about baby's movement\n• You experience severe headache or vision changes\n\nAlways consult your healthcare provider for medical advice.`, type: "text" };
   
-  if (lower.includes("baby") && lower.includes("week")) return { content: `At this stage, your baby is reaching many milestones! \n\n**Highlights:**\n• Major organs are maturing\n• Hearing development is progressing\n• Movement is becoming more rhythmic\n\n**Health Reminders:**\n• Continue prenatal vitamins\n• Maintain high hydration\n• Monitor daily kick counts if in the third trimester\n\nPlease share any concerns about your baby's growth with your provider.`, type: "text" };
+  if (lower.includes("baby") && lower.includes("week")) return { content: `At this stage, your baby is reaching many milestones! \n\nHighlights:\n• Major organs are maturing\n• Hearing development is progressing\n• Movement is becoming more rhythmic\n\nHealth Reminders:\n• Continue prenatal vitamins\n• Maintain high hydration\n• Monitor daily kick counts if in the third trimester\n\nPlease share any concerns about your baby's growth with your provider.`, type: "text" };
 
   return { 
-    content: `Thank you for sharing. I'm here to provide supportive prototype guidance.\n\n**Important:**\n• I am a prototype, not a medical professional.\n• For any concerns or urgent symptoms, contact your provider immediately.\n• This guidance is for educational purposes only.\n\nHow else can I support you today?`, 
+    content: `Thank you for sharing. I'm here to provide supportive prototype guidance.\n\nImportant:\n• I am a prototype, not a medical professional.\n• For any concerns or urgent symptoms, contact your provider immediately.\n• This guidance is for educational purposes only.\n\nHow else can I support you today?`, 
     type: "text" 
   };
 }
@@ -222,8 +222,8 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--rose-400)] to-[var(--rose-600)] flex items-center justify-center"><Sparkles size={18} className="text-white" /></div>
             <div>
-              <div className="font-semibold text-[var(--text-primary)] text-sm leading-tight">Mama Guard Assistant</div>
-              <div className="text-[11px] text-[var(--text-tertiary)] flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[var(--sage-500)] inline-block" />Supportive guidance · Not a diagnosis</div>
+              <div className="font-semibold text-[var(--text-primary)] text-sm leading-tight">Supportive pregnancy guidance</div>
+              <div className="text-[11px] text-[var(--text-tertiary)] flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[var(--sage-500)] inline-block" />Supportive guidance only · Not a diagnosis</div>
             </div>
           </div>
         </div>
@@ -262,7 +262,7 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
                   if (action.action === "checkin") router.push("/checkin"); 
                   if (action.action === "learn") router.push("/learn"); 
                   if (action.action === "summary") handleProviderSummary();
-                  if (action.action === "er") alert("Emergency Notice: Please contact your local emergency services (e.g. 911) or go to the nearest hospital immediately. Mama Guard does not dispatch emergency services.");
+                  if (action.action === "er") alert("Emergency Notice: Please contact your local emergency services or go to the nearest hospital immediately. Mama Guard does not dispatch emergency services.");
                   if (action.action === "call") { const onboarding = safeStorage.get(STORAGE_KEYS.ONBOARDING, { providerPhone: "" }); if (onboarding.providerPhone) { window.location.href = `tel:${onboarding.providerPhone}`; } else { alert("Please add your provider's phone number in your profile first."); } } 
                 }} className={`flex items-center gap-2 px-3 py-3 rounded-xl border text-[11px] font-bold uppercase tracking-wider transition-all active:scale-[0.98] ${action.action === "er" ? "bg-rose-600 text-white border-rose-700" : "bg-white border-[var(--warm-200)] text-[var(--text-primary)] hover:bg-[var(--warm-50)]"}`}><ActionIcon size={14} className={action.action === "er" ? "text-white" : "text-[var(--rose-500)]"} />{action.label}</button>; })}</div>}
               </div>
