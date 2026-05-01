@@ -673,7 +673,7 @@ function CheckInContent() {
 
                   <div>
                     <span
-                      className={`text-xs font-bold uppercase tracking-widest ${
+                      className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-1 block ${
                         riskLevel === "high"
                           ? "text-rose-600"
                           : riskLevel === "medium"
@@ -681,7 +681,7 @@ function CheckInContent() {
                           : "text-emerald-600"
                       }`}
                     >
-                      {riskLevel === "high" ? "Urgent Action Recommended" : riskLevel === "medium" ? "Close Monitoring Advised" : "No Concerns Detected"}
+                      {riskLevel === "high" ? "Urgent Action Recommended" : riskLevel === "medium" ? "Monitoring Advised" : "No Concerns Detected"}
                     </span>
 
                     <h2 className="text-xl font-bold text-[var(--text-primary)]">
@@ -694,38 +694,48 @@ function CheckInContent() {
                   </div>
                 </div>
 
-                <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 mb-4 border border-white/40">
-                  <h3 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">Summary of Symptoms</h3>
-                  <div className="space-y-2">
+                <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-5 mb-5 border border-white/40 shadow-sm">
+                  <h3 className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-[0.15em] mb-3 border-b border-black/5 pb-2">Check-in Summary</h3>
+                  <div className="space-y-3">
                     {selectedSymptoms.map((id) => {
                       const symptom = symptoms.find((item) => item.id === id);
                       const answer = followUpAnswers[id];
                       return symptom ? (
-                        <div key={id} className="flex items-center justify-between text-sm">
-                          <span className="text-[var(--text-secondary)] font-medium">{symptom.label}</span>
-                          {answer && <span className="text-[var(--text-primary)] font-bold">{answer}</span>}
+                        <div key={id} className="flex flex-col gap-1">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-[var(--text-primary)] font-bold">{symptom.label}</span>
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${symptom.severity === 'high' ? 'bg-rose-100 text-rose-700' : 'bg-blue-50 text-blue-700'}`}>
+                              {symptom.severity === 'high' ? 'Important' : 'Normal'}
+                            </span>
+                          </div>
+                          {answer && (
+                            <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] bg-black/5 rounded-lg px-2 py-1.5">
+                              <Sparkles size={12} className="text-[var(--rose-500)]" />
+                              <span>{answer}</span>
+                            </div>
+                          )}
                         </div>
                       ) : null;
                     })}
                     {selectedSymptoms.length === 0 && (
-                      <div className="text-sm text-[var(--text-tertiary)] italic">No symptoms reported today.</div>
+                      <div className="text-sm text-[var(--text-tertiary)] italic py-2">No concerning symptoms reported today.</div>
                     )}
                   </div>
                 </div>
 
-                <p
-                  className={`text-sm leading-relaxed mb-4 ${
-                    riskLevel === "high"
-                      ? "text-rose-800 font-medium"
-                      : riskLevel === "medium"
-                      ? "text-amber-800"
-                      : "text-emerald-800"
-                  }`}
-                >
-                  {getRiskAdvice(riskLevel, week)}
-                </p>
+                <div className={`rounded-2xl p-4 mb-2 ${
+                  riskLevel === "high" ? "bg-rose-100/50" : riskLevel === "medium" ? "bg-amber-100/50" : "bg-emerald-100/50"
+                }`}>
+                  <p className={`text-sm leading-relaxed font-semibold ${
+                    riskLevel === "high" ? "text-rose-900" : riskLevel === "medium" ? "text-amber-900" : "text-emerald-900"
+                  }`}>
+                    {getRiskAdvice(riskLevel, week)}
+                  </p>
+                </div>
 
-                <MedicalDisclaimer variant={riskLevel === "high" ? "emergency" : "normal"} className="mt-6 mb-0 bg-white/50" />
+                <p className="text-[10px] text-[var(--text-muted)] italic leading-tight mt-4">
+                  Mama Guard provides supportive risk guidance only. It does not diagnose or replace professional medical care.
+                </p>
               </div>
 
               <div className="space-y-3 mb-5">
@@ -771,20 +781,41 @@ function CheckInContent() {
                 <button
                   type="button"
                   onClick={() => {
-                    const summary = `Mama Guard Check-in Summary\n--------------------------\nDate: ${new Date().toLocaleDateString()}\nStatus: ${riskLevel === "high" ? "URGENT ACTION RECOMMENDED" : riskLevel === "medium" ? "MONITORING ADVISED" : "ROUTINE"}\n\nSymptoms Reported:\n${selectedSymptoms.map(id => {
+                    const statusText = riskLevel === "high" ? "URGENT ACTION RECOMMENDED" : riskLevel === "medium" ? "MONITORING ADVISED" : "ROUTINE MONITORING";
+                    const adviceText = getRiskAdvice(riskLevel, week);
+                    
+                    const summary = `Mama Guard Check-in Summary\n--------------------------\nDate: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}\nGestational Week: ${week}\nGuidance Level: ${statusText}\n\nSymptoms Reported:\n${selectedSymptoms.map(id => {
                       const s = symptoms.find(item => item.id === id);
-                      return `• ${s ? s.label : id}${followUpAnswers[id] ? `: ${followUpAnswers[id]}` : ""}`;
-                    }).join("\n")}\n\nClinical Guidance:\n${riskLevel === "high" ? "Seek immediate medical evaluation from your healthcare provider or emergency department." : riskLevel === "medium" ? "Monitor symptoms closely and consult your healthcare provider for guidance." : "Continue standard prenatal care and routine check-ins."}\n\n--------------------------\nNote: This is a prototype summary generated by Mama Guard. It is not a medical diagnosis or clinical record.`;
+                      const answer = followUpAnswers[id];
+                      return `• ${s ? s.label : id}${answer ? ` (${answer})` : ""}`;
+                    }).join("\n") || "No symptoms reported"}\n\nSuggested Next Steps:\n${adviceText}\n\n--------------------------\nNote: This is a prototype summary generated by Mama Guard for supportive risk guidance only. It is not a medical diagnosis or clinical record.`;
                     
                     if (navigator.clipboard) {
-                      navigator.clipboard.writeText(summary).then(() => alert("Summary copied to clipboard!")).catch(() => alert("Failed to copy. Please take a screenshot."));
+                      navigator.clipboard.writeText(summary).then(() => alert("Summary copied! You can now paste this to your provider.")).catch(() => alert("Failed to copy. Please take a screenshot."));
                     } else {
                       alert("Clipboard not available. Please take a screenshot of this result.");
                     }
                   }}
-                  className="w-full py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-medium active:scale-[0.98] flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-2xl bg-white border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-bold active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm"
                 >
-                  <Share2 size={18} /> Copy Summary for Provider
+                  <Share2 size={18} className="text-[var(--rose-500)]" /> Copy Summary for Provider
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mb-8">
+                <button
+                  type="button"
+                  onClick={() => router.push("/home")}
+                  className="py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-semibold text-sm active:scale-[0.95] flex items-center justify-center gap-2"
+                >
+                  <ChevronLeft size={16} /> Dashboard
+                </button>
+                <button
+                  type="button"
+                  onClick={resetCheckIn}
+                  className="py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-semibold text-sm active:scale-[0.95] flex items-center justify-center gap-2"
+                >
+                  <RotateCcw size={16} /> New Check-in
                 </button>
               </div>
 

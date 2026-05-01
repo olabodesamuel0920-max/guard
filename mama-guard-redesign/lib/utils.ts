@@ -62,11 +62,11 @@ export type RiskLevel = "low" | "medium" | "high";
 
 export function getRiskAdvice(level: RiskLevel, week: number): string {
   if (level === "high") {
-    if (week >= 37) return "URGENT: You're full-term. These symptoms require immediate medical evaluation. Contact your provider or go to the nearest emergency care center NOW.";
-    if (week >= 28) return "URGENT: In the third trimester, these symptoms are serious. Please seek medical attention immediately.";
-    if (week >= 14) return "IMPORTANT: Please contact your healthcare provider or visit an emergency care center today for guidance.";
-    return "IMPORTANT: Early pregnancy symptoms like these require prompt medical evaluation. Please contact your provider now.";
+    if (week >= 37) return "URGENT ACTION RECOMMENDED: You are at full-term. These symptoms require immediate medical evaluation. Contact your healthcare provider now or go to the nearest emergency care center immediately if symptoms are severe.";
+    if (week >= 28) return "URGENT ACTION RECOMMENDED: In the third trimester, these symptoms are serious and require prompt medical evaluation. Please contact your healthcare provider or visit an emergency care center immediately.";
+    if (week >= 14) return "IMPORTANT GUIDANCE: These symptoms in the second trimester require prompt medical evaluation. Please contact your healthcare provider or visit an emergency care center today for guidance.";
+    return "IMPORTANT GUIDANCE: Early pregnancy symptoms like these require prompt medical evaluation. Please contact your healthcare provider today for guidance.";
   }
-  if (level === "medium") return "It's a good idea to discuss these with your healthcare provider at your next visit or call their advice line.";
-  return "These are common symptoms. Rest, stay hydrated, and continue monitoring. Check in again if anything changes.";
+  if (level === "medium") return "MONITORING ADVISED: It is recommended to discuss these symptoms with your healthcare provider. Contact them if symptoms continue, worsen, or if you feel concerned.";
+  return "ROUTINE MONITORING: These are common symptoms. Continue monitoring, stay hydrated, and refer to your Safety Plan. Check in again if anything changes.";
 }
