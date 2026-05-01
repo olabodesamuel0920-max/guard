@@ -3,24 +3,33 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, Send, Loader2, Heart, Baby, Activity, Shield, AlertTriangle, CheckCircle2, Stethoscope, BookOpen, Phone, X } from "lucide-react";
+import { ArrowLeft, Sparkles, Send, Loader2, Heart, Baby, Activity, Shield, AlertTriangle, CheckCircle2, Stethoscope, BookOpen, Phone, X, FileText } from "lucide-react";
 import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
 
 interface Message { id: string; role: "user" | "assistant"; content: string; type?: "text" | "action" | "warning"; actions?: { label: string; icon: React.ElementType; action: string }[]; }
 
+interface UserProfile {
+  name: string;
+  status: "pregnant" | "postpartum";
+  dueDate: string;
+  providerPhone?: string;
+  nearestHospital?: string;
+}
+
 const quickPrompts = [
-  { label: "Is this normal?", icon: Heart, prompt: "I have mild cramping at 20 weeks. Is this normal?" },
-  { label: "Check symptoms", icon: Activity, prompt: "Help me check my symptoms" },
-  { label: "Baby development", icon: Baby, prompt: "What's happening with my baby this week?" },
-  { label: "Safety advice", icon: Shield, prompt: "What should I watch out for in my third trimester?" },
+  { label: "Severe headache", icon: AlertTriangle, prompt: "I have a severe headache" },
+  { label: "Baby moving less", icon: Baby, prompt: "My baby is moving less" },
+  { label: "Feeling dizzy", icon: Activity, prompt: "I feel dizzy" },
+  { label: "Provider summary", icon: FileText, prompt: "Help me prepare a provider summary" },
+  { label: "Warning signs", icon: Shield, prompt: "What warning signs should I watch for?" },
 ];
 
 const suggestedActions = [
   { label: "Call Provider", icon: Phone, action: "call" },
   { label: "Find ER", icon: AlertTriangle, action: "er" },
+  { label: "Provider Summary", icon: FileText, action: "summary" },
   { label: "Read Article", icon: BookOpen, action: "learn" },
-  { label: "Log Symptom", icon: Stethoscope, action: "checkin" },
 ];
 
 function generateResponse(input: string): { content: string; type: "text" | "action" | "warning"; actions?: typeof suggestedActions } {
@@ -28,42 +37,61 @@ function generateResponse(input: string): { content: string; type: "text" | "act
 
   // Escalation for critical symptoms
   const criticalSymptoms = [
-    { keywords: ["bleed", "hemorrhage", "leaking", "fluid"], label: "Bleeding or Leaking" },
-    { keywords: ["headache", "migraine"], label: "Severe Headache" },
-    { keywords: ["vision", "blur", "spots", "flashes"], label: "Vision Changes" },
-    { keywords: ["movement", "kick", "baby not moving"], label: "Decreased Movement" },
-    { keywords: ["breath", "shortness of breath", "chest pain", "heart racing", "fast-beating"], label: "Chest or Breathing Issues" },
-    { keywords: ["fever", "temperature", "chills"], label: "Fever" },
-    { keywords: ["abdominal pain", "stomach pain", "cramp", "severe pain"], label: "Severe Pain" },
-    { keywords: ["nausea", "vomiting", "throw up"], label: "Severe Nausea" },
-    { keywords: ["dizzy", "faint", "passed out"], label: "Dizziness" },
-    { keywords: ["harm", "suicide", "hurt myself", "hurt baby"], label: "Self-Harm Thoughts" },
+    { keywords: ["bleed", "hemorrhage", "leaking", "fluid", "gush"], label: "Bleeding or Leaking" },
+    { keywords: ["headache", "migraine", "worst headache"], label: "Severe Headache" },
+    { keywords: ["vision", "blur", "spots", "flashes", "vision changes"], label: "Vision Changes" },
+    { keywords: ["swelling", "puffy", "swollen hands", "swollen face"], label: "Severe Swelling" },
+    { keywords: ["fever", "100.4", "38", "temperature"], label: "Fever" },
+    { keywords: ["movement", "kick", "baby not moving", "less movement", "reduced movement"], label: "Reduced Baby Movement" },
+    { keywords: ["breath", "shortness of breath", "chest pain", "heart racing", "fast heartbeat", "racing heart", "trouble breathing"], label: "Chest or Breathing Issues" },
+    { keywords: ["abdominal pain", "stomach pain", "intense cramp", "severe pain"], label: "Severe Abdominal Pain" },
+    { keywords: ["nausea", "vomiting", "throw up", "cannot keep food down"], label: "Severe Nausea/Vomiting" },
+    { keywords: ["dizzy", "faint", "passed out", "seizure", "fit", "twitching"], label: "Dizziness or Seizures" },
+    { keywords: ["harm", "suicide", "hurt myself", "hurt baby", "self-harm"], label: "Mental Health Urgent Concerns" },
+    { keywords: ["tired", "exhausted", "extreme tiredness", "fatigue"], label: "Extreme Fatigue" },
   ];
 
   const matchedCritical = criticalSymptoms.find(s => s.keywords.some(k => lower.includes(k)));
 
   if (matchedCritical) {
-    let specificAdvice = "";
+    let whyItMatters = "These symptoms during pregnancy or postpartum can indicate conditions that need immediate clinical attention to ensure the safety of you and your baby.";
+    let nextStep = "Contact your healthcare provider immediately or go to the nearest emergency center.";
+    let whatToTell = `Tell them: "I am having ${matchedCritical.label} and I'm concerned."`;
+
     if (lower.includes("bleed") || lower.includes("leak")) {
-      specificAdvice = "Vaginal bleeding or leaking fluid during pregnancy warrants immediate clinical evaluation.";
-    } else if (lower.includes("headache") || lower.includes("vision")) {
-      specificAdvice = "Severe headaches and vision changes can be signs of preeclampsia. Please contact your provider or seek urgent care immediately.";
+      whyItMatters = "Vaginal bleeding or leaking fluid could indicate issues with the placenta or premature rupture of membranes.";
+    } else if (lower.includes("headache") || lower.includes("vision") || lower.includes("swell")) {
+      whyItMatters = "Severe headaches, vision changes, or facial swelling can be signs of preeclampsia (high blood pressure in pregnancy).";
     } else if (lower.includes("movement")) {
-      specificAdvice = "A significant decrease in your baby's movement patterns requires prompt medical evaluation.";
+      whyItMatters = "A significant decrease in movement can be a sign that the baby is in distress.";
     } else if (lower.includes("breath") || lower.includes("chest") || lower.includes("heart")) {
-      specificAdvice = "Chest pain, a racing heart, or trouble breathing are serious signs that require immediate medical attention.";
+      whyItMatters = "These can be signs of heart or lung issues that require immediate rule-out in an emergency setting.";
     } else if (lower.includes("harm")) {
-      specificAdvice = "If you have thoughts of harming yourself or your baby, please contact a crisis line or your healthcare provider immediately. You are not alone and help is available.";
+      whyItMatters = "Your mental health is just as important as your physical health. Help is available and you are not alone.";
+      nextStep = "Contact a crisis line, your provider, or go to the ER immediately.";
+      whatToTell = "Tell them honestly how you are feeling so they can support you.";
     } else if (lower.includes("fever")) {
-      specificAdvice = "A fever of 100.4°F (38°C) or higher during pregnancy should be reported to your provider promptly.";
+      whyItMatters = "A high fever can indicate an infection that may affect you or the baby.";
     }
 
     return { 
-      content: `**Urgent Notice:** You mentioned concerns related to ${matchedCritical.label}. 
+      content: `### Urgent Notice: ${matchedCritical.label}
+This may need urgent medical attention. Mama Guard cannot diagnose this.
 
-${specificAdvice || "Symptoms like this during pregnancy require prompt medical evaluation to ensure the safety of you and your baby."}
+**What you shared:**
+You mentioned concerns related to ${matchedCritical.label.toLowerCase()}.
 
-**Please contact your healthcare provider immediately or go to the nearest emergency center.** This is a prototype and not a medical diagnosis.`, 
+**Why it matters:**
+${whyItMatters}
+
+**Suggested next step:**
+${nextStep}
+
+**What to tell your provider:**
+${whatToTell}
+
+**Safety note:**
+Always trust your maternal intuition. If something feels wrong, seek care regardless of symptoms.`, 
       type: "warning", 
       actions: suggestedActions 
     };
@@ -88,9 +116,69 @@ export default function AIPage() {
 
   useEffect(() => { scrollRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
+  const handleProviderSummary = () => {
+    const onboarding = safeStorage.get<UserProfile | null>(STORAGE_KEYS.ONBOARDING, null);
+    const checkins = safeStorage.get<any[]>(STORAGE_KEYS.CHECKINS, []);
+    const latestCheckin = checkins.length > 0 ? checkins[checkins.length - 1] : null;
+    
+    const summary = `
+Mama Guard - Provider Care Summary
+----------------------------------
+Generated: ${new Date().toLocaleString()}
+
+Patient: ${onboarding?.name || "User"}
+Status: ${onboarding?.status === "pregnant" ? "Pregnant" : onboarding?.status === "postpartum" ? "Postpartum" : "Not set"}
+Details: ${onboarding?.dueDate ? "Due: " + onboarding.dueDate : "N/A"}
+
+Latest Check-in:
+- Date: ${latestCheckin ? new Date(latestCheckin.date).toLocaleDateString() : "None"}
+- Risk: ${latestCheckin ? latestCheckin.risk.toUpperCase() : "N/A"}
+- Symptoms: ${latestCheckin ? latestCheckin.symptoms.join(", ") : "None"}
+
+Current Concerns logged in Assistant:
+"${input || messages[messages.length-1]?.content || "Current session query"}"
+
+Disclaimer:
+This is supportive guidance from Mama Guard, not a medical diagnosis.
+----------------------------------
+    `.trim();
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(summary)
+        .then(() => alert("Provider summary copied to clipboard! You can now paste it into a message or email to your provider."))
+        .catch(() => alert("Could not copy automatically. You can find your history in the Profile page to share."));
+    } else {
+      alert("Summary prepared (Clipboard not available):\n\n" + summary);
+    }
+  };
+
   const handleSend = async (text?: string) => {
     const content = text || input.trim();
     if (!content || isLoading) return;
+
+    if (content.toLowerCase().includes("summary") || content.toLowerCase().includes("report")) {
+      const userMsg: Message = { id: Date.now().toString(), role: "user", content };
+      setMessages((prev) => [...prev, userMsg]);
+      setInput("");
+      setIsLoading(true);
+      setTimeout(() => {
+        handleProviderSummary();
+        const assistantMsg: Message = { 
+          id: (Date.now() + 1).toString(), 
+          role: "assistant", 
+          content: "I've prepared a care summary based on your profile and latest check-ins. It has been copied to your clipboard. You can share this with your healthcare provider.", 
+          type: "text",
+          actions: [
+            { label: "Copy Again", icon: FileText, action: "summary" },
+            { label: "Call Provider", icon: Phone, action: "call" }
+          ]
+        };
+        setMessages((prev) => [...prev, assistantMsg]);
+        setIsLoading(false);
+      }, 800);
+      return;
+    }
+
     const userMsg: Message = { id: Date.now().toString(), role: "user", content };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
@@ -112,7 +200,7 @@ export default function AIPage() {
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--rose-400)] to-[var(--rose-600)] flex items-center justify-center"><Sparkles size={18} className="text-white" /></div>
             <div>
               <div className="font-semibold text-[var(--text-primary)] text-sm leading-tight">Mama Guard Assistant</div>
-              <div className="text-[11px] text-[var(--text-tertiary)] flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[var(--sage-500)] inline-block" />Supportive pregnancy guidance</div>
+              <div className="text-[11px] text-[var(--text-tertiary)] flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[var(--sage-500)] inline-block" />Supportive guidance · Not a diagnosis</div>
             </div>
           </div>
         </div>
@@ -126,12 +214,13 @@ export default function AIPage() {
                 {msg.role === "assistant" && <div className="flex items-center gap-1.5 mb-2"><Sparkles size={12} className={msg.type === "warning" ? "text-amber-500" : "text-[var(--rose-500)]"} /><span className={`text-[10px] font-semibold uppercase tracking-wider ${msg.type === "warning" ? "text-amber-600" : "text-[var(--rose-600)]"}`}>{msg.type === "warning" ? "Important" : "Assistant"}</span></div>}
                 <div className={`text-sm whitespace-pre-wrap leading-relaxed ${msg.role === "user" ? "text-white" : msg.type === "warning" ? "text-amber-900" : "text-[var(--text-secondary)]"}`}>{msg.content}</div>
                 {msg.role === "assistant" && msg.id === "welcome" && <MedicalDisclaimer className="mt-4 mb-0" />}
-                {msg.actions && <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[var(--warm-200)]">{msg.actions.map((action) => { const ActionIcon = action.icon; return <button key={action.action} onClick={() => { 
+                {msg.actions && <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-[var(--warm-200)]">{msg.actions.map((action) => { const ActionIcon = action.icon; return <button key={action.action} onClick={() => { 
                   if (action.action === "checkin") router.push("/checkin"); 
                   if (action.action === "learn") router.push("/learn"); 
-                  if (action.action === "er") alert("Prototype Notice: In a real version, this would show nearby emergency centers. For now, please contact your local emergency service or nearest hospital.");
+                  if (action.action === "summary") handleProviderSummary();
+                  if (action.action === "er") alert("Emergency Notice: Please contact your local emergency services (e.g. 911) or go to the nearest hospital immediately. Mama Guard does not dispatch emergency services.");
                   if (action.action === "call") { const onboarding = safeStorage.get(STORAGE_KEYS.ONBOARDING, { providerPhone: "" }); if (onboarding.providerPhone) { window.location.href = `tel:${onboarding.providerPhone}`; } else { alert("Please add your provider's phone number in your profile first."); } } 
-                }} className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white border border-[var(--warm-200)] text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--warm-50)] transition-colors"><ActionIcon size={14} className="text-[var(--rose-500)]" />{action.label}</button>; })}</div>}
+                }} className={`flex items-center gap-2 px-3 py-3 rounded-xl border text-[11px] font-bold uppercase tracking-wider transition-all active:scale-[0.98] ${action.action === "er" ? "bg-rose-600 text-white border-rose-700" : "bg-white border-[var(--warm-200)] text-[var(--text-primary)] hover:bg-[var(--warm-50)]"}`}><ActionIcon size={14} className={action.action === "er" ? "text-white" : "text-[var(--rose-500)]"} />{action.label}</button>; })}</div>}
               </div>
             </motion.div>
           ))}
