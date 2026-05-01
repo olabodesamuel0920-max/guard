@@ -189,7 +189,7 @@ const symptoms: Symptom[] = [
   {
     id: "breathing",
     label: "Chest or Breathing",
-    description: "Pain, racing heart, or SOB",
+    description: "Pain, racing heart, or shortness of breath",
     icon: Stethoscope,
     severity: "high",
   },
@@ -227,6 +227,13 @@ const symptoms: Symptom[] = [
     description: "Overwhelming or fainting",
     icon: Clock,
     severity: "medium",
+  },
+  {
+    id: "self_harm",
+    label: "Thoughts of self-harm",
+    description: "Thoughts of harming yourself or your baby",
+    icon: Brain,
+    severity: "high",
   },
 ];
 
