@@ -242,6 +242,12 @@ export default function ProfilePage() {
       title: "Support",
       items: [
         {
+          icon: Info,
+          label: "About Mama Guard",
+          desc: "Product info & mission",
+          action: () => router.push("/about"),
+        },
+        {
           icon: HelpCircle,
           label: "Help Center",
           desc: "FAQs and support",
