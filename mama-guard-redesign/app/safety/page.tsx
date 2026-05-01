@@ -15,13 +15,21 @@ import {
   ChevronRight,
   LifeBuoy,
   Stethoscope,
-  HeartPulse
+  HeartPulse,
+  Shield,
+  Heart,
+  Sparkles,
+  Activity,
+  User,
+  ArrowRight
 } from "lucide-react";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
 
 interface UserData {
+  name?: string;
   providerPhone?: string;
   nearestHospital?: string;
+  emergencyContact?: string;
 }
 
 export default function SafetyPlanPage() {
@@ -68,105 +76,145 @@ export default function SafetyPlanPage() {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-3xl bg-gradient-to-br from-rose-500 to-rose-600 p-6 mb-6 text-white shadow-xl shadow-rose-500/20"
+          className="mb-8"
         >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-              <ShieldAlert size={24} />
-            </div>
-            <h2 className="text-xl font-bold">Urgent Action</h2>
+          <div className="flex items-center gap-2 mb-2 text-[var(--rose-600)]">
+            <Shield size={16} />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Safety Protocol</span>
           </div>
-          <p className="text-sm font-medium text-rose-50 leading-relaxed mb-4">
-            If you experience any red-flag symptoms, please contact your care team or local emergency services immediately.
+          <h2 className="text-3xl font-extrabold text-[var(--text-primary)] mb-3 leading-tight">Your Safety Plan</h2>
+          <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-4">
+            Keep your provider details, nearest hospital, warning signs, and emergency guidance in one easy-to-find place.
           </p>
-          <div className="bg-white/10 rounded-2xl p-4 border border-white/20">
-            <p className="text-[11px] font-bold uppercase tracking-widest mb-1 opacity-80">Prototype Notice</p>
-            <p className="text-xs leading-tight opacity-90">
-              Mama Guard does not contact emergency services. Emergency numbers vary by location. Always use your local emergency number or go to the nearest hospital.
+          <div className="bg-rose-50 border border-rose-100 rounded-2xl p-4">
+            <p className="text-[10px] text-rose-800 leading-tight font-medium">
+              <strong>Emergency Note:</strong> Mama Guard does not contact emergency services. If you feel unsafe or symptoms are severe, contact your healthcare provider or local emergency care immediately.
             </p>
           </div>
-        </motion.div>
-
-        <section className="mb-6">
-          <h3 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3 px-1">Your Care Team</h3>
+        </motion.div>        <section className="mb-8">
+          <div className="flex items-center justify-between mb-4 px-1">
+            <h3 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">Your Care Team</h3>
+            <button onClick={() => router.push("/profile")} className="text-[11px] font-bold text-[var(--rose-600)] flex items-center gap-1">Update Profile <ArrowRight size={12} /></button>
+          </div>
           <div className="space-y-3">
-            <div className={`bg-[var(--surface-primary)] rounded-2xl p-4 shadow-sm border transition-colors ${!userData.providerPhone ? 'border-amber-200 bg-amber-50/30' : 'border-[var(--warm-200)]'} flex items-center gap-4`}>
-              <div className="w-12 h-12 rounded-xl bg-[var(--rose-100)] flex items-center justify-center text-[var(--rose-600)]">
+            {/* Provider */}
+            <div className={`bg-[var(--surface-primary)] rounded-2xl p-4 shadow-sm border transition-colors ${!userData.providerPhone ? 'border-amber-200 bg-amber-50/40' : 'border-[var(--warm-200)]'} flex items-center gap-4`}>
+              <div className="w-12 h-12 rounded-xl bg-[var(--rose-100)] flex items-center justify-center text-[var(--rose-600)] shrink-0">
                 <Phone size={24} />
               </div>
-              <div className="flex-1">
-                <div className="text-xs text-[var(--text-tertiary)] font-medium">Provider Phone</div>
-                <div className={`font-bold ${userData.providerPhone ? 'text-[var(--text-primary)]' : 'text-amber-700 italic'}`}>
-                  {userData.providerPhone || "Not configured"}
+              <div className="flex-1 min-w-0">
+                <div className="text-[10px] text-[var(--text-tertiary)] font-bold uppercase tracking-wider mb-0.5">Primary Provider</div>
+                <div className={`font-bold truncate ${userData.providerPhone ? 'text-[var(--text-primary)]' : 'text-amber-700 italic text-sm'}`}>
+                  {userData.providerPhone || "Add provider in Profile"}
                 </div>
               </div>
-              {userData.providerPhone ? (
-                <a 
-                  href={`tel:${userData.providerPhone}`}
-                  className="px-4 py-2 rounded-xl bg-[var(--rose-500)] text-white text-xs font-bold active:scale-95 transition-all shadow-md shadow-rose-500/20"
-                >
-                  Call Now
+              {userData.providerPhone && (
+                <a href={`tel:${userData.providerPhone}`} className="w-10 h-10 rounded-full bg-[var(--rose-500)] text-white flex items-center justify-center shadow-lg shadow-rose-500/20 active:scale-90 transition-all">
+                  <Phone size={18} />
                 </a>
-              ) : (
-                <button 
-                  onClick={() => router.push("/profile")}
-                  className="px-3 py-2 rounded-xl bg-amber-100 text-amber-700 font-bold text-[11px] flex items-center gap-1 active:scale-95 transition-all"
-                >
-                  Add in Profile <ChevronRight size={14} />
-                </button>
               )}
             </div>
 
-            <div className={`bg-[var(--surface-primary)] rounded-2xl p-4 shadow-sm border transition-colors ${!userData.nearestHospital ? 'border-amber-200 bg-amber-50/30' : 'border-[var(--warm-200)]'} flex items-center gap-4`}>
-              <div className="w-12 h-12 rounded-xl bg-[var(--sage-100)] flex items-center justify-center text-[var(--sage-600)]">
+            {/* Hospital */}
+            <div className={`bg-[var(--surface-primary)] rounded-2xl p-4 shadow-sm border transition-colors ${!userData.nearestHospital ? 'border-amber-200 bg-amber-50/40' : 'border-[var(--warm-200)]'} flex items-center gap-4`}>
+              <div className="w-12 h-12 rounded-xl bg-[var(--sage-100)] flex items-center justify-center text-[var(--sage-600)] shrink-0">
                 <MapPin size={24} />
               </div>
-              <div className="flex-1">
-                <div className="text-xs text-[var(--text-tertiary)] font-medium">Nearest Hospital</div>
-                <div className={`font-bold ${userData.nearestHospital ? 'text-[var(--text-primary)]' : 'text-amber-700 italic'}`}>
-                  {userData.nearestHospital || "Not configured"}
+              <div className="flex-1 min-w-0">
+                <div className="text-[10px] text-[var(--text-tertiary)] font-bold uppercase tracking-wider mb-0.5">Nearest Hospital</div>
+                <div className={`font-bold truncate ${userData.nearestHospital ? 'text-[var(--text-primary)]' : 'text-amber-700 italic text-sm'}`}>
+                  {userData.nearestHospital || "Add nearest hospital in Profile"}
                 </div>
               </div>
-              <button 
-                onClick={() => router.push("/profile")}
-                className={`flex items-center gap-1 font-bold text-[11px] px-3 py-2 rounded-xl transition-all active:scale-95 ${userData.nearestHospital ? 'text-[var(--sage-600)] bg-[var(--sage-100)]' : 'text-amber-700 bg-amber-100'}`}
-              >
-                {userData.nearestHospital ? 'Update' : 'Add in Profile'} <ChevronRight size={14} />
-              </button>
+            </div>
+
+            {/* Emergency Contact */}
+            <div className={`bg-[var(--surface-primary)] rounded-2xl p-4 shadow-sm border transition-colors ${!userData.emergencyContact ? 'border-amber-200 bg-amber-50/40' : 'border-[var(--warm-200)]'} flex items-center gap-4`}>
+              <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                <Heart size={24} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[10px] text-[var(--text-tertiary)] font-bold uppercase tracking-wider mb-0.5">Emergency Contact</div>
+                <div className={`font-bold truncate ${userData.emergencyContact ? 'text-[var(--text-primary)]' : 'text-amber-700 italic text-sm'}`}>
+                  {userData.emergencyContact || "Add emergency contact in Profile"}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="mb-6">
-          <h3 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3 px-1">Red Flag Symptoms</h3>
-          <div className="bg-[var(--surface-primary)] rounded-2xl overflow-hidden shadow-sm border border-[var(--warm-200)]">
-            {emergencySigns.map((sign, i) => (
-              <div 
-                key={i} 
-                className={`flex items-start gap-3 p-4 ${i !== emergencySigns.length - 1 ? 'border-b border-[var(--warm-100)]' : ''}`}
-              >
-                <div className="mt-0.5 w-1.5 h-1.5 rounded-full bg-rose-400 flex-shrink-0" />
-                <span className="text-sm text-[var(--text-secondary)] leading-tight">{sign}</span>
+        <section className="mb-8">
+          <h3 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3 px-1">Warning Signs to Watch For</h3>
+          <div className="bg-[var(--surface-primary)] rounded-3xl overflow-hidden shadow-sm border border-[var(--warm-200)] divide-y divide-[var(--warm-100)]">
+            {[
+              "Fever 100.4°F / 38°C or higher",
+              "Heavy bleeding or fluid leaking",
+              "Severe headache that won't go away",
+              "Vision changes (blurring, spots, flashes)",
+              "Sudden swelling of face or hands",
+              "Chest pain, racing heart, or shortness of breath",
+              "Reduced baby movement",
+              "Severe abdominal pain or stomach cramps",
+              "Severe nausea or vomiting",
+              "Dizziness, fainting, or seizures",
+              "Thoughts of harming yourself or baby"
+            ].map((sign, i) => (
+              <div key={i} className="flex items-center gap-4 p-4 hover:bg-[var(--warm-50)] transition-colors">
+                <div className="w-2 h-2 rounded-full bg-rose-400 shrink-0 shadow-sm shadow-rose-200" />
+                <span className="text-sm font-medium text-[var(--text-secondary)] leading-tight">{sign}</span>
               </div>
             ))}
           </div>
         </section>
 
         <section className="mb-8">
-          <h3 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3 px-1">Support Resources</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <button className="bg-[var(--surface-primary)] p-4 rounded-2xl shadow-sm border border-[var(--warm-200)] text-left active:scale-[0.98] transition-transform">
-              <LifeBuoy size={20} className="text-[var(--rose-500)] mb-2" />
-              <div className="font-bold text-[var(--text-primary)] text-sm leading-tight">National Crisis Line</div>
-              <div className="text-[10px] text-[var(--text-tertiary)] font-bold uppercase mt-1">Prototype Placeholder</div>
-            </button>
-            <button className="bg-[var(--surface-primary)] p-4 rounded-2xl shadow-sm border border-[var(--warm-200)] text-left active:scale-[0.98] transition-transform">
-              <HeartPulse size={20} className="text-[var(--rose-500)] mb-2" />
-              <div className="font-bold text-[var(--text-primary)] text-sm leading-tight">Mental Health Hub</div>
-              <div className="text-[10px] text-[var(--text-tertiary)] font-bold uppercase mt-1">Prototype Placeholder</div>
-            </button>
+          <h3 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3 px-1">Action Guide</h3>
+          <div className="bg-white rounded-3xl p-5 border border-[var(--warm-200)] shadow-sm space-y-4">
+            <div className="flex gap-4">
+              <div className="w-8 h-8 rounded-full bg-[var(--rose-100)] text-[var(--rose-700)] flex items-center justify-center shrink-0 font-bold text-sm">1</div>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed"><span className="font-bold text-[var(--text-primary)]">Call your provider</span> if symptoms concern you or you notice any warning signs above.</p>
+            </div>
+            <div className="flex gap-4">
+              <div className="w-8 h-8 rounded-full bg-[var(--rose-100)] text-[var(--rose-700)] flex items-center justify-center shrink-0 font-bold text-sm">2</div>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed"><span className="font-bold text-[var(--text-primary)]">Go to nearest emergency care</span> if symptoms are severe, worsening, or life-threatening.</p>
+            </div>
+            <div className="flex gap-4">
+              <div className="w-8 h-8 rounded-full bg-[var(--rose-100)] text-[var(--rose-700)] flex items-center justify-center shrink-0 font-bold text-sm">3</div>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed"><span className="font-bold text-[var(--text-primary)]">Bring your provider summary</span> from the Assistant to help the care team understand your history.</p>
+            </div>
+            <div className="flex gap-4">
+              <div className="w-8 h-8 rounded-full bg-[var(--rose-100)] text-[var(--rose-700)] flex items-center justify-center shrink-0 font-bold text-sm">4</div>
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed"><span className="font-bold text-[var(--text-primary)]">Trust your maternal intuition.</span> If something feels wrong, seek care regardless of symptoms.</p>
+            </div>
           </div>
         </section>
+
+        <section className="mb-8">
+          <div className="bg-gradient-to-br from-[var(--surface-primary)] to-[var(--bg-cream)] rounded-3xl p-6 border border-[var(--warm-200)] shadow-md">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--rose-100)] to-[var(--rose-200)] flex items-center justify-center"><Sparkles size={20} className="text-[var(--rose-600)]" /></div>
+              <h4 className="font-bold text-[var(--text-primary)]">Organize your concern</h4>
+            </div>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-5">
+              Mama Guard Assistant can help prepare a provider summary or guide you into a structured check-in.
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <button onClick={() => router.push("/ai")} className="py-3 rounded-2xl bg-white border border-[var(--warm-200)] text-[var(--text-primary)] text-xs font-bold active:scale-[0.98] transition-all shadow-sm">Open Assistant</button>
+              <button onClick={() => router.push("/checkin?from=safety")} className="py-3 rounded-2xl bg-[var(--rose-500)] text-white text-xs font-bold active:scale-[0.98] transition-all shadow-md shadow-rose-500/20">Start Check-in</button>
+            </div>
+          </div>
+        </section>
+
+        <div className="mb-8 px-2 flex flex-col items-center gap-2">
+          <div className="flex items-center gap-2">
+            <Shield size={14} className="text-[var(--sage-500)]" />
+            <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Early Access Transparency</span>
+          </div>
+          <p className="text-[10px] text-[var(--text-muted)] text-center px-6 leading-tight">
+            Mama Guard stores safety plan details locally on this device.
+            This tool provides supportive guidance only and is not a medical diagnosis.
+          </p>
+        </div>
 
         <MedicalDisclaimer variant="emergency" />
       </main>
