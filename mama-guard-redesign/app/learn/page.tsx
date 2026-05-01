@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/Header";
 import { BottomNav } from "@/components/BottomNav";
 import { getGestationalWeek } from "@/lib/utils";
-import { Search, Bookmark, Clock, ChevronRight, Play, Filter, X, AlertCircle, Shield } from "lucide-react";
+import { Search, Bookmark, Clock, ChevronRight, Play, Filter, X, AlertCircle, Shield, Sparkles } from "lucide-react";
 import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
 
@@ -30,131 +30,155 @@ interface Article {
 }
 
 const categories = [
-  { id: "all", label: "All" }, { id: "nutrition", label: "Nutrition" },
-  { id: "labor", label: "Labor & Birth" }, { id: "newborn", label: "Newborn Care" },
-  { id: "mental", label: "Mental Health" }, { id: "exercise", label: "Exercise" },
-  { id: "symptoms", label: "Symptoms" },
+  { id: "all", label: "All" }, 
+  { id: "warning", label: "Warning Signs" },
+  { id: "movement", label: "Baby Movement" },
+  { id: "postpartum", label: "Postpartum" },
+  { id: "care", label: "Care Preparation" },
+  { id: "wellness", label: "Wellness" },
 ];
 
 const articles: Article[] = [
   { 
     id: "9", 
-    title: "When to seek Emergency Care", 
-    category: "symptoms", 
+    title: "Essential Warning Signs", 
+    category: "warning", 
     readTime: 3, 
     type: "article", 
     weekRelevance: [1, 44], 
     bookmarked: false, 
-    excerpt: "Critical signs that require immediate medical attention for you or your baby.", 
+    excerpt: "Learn to recognize critical signs that require immediate medical attention for you or your baby.", 
     isEmergency: true,
     content: {
-      intro: "Knowing when a symptom is an emergency is one of the most important parts of prenatal care. While many discomforts are normal, some signs require immediate intervention.",
+      intro: "Knowing when a symptom might be concerning is a vital part of maternal safety. While many discomforts are common during pregnancy, certain signs should always be evaluated by a healthcare professional.",
       keyPoints: [
-        "Trust your instincts: If something feels wrong, seek care.",
-        "Emergency departments are always available for pregnancy concerns.",
-        "Keep your provider's after-hours number saved."
+        "Trust your instincts: If something feels wrong, seek guidance.",
+        "Your healthcare provider is your best resource for individual concerns.",
+        "Knowing your 'baseline' helps you spot changes earlier."
       ],
       whenToSeekCare: [
-        "Vaginal bleeding or leaking fluid",
-        "Severe headache that won't go away",
+        "Sudden, severe headache or vision changes",
+        "Heavy bleeding or fluid leaking (gush)",
         "Fever of 100.4°F (38°C) or higher",
-        "Chest pain or fast-beating heart",
-        "Significant decrease in baby's movement",
-        "Severe nausea, vomiting, or abdominal pain",
-        "Severe swelling or pain in one limb"
+        "Significant decrease in baby's movement patterns",
+        "Chest pain or sudden shortness of breath",
+        "Severe nausea, vomiting, or persistent abdominal pain",
+        "Thoughts of harming yourself or your baby"
       ]
     }
   },
   { 
     id: "10", 
-    title: "Severe Headache & Preeclampsia", 
-    category: "symptoms", 
+    title: "Understanding Preeclampsia", 
+    category: "warning", 
     readTime: 5, 
     type: "article", 
     weekRelevance: [20, 42], 
-    bookmarked: true, 
-    excerpt: "Why a persistent headache after 20 weeks matters.",
+    bookmarked: false, 
+    excerpt: "Why monitoring blood pressure and headaches after 20 weeks is important.",
     content: {
-      intro: "A severe, persistent headache after 20 weeks of pregnancy can be a sign of Preeclampsia—a serious condition related to high blood pressure.",
+      intro: "Preeclampsia is a condition related to high blood pressure that can occur after 20 weeks of pregnancy or in the postpartum period.",
       keyPoints: [
-        "Preeclampsia can happen even if you've never had high blood pressure.",
-        "It can affect your kidneys, liver, and baby's growth.",
-        "Early detection and monitoring are key to a safe delivery."
+        "It can happen even if your blood pressure was normal before.",
+        "Monitoring for symptoms is as important as BP checks.",
+        "Early recognition helps your care team manage it safely."
       ],
       whenToSeekCare: [
-        "Headache that doesn't go away with rest or hydration",
-        "Blurred vision, seeing spots, or light sensitivity",
-        "Pain in the upper right abdomen",
-        "Sudden swelling in face or around eyes"
+        "Severe headache that doesn't improve with rest",
+        "Blurry vision, seeing spots, or sensitivity to light",
+        "Sudden swelling in your face or around your eyes",
+        "Intense pain in the upper right side of your abdomen"
       ]
     }
   },
   { 
     id: "11", 
-    title: "Monitoring Baby's Movement", 
-    category: "symptoms", 
+    title: "Tracking Baby's Movement", 
+    category: "movement", 
     readTime: 4, 
     type: "article", 
     weekRelevance: [26, 40], 
     bookmarked: false, 
-    excerpt: "How to track 'kick counts' and what to look for.",
+    excerpt: "How to monitor your baby's activity patterns and what to notice.",
     content: {
-      intro: "Feeling your baby move is a wonderful way to connect and a key indicator of their well-being.",
+      intro: "Feeling your baby move is a reassuring sign of their well-being and a special way to connect during your journey.",
       keyPoints: [
-        "Baby's movements usually become regular around 26-28 weeks.",
-        "You don't need to count every kick all day, but notice patterns.",
-        "Babies have sleep and wake cycles (often most active at night)."
+        "Movements usually become more predictable between 26-28 weeks.",
+        "Notice the times of day your baby is most active.",
+        "Babies have regular sleep cycles and wake periods."
       ],
       whenToSeekCare: [
         "You notice a significant decrease in your baby's usual activity",
-        "You can't feel 10 movements within 2 hours while resting on your side",
-        "The movements feel significantly weaker than normal"
-      ]
-    }
-  },
-  { 
-    id: "1", 
-    title: "Prenatal Nutrition Essentials", 
-    category: "nutrition", 
-    readTime: 5, 
-    type: "article", 
-    weekRelevance: [1, 40], 
-    bookmarked: false, 
-    excerpt: "Key nutrients for a healthy pregnancy and how to get them from your diet.",
-    content: {
-      intro: "Your nutritional needs increase during pregnancy to support your baby's development and your own changing body.",
-      keyPoints: [
-        "Folic acid is vital for early brain and spine development.",
-        "Iron needs double to support increased blood volume.",
-        "Calcium and Vitamin D support baby's bone growth."
-      ],
-      whenToSeekCare: [
-        "Severe nausea that prevents you from keeping any food or water down",
-        "Sudden loss of appetite or severe fatigue"
+        "You feel fewer than 10 movements over a 2-hour period while resting",
+        "The intensity of movements feels significantly weaker than your baseline"
       ]
     }
   },
   { 
     id: "12", 
-    title: "Postpartum Warning Signs", 
-    category: "symptoms", 
+    title: "The Fourth Trimester", 
+    category: "postpartum", 
     readTime: 6, 
     type: "article", 
     weekRelevance: [37, 44], 
     bookmarked: false, 
-    excerpt: "The 'Fourth Trimester' safety guide for new moms.",
+    excerpt: "Safety and recovery guidance for the first weeks after birth.",
     content: {
-      intro: "The six weeks following birth (postpartum) are a critical time for your recovery and health.",
+      intro: "The postpartum period, often called the 'fourth trimester,' is a time of major physical and emotional transition.",
       keyPoints: [
-        "Your body goes through massive hormonal and physical shifts.",
-        "Rest and hydration are just as important now as during pregnancy.",
-        "Postpartum preeclampsia can happen even after a healthy delivery."
+        "Your body needs significant time and rest to recover from birth.",
+        "Mental health is just as important as physical recovery.",
+        "Warning signs can still occur in the weeks after delivery."
       ],
       whenToSeekCare: [
-        "Heavy bleeding (soaking a pad in an hour)",
+        "Very heavy bleeding (soaking a pad in an hour)",
         "Fever of 100.4°F or higher",
-        "Severe leg pain or swelling (possible blood clot)",
-        "Feelings of extreme sadness or thoughts of harming yourself"
+        "Severe pain, redness, or swelling in one leg",
+        "Extreme sadness or anxiety that makes it hard to care for yourself"
+      ]
+    }
+  },
+  { 
+    id: "1", 
+    title: "Preparing for Your Visit", 
+    category: "care", 
+    readTime: 4, 
+    type: "article", 
+    weekRelevance: [1, 40], 
+    bookmarked: false, 
+    excerpt: "How to organize your symptoms and questions for your provider.",
+    content: {
+      intro: "Getting the most out of your prenatal visits starts with clear communication and preparation.",
+      keyPoints: [
+        "Write down questions as they come up between visits.",
+        "Organize any symptoms you've noticed by frequency and severity.",
+        "Don't hesitate to ask for clarification on anything you don't understand."
+      ],
+      whenToSeekCare: [
+        "You have questions that feel urgent or cannot wait for your next visit",
+        "You notice a new or worsening symptom that concerns you"
+      ]
+    }
+  },
+  { 
+    id: "2", 
+    title: "Gentle Wellness & Rest", 
+    category: "wellness", 
+    readTime: 5, 
+    type: "article", 
+    weekRelevance: [1, 44], 
+    bookmarked: false, 
+    excerpt: "Supporting your body through rest, hydration, and gentle movement.",
+    content: {
+      intro: "Wellness during pregnancy is about listening to your body and supporting its incredible work through simple, consistent habits.",
+      keyPoints: [
+        "Hydration supports healthy blood volume and amniotic fluid.",
+        "Rest is a productive part of your pregnancy journey.",
+        "Gentle movement can help with circulation and mood."
+      ],
+      whenToSeekCare: [
+        "You feel extreme fatigue that prevents normal daily activity",
+        "Dizziness or lightheadedness that doesn't improve with rest and fluid"
       ]
     }
   }
@@ -200,11 +224,13 @@ export default function LearnPage() {
       <Header showAssistantButton={false} />
       <main className="pt-20 pb-28 px-5">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1">Learn</h1>
-          <p className="text-sm text-[var(--text-secondary)]">Supportive guidance for your journey</p>
-          <div className="mt-4 px-3 py-1.5 rounded-lg bg-[var(--warm-100)] border border-[var(--warm-200)] inline-flex items-center gap-2">
-            <Shield size={12} className="text-[var(--text-muted)]" />
-            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Educational content only — not medical advice</span>
+          <h1 className="text-3xl font-extrabold text-[var(--text-primary)] mb-2 leading-tight">Learn warning signs & next steps</h1>
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
+            Simple pregnancy and postpartum education to help you recognize symptoms, prepare questions, and know when to contact a healthcare provider.
+          </p>
+          <div className="px-3 py-2 rounded-xl bg-[var(--bg-secondary)] border border-[var(--warm-200)] inline-flex items-center gap-2 shadow-sm">
+            <Shield size={14} className="text-[var(--rose-600)]" />
+            <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Educational content only · Not medical advice</span>
           </div>
         </div>
         <div className="relative mb-5">
@@ -223,15 +249,36 @@ export default function LearnPage() {
         <motion.div 
           initial={{ opacity: 0, y: 10 }} 
           animate={{ opacity: 1, y: 0 }} 
-          className="rounded-2xl bg-gradient-to-br from-rose-500 to-rose-600 p-4 mb-6 text-white shadow-lg shadow-rose-500/20"
+          className="rounded-3xl bg-gradient-to-br from-rose-500 to-rose-600 p-6 mb-8 text-white shadow-xl shadow-rose-500/20 relative overflow-hidden"
         >
-          <div className="flex items-center gap-2 mb-2">
-            <AlertCircle size={18} />
-            <span className="text-xs font-bold uppercase tracking-widest">Emergency Signs</span>
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+            <AlertCircle size={80} />
           </div>
-          <p className="text-xs font-medium leading-relaxed text-rose-50">
-            Bleeding, leaking fluid, fever of 100.4°F+, severe headache, chest pain, or reduced movement require urgent medical care.
-          </p>
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                <AlertCircle size={18} />
+              </div>
+              <span className="text-xs font-bold uppercase tracking-[0.2em]">Urgent Warning Signs</span>
+            </div>
+            <p className="text-sm font-medium leading-relaxed mb-5 text-rose-50">
+              Severe headache, vision changes, heavy bleeding, fever (100.4°F+), or reduced baby movement require prompt medical evaluation.
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <button 
+                onClick={() => router.push("/checkin")}
+                className="bg-white text-rose-600 py-2.5 rounded-xl text-xs font-bold shadow-sm active:scale-[0.95] transition-all"
+              >
+                Start Check-in
+              </button>
+              <button 
+                onClick={() => router.push("/safety")}
+                className="bg-rose-400/30 border border-white/30 text-white py-2.5 rounded-xl text-xs font-bold active:scale-[0.95] transition-all"
+              >
+                View Safety Plan
+              </button>
+            </div>
+          </div>
         </motion.div>
 
         {userWeek > 0 && (
@@ -240,22 +287,51 @@ export default function LearnPage() {
             <p className="text-xs text-[var(--text-secondary)]">Showing content relevant to <span className="font-semibold text-[var(--rose-700)]">Week {userWeek}</span> first</p>
           </motion.div>
         )}
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-4 mb-8">
           {sortedArticles.map((article, index) => {
             const isRelevant = article.weekRelevance && userWeek >= article.weekRelevance[0] && userWeek <= article.weekRelevance[1];
+            const categoryLabel = categories.find(c => c.id === article.category)?.label || article.category;
+            
             return (
-              <motion.button key={article.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} onClick={() => handleArticleOpen(article)} className={`text-left rounded-2xl p-4 shadow-md border active:scale-[0.98] transition-transform ${article.isEmergency ? "bg-red-50 border-red-200" : "bg-[var(--surface-primary)] border-[var(--warm-200)]/60"}`}>
-                <div className="flex items-start gap-3">
-                  <div className={`w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0 ${article.isEmergency ? "bg-red-100" : article.type === "video" ? "bg-gradient-to-br from-[var(--rose-100)] to-[var(--rose-200)]" : "bg-gradient-to-br from-[var(--sage-100)] to-[var(--sage-200)]"}`}>{article.isEmergency ? <AlertCircle size={24} className="text-red-600" /> : article.type === "video" ? <Play size={24} className="text-[var(--rose-600)]" /> : <Bookmark size={24} className="text-[var(--sage-600)]" />}</div>
+              <motion.button 
+                key={article.id} 
+                initial={{ opacity: 0, y: 16 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ delay: index * 0.05 }} 
+                onClick={() => handleArticleOpen(article)} 
+                className={`text-left rounded-3xl p-5 shadow-sm border active:scale-[0.98] transition-all relative overflow-hidden ${
+                  article.isEmergency 
+                    ? "bg-rose-50/50 border-rose-200" 
+                    : "bg-white border-[var(--warm-200)]"
+                }`}
+              >
+                <div className="flex items-start gap-4">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-inner ${
+                    article.isEmergency 
+                      ? "bg-rose-100 text-rose-600" 
+                      : article.type === "video" 
+                        ? "bg-rose-50 text-rose-500" 
+                        : "bg-[var(--bg-secondary)] text-[var(--text-tertiary)]"
+                  }`}>
+                    {article.isEmergency ? <AlertCircle size={24} /> : article.type === "video" ? <Play size={24} /> : <Bookmark size={24} />}
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-semibold text-[var(--text-primary)] text-[15px] leading-snug mb-1">{article.title}</h3>
-                      <button onClick={(e) => { e.stopPropagation(); toggleBookmark(article.id); }} className="flex-shrink-0"><Bookmark size={18} className={bookmarkedIds.has(article.id) ? "text-[var(--rose-500)] fill-[var(--rose-500)]" : "text-[var(--warm-300)]"} /></button>
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <h3 className="font-bold text-[var(--text-primary)] text-[16px] leading-tight">{article.title}</h3>
+                      <button onClick={(e) => { e.stopPropagation(); toggleBookmark(article.id); }} className="p-1 -mr-1"><Bookmark size={18} className={bookmarkedIds.has(article.id) ? "text-[var(--rose-500)] fill-[var(--rose-500)]" : "text-[var(--warm-300)]"} /></button>
                     </div>
-                    <p className="text-xs text-[var(--text-tertiary)] mb-2 line-clamp-2">{article.excerpt}</p>
+                    <p className="text-xs text-[var(--text-tertiary)] mb-3 line-clamp-2 leading-relaxed">{article.excerpt}</p>
                     <div className="flex items-center gap-3">
-                      <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${isRelevant ? "bg-[var(--rose-100)] text-[var(--rose-700)]" : "bg-[var(--warm-100)] text-[var(--warm-600)]"}`}>{article.category}</span>
-                      <span className="flex items-center gap-1 text-[11px] text-[var(--text-muted)]"><Clock size={11} />{article.readTime} min</span>
+                      <span className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border ${
+                        isRelevant 
+                          ? "bg-rose-100 text-rose-700 border-rose-200" 
+                          : "bg-[var(--bg-secondary)] text-[var(--text-muted)] border-[var(--warm-200)]"
+                      }`}>
+                        {categoryLabel}
+                      </span>
+                      <span className="flex items-center gap-1 text-[10px] font-medium text-[var(--text-muted)]">
+                        <Clock size={10} /> {article.readTime} min read
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -263,6 +339,36 @@ export default function LearnPage() {
             );
           })}
         </div>
+
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-gradient-to-br from-[var(--surface-primary)] to-[var(--bg-cream)] rounded-3xl p-6 border border-[var(--warm-200)] shadow-md mb-8"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-100 to-rose-200 flex items-center justify-center">
+              <Sparkles size={20} className="text-rose-600" />
+            </div>
+            <h4 className="font-bold text-[var(--text-primary)]">Need help organizing?</h4>
+          </div>
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-5">
+            Mama Guard Assistant can help you summarize symptoms or prepare questions for your healthcare provider.
+          </p>
+          <div className="flex flex-col gap-2">
+            <button 
+              onClick={() => router.push("/ai")}
+              className="w-full py-3 rounded-2xl bg-white border border-[var(--warm-200)] text-[var(--text-primary)] text-sm font-bold active:scale-[0.98] shadow-sm flex items-center justify-center gap-2"
+            >
+              Ask Assistant <ChevronRight size={16} />
+            </button>
+            <button 
+              onClick={() => router.push("/checkin")}
+              className="w-full py-3 rounded-2xl bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-sm font-bold active:scale-[0.98] flex items-center justify-center gap-2"
+            >
+              Start Check-in
+            </button>
+          </div>
+        </motion.div>
         {sortedArticles.length === 0 && <div className="text-center py-16"><Search size={48} className="text-[var(--warm-300)] mx-auto mb-4" /><p className="text-[var(--text-tertiary)] font-medium mb-1">No articles found</p><p className="text-sm text-[var(--text-muted)]">Try adjusting your search or category filter</p></div>}
       </main>
       <BottomNav />
@@ -283,30 +389,30 @@ export default function LearnPage() {
                 {selectedArticle.content ? (
                   <div className="space-y-6">
                     <div>
-                      <h4 className="text-sm font-bold text-[var(--text-primary)] mb-2">Introduction</h4>
+                      <h4 className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-[0.2em] mb-3">Topic Overview</h4>
                       <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{selectedArticle.content.intro}</p>
                     </div>
 
-                    <div className="bg-[var(--warm-50)] rounded-2xl p-4 border border-[var(--warm-100)]">
-                      <h4 className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-widest mb-3">Key Points</h4>
-                      <ul className="space-y-2">
+                    <div className="bg-white rounded-2xl p-5 border border-[var(--warm-200)] shadow-sm">
+                      <h4 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-[0.1em] mb-4 border-b border-[var(--warm-100)] pb-2">Key Guidance</h4>
+                      <ul className="space-y-3">
                         {selectedArticle.content.keyPoints.map((point, i) => (
-                          <li key={i} className="flex gap-2 text-sm text-[var(--text-secondary)]">
-                            <span className="text-[var(--rose-500)] font-bold">•</span>
+                          <li key={i} className="flex gap-3 text-sm text-[var(--text-secondary)] leading-relaxed">
+                            <div className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0 mt-1.5" />
                             <span>{point}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
 
-                    <div className="bg-rose-50 rounded-2xl p-4 border border-rose-100">
-                      <h4 className="text-xs font-bold text-rose-700 uppercase tracking-widest mb-3 flex items-center gap-2">
-                        <AlertCircle size={14} /> When to seek Care
+                    <div className="bg-rose-50/50 rounded-2xl p-5 border border-rose-100 shadow-sm">
+                      <h4 className="text-xs font-bold text-rose-800 uppercase tracking-[0.1em] mb-4 border-b border-rose-200/50 pb-2 flex items-center gap-2">
+                        <AlertCircle size={14} /> When to contact provider
                       </h4>
-                      <ul className="space-y-2">
+                      <ul className="space-y-3">
                         {selectedArticle.content.whenToSeekCare.map((point, i) => (
-                          <li key={i} className="flex gap-2 text-sm text-rose-900 font-medium">
-                            <span className="text-rose-500">•</span>
+                          <li key={i} className="flex gap-3 text-sm text-rose-900 font-semibold leading-relaxed">
+                            <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0 mt-1.5" />
                             <span>{point}</span>
                           </li>
                         ))}
