@@ -62,9 +62,9 @@ export type RiskLevel = "low" | "medium" | "high";
 
 export function getRiskAdvice(level: RiskLevel, week: number): string {
   if (level === "high") {
-    if (week >= 37) return "URGENT: You're full-term. These symptoms require immediate medical evaluation. Contact your provider or go to the nearest emergency center NOW.";
+    if (week >= 37) return "URGENT: You're full-term. These symptoms require immediate medical evaluation. Contact your provider or go to the nearest emergency care center NOW.";
     if (week >= 28) return "URGENT: In the third trimester, these symptoms are serious. Please seek medical attention immediately.";
-    if (week >= 14) return "IMPORTANT: Please contact your healthcare provider or visit an emergency center today for guidance.";
+    if (week >= 14) return "IMPORTANT: Please contact your healthcare provider or visit an emergency care center today for guidance.";
     return "IMPORTANT: Early pregnancy symptoms like these require prompt medical evaluation. Please contact your provider now.";
   }
   if (level === "medium") return "It's a good idea to discuss these with your healthcare provider at your next visit or call their advice line.";

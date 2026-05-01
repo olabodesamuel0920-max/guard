@@ -66,7 +66,7 @@ const quickPromptGroups = [
 
 const suggestedActions = [
   { label: "Call Provider", icon: Phone, action: "call" },
-  { label: "Find ER", icon: AlertTriangle, action: "er" },
+  { label: "Find emergency care", icon: AlertTriangle, action: "er" },
   { label: "Provider Summary", icon: FileText, action: "summary" },
   { label: "Read Article", icon: BookOpen, action: "learn" },
 ];
@@ -100,7 +100,7 @@ function generateResponse(input: string): {
 
   if (matchedCritical) {
     let whyItMatters = "These symptoms during pregnancy or postpartum can indicate conditions that need immediate clinical attention to ensure the safety of you and your baby.";
-    let nextStep = "Contact your healthcare provider immediately or go to the nearest emergency center.";
+    let nextStep = "Contact your healthcare provider immediately or go to the nearest emergency care center.";
     let whatToTell = `Tell them: "I am having ${matchedCritical.label} and I'm concerned."`;
 
     if (lower.includes("bleed") || lower.includes("leak")) {
@@ -113,7 +113,7 @@ function generateResponse(input: string): {
       whyItMatters = "These can be signs of heart or lung issues that require immediate rule-out in an emergency setting.";
     } else if (lower.includes("harm")) {
       whyItMatters = "Your mental health is just as important as your physical health. Help is available and you are not alone.";
-      nextStep = "Contact a crisis line, your provider, or go to the ER immediately.";
+      nextStep = "Contact a crisis line, your provider, or go to emergency care immediately.";
       whatToTell = "Tell them honestly how you are feeling so they can support you.";
     } else if (lower.includes("fever")) {
       whyItMatters = "A high fever can indicate an infection that may affect you or the baby.";
@@ -124,7 +124,7 @@ function generateResponse(input: string): {
       type: "warning", 
       actions: [
         { label: "Call Provider", icon: Phone, action: "call" },
-        { label: "Find ER", icon: AlertTriangle, action: "er" },
+        { label: "Find emergency care", icon: AlertTriangle, action: "er" },
         { label: "Provider Summary", icon: FileText, action: "summary" },
         { label: "Start Check-in", icon: Activity, action: "checkin" },
       ],
@@ -418,7 +418,7 @@ This summary was prepared by Mama Guard to help organize information. It is supp
                               if (action.action === "summary") handleProviderSummary();
                               if (action.action === "safety") router.push("/safety");
                               if (action.action === "profile") router.push("/profile");
-                              if (action.action === "er") alert("Emergency Notice: Please contact your local emergency services or go to the nearest hospital immediately. Mama Guard does not dispatch emergency services.");
+                              if (action.action === "er") alert("Emergency Notice: Please contact your local emergency services or go to the nearest emergency care center immediately. Mama Guard does not dispatch emergency services.");
                               if (action.action === "call") { 
                                 const onboarding = safeStorage.get(STORAGE_KEYS.ONBOARDING, { providerPhone: "" }); 
                                 if (onboarding.providerPhone) { window.location.href = `tel:${onboarding.providerPhone}`; } 
