@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, Send, Loader2, Heart, Baby, Activity, Shield, AlertTriangle, CheckCircle2, Stethoscope, BookOpen, Phone, X, FileText } from "lucide-react";
+import { ArrowLeft, Sparkles, Send, Loader2, Heart, Baby, Activity, Shield, AlertTriangle, CheckCircle2, Stethoscope, BookOpen, Phone, X, FileText, User } from "lucide-react";
 import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
 
@@ -11,12 +11,17 @@ interface Message {
   id: string; 
   role: "user" | "assistant"; 
   content: string; 
-  type?: "text" | "action" | "warning"; 
+  type?: "text" | "action" | "warning" | "safety"; 
   actions?: { label: string; icon: React.ElementType; action: string }[]; 
   structuredWarning?: {
     title: string;
     subtitle: string;
     sections: { label: string; content: string }[];
+  };
+  safetyCard?: {
+    provider?: string;
+    hospital?: string;
+    contact?: string;
   };
 }
 
@@ -26,12 +31,13 @@ interface UserProfile {
   dueDate: string;
   providerPhone?: string;
   nearestHospital?: string;
+  emergencyContact?: string;
 }
 
 const quickPrompts = [
+  { label: "Safety plan help", icon: Shield, prompt: "Help me build my safety plan" },
   { label: "Severe headache", icon: AlertTriangle, prompt: "I have a severe headache" },
   { label: "Baby moving less", icon: Baby, prompt: "My baby is moving less" },
-  { label: "Feeling dizzy", icon: Activity, prompt: "I feel dizzy" },
   { label: "Provider summary", icon: FileText, prompt: "Help me prepare a provider summary" },
   { label: "Warning signs", icon: Shield, prompt: "What warning signs should I watch for?" },
 ];
@@ -45,9 +51,10 @@ const suggestedActions = [
 
 function generateResponse(input: string): { 
   content: string; 
-  type: "text" | "action" | "warning"; 
+  type: "text" | "action" | "warning" | "safety"; 
   actions?: { label: string; icon: React.ElementType; action: string }[];
   structuredWarning?: Message["structuredWarning"];
+  safetyCard?: Message["safetyCard"];
 } {
   const lower = input.toLowerCase();
 
@@ -110,6 +117,24 @@ function generateResponse(input: string): {
           { label: "Safety note", content: "Always trust your maternal intuition. If something feels wrong, seek care regardless of symptoms." }
         ]
       }
+    };
+  }
+
+  if (lower.includes("safety plan") || lower.includes("emergency plan") || lower.includes("hospital") || lower.includes("provider") || lower.includes("care contact")) {
+    const onboarding = safeStorage.get<UserProfile | null>(STORAGE_KEYS.ONBOARDING, null);
+    return {
+      content: "Building your safety plan is a critical step for your care journey. Here is a summary of your current emergency details and guidance on what to watch for.",
+      type: "safety",
+      safetyCard: {
+        provider: onboarding?.providerPhone || "Add your provider in Profile",
+        hospital: onboarding?.nearestHospital || "Add nearest hospital in Profile",
+        contact: onboarding?.emergencyContact || "Add emergency contact in Profile"
+      },
+      actions: [
+        { label: "Open Safety Plan", icon: Shield, action: "safety" },
+        { label: "Update Profile", icon: User, action: "profile" },
+        { label: "Start Check-in", icon: Activity, action: "checkin" },
+      ]
     };
   }
 
@@ -254,7 +279,56 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
               <div className={`max-w-[85%] ${msg.role === "user" ? "bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] text-white rounded-2xl rounded-tr-sm px-4 py-3" : msg.type === "warning" ? "bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl rounded-tl-sm px-4 py-3" : "bg-[var(--surface-primary)] border border-[var(--warm-200)] rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm"}`}>
                 {msg.role === "assistant" && <div className="flex items-center gap-1.5 mb-2"><Sparkles size={12} className={msg.type === "warning" ? "text-amber-500" : "text-[var(--rose-500)]"} /><span className={`text-[10px] font-semibold uppercase tracking-wider ${msg.type === "warning" ? "text-amber-600" : "text-[var(--rose-600)]"}`}>{msg.type === "warning" ? "Urgent Information" : "Assistant Guidance"}</span></div>}
                 
-                {msg.type === "warning" && msg.structuredWarning ? (
+                {msg.type === "safety" && msg.safetyCard ? (
+                  <div className="space-y-4">
+                    <div className="bg-white/50 rounded-2xl p-4 border border-[var(--rose-100)] space-y-3">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Shield size={16} className="text-[var(--rose-500)]" />
+                        <span className="text-xs font-bold text-[var(--rose-700)] uppercase tracking-wider">Your Safety Plan</span>
+                      </div>
+                      
+                      <div className="space-y-2.5">
+                        <div className="flex items-start gap-2.5">
+                          <Phone size={14} className="text-[var(--text-tertiary)] mt-0.5" />
+                          <div>
+                            <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-tight">Care Team / Provider</p>
+                            <p className="text-xs font-semibold text-[var(--text-primary)]">{msg.safetyCard.provider}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2.5">
+                          <Activity size={14} className="text-[var(--text-tertiary)] mt-0.5" />
+                          <div>
+                            <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-tight">Nearest Hospital</p>
+                            <p className="text-xs font-semibold text-[var(--text-primary)]">{msg.safetyCard.hospital}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2.5">
+                          <Heart size={14} className="text-[var(--text-tertiary)] mt-0.5" />
+                          <div>
+                            <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-tight">Emergency Contact</p>
+                            <p className="text-xs font-semibold text-[var(--text-primary)]">{msg.safetyCard.contact}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-t border-[var(--rose-100)]">
+                        <p className="text-[10px] font-bold text-[var(--rose-800)] mb-1">Warning signs to act on:</p>
+                        <p className="text-[10px] text-[var(--rose-700)] leading-tight">Severe headache, vision changes, bleeding, fluid leaking, or decreased movement.</p>
+                      </div>
+
+                      <div className="pt-2">
+                        <p className="text-[10px] font-bold text-[var(--text-primary)] mb-1">What to say to provider:</p>
+                        <p className="text-[10px] text-[var(--text-secondary)] italic leading-tight">"I am calling from Mama Guard with a potential warning sign. I am experiencing [symptom] and need evaluation."</p>
+                      </div>
+
+                      <div className="pt-2 bg-rose-50/50 rounded-lg p-2 border border-rose-100/50">
+                        <p className="text-[9px] text-rose-800 leading-tight font-medium">
+                          <strong>Safety Note:</strong> Mama Guard does not contact emergency services. If you feel unsafe or symptoms are severe, contact your healthcare provider or local emergency care immediately. Emergency numbers vary by location.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : msg.type === "warning" && msg.structuredWarning ? (
                   <div className="space-y-4">
                     <div>
                       <div className="text-base font-bold text-amber-900 leading-tight mb-1">{msg.structuredWarning.title}</div>
@@ -288,6 +362,8 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
                               if (action.action === "checkin") router.push("/checkin?from=assistant"); 
                               if (action.action === "learn") router.push("/learn"); 
                               if (action.action === "summary") handleProviderSummary();
+                              if (action.action === "safety") router.push("/safety");
+                              if (action.action === "profile") router.push("/profile");
                               if (action.action === "er") alert("Emergency Notice: Please contact your local emergency services or go to the nearest hospital immediately. Mama Guard does not dispatch emergency services.");
                               if (action.action === "call") { 
                                 const onboarding = safeStorage.get(STORAGE_KEYS.ONBOARDING, { providerPhone: "" }); 
@@ -298,7 +374,7 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
                             className={`flex items-center gap-2 px-3 py-3 rounded-xl border text-[11px] font-bold uppercase tracking-wider transition-all active:scale-[0.98] ${
                               action.action === "er" || action.action === "checkin" && msg.type === "warning"
                                 ? "bg-rose-600 text-white border-rose-700 shadow-sm" 
-                                : action.action === "checkin"
+                                : action.action === "checkin" || action.action === "safety"
                                   ? "bg-[var(--rose-50)] text-[var(--rose-700)] border-[var(--rose-200)]"
                                   : "bg-white border-[var(--warm-200)] text-[var(--text-primary)] hover:bg-[var(--warm-50)]"
                             }`}
@@ -309,9 +385,12 @@ This is supportive guidance from Mama Guard, not a medical diagnosis.
                         ); 
                       })}
                     </div>
-                    {msg.actions.some(a => a.action === "checkin") && (
+                    {msg.actions.some(a => a.action === "checkin" || a.action === "safety") && (
                       <p className="text-[10px] text-[var(--text-tertiary)] italic leading-tight">
-                        Check-in helps organize your symptoms, but it does not diagnose or replace medical care.
+                        {msg.type === "safety" 
+                          ? "This plan helps you stay prepared, but does not replace medical professional advice."
+                          : "Check-in helps organize your symptoms, but it does not diagnose or replace medical care."
+                        }
                       </p>
                     )}
                   </div>
