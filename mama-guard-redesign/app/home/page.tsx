@@ -67,8 +67,19 @@ export default function HomePage() {
       <Header />
       <main className="pt-20 pb-28 px-5">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-6">
-          <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-1">{greeting}</h1>
-          <p className="text-[var(--text-tertiary)] text-sm">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p>
+          <div className="flex items-center justify-between items-end mb-2">
+            <div>
+              <h1 className="text-2xl font-bold text-[var(--text-primary)] leading-tight">{greeting}</h1>
+              <p className="text-[var(--text-tertiary)] text-xs font-medium uppercase tracking-wider">{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p>
+            </div>
+            <div className="flex items-center gap-1.5 bg-[var(--rose-50)] px-3 py-1.5 rounded-full border border-[var(--rose-100)]">
+              <Shield size={12} className="text-[var(--rose-500)]" />
+              <span className="text-[10px] font-bold text-[var(--rose-700)] uppercase tracking-tight">Early Access</span>
+            </div>
+          </div>
+          <p className="text-[var(--text-secondary)] text-sm leading-relaxed mt-3 max-w-[90%]">
+            Your maternal safety companion for tracking symptoms, understanding warning signs, and preparing care information.
+          </p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--rose-50)] via-[#FFF5F0] to-[var(--bg-secondary)] p-6 mb-5 shadow-lg border border-[var(--rose-200)]/40">
@@ -93,15 +104,16 @@ export default function HomePage() {
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="mb-5">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="mb-6">
+          <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-3 px-1">Primary Actions</div>
           <button onClick={() => router.push("/checkin")} className="w-full relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] p-5 text-left shadow-xl shadow-rose-500/20 active:scale-[0.98] transition-transform">
             <div className="absolute top-0 right-0 w-28 h-28 bg-white/10 rounded-full -translate-y-8 translate-x-8" />
             <div className="relative flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center"><Activity size={24} className="text-white" /></div>
                 <div>
-                  <div className="text-white font-bold text-lg mb-0.5">Daily Check-in</div>
-                  <div className="text-white/80 text-sm">{lastCheckIn ? `Last check-in: ${getRelativeTime(lastCheckIn.date)}` : "How are you feeling today?"}</div>
+                  <div className="text-white font-bold text-lg mb-0.5">Start Check-in</div>
+                  <div className="text-white/80 text-xs leading-snug max-w-[200px]">Log symptoms and create clearer information for your care team.</div>
                 </div>
               </div>
               <ChevronRight size={24} className="text-white/70" />
@@ -109,16 +121,28 @@ export default function HomePage() {
           </button>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }} className="grid grid-cols-2 gap-3 mb-5">
-          <button onClick={() => router.push("/ai")} className="rounded-2xl bg-[var(--surface-primary)] p-4 text-left shadow-md border border-[var(--warm-200)]/60 active:scale-[0.97] transition-transform">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--rose-100)] to-[var(--rose-200)] flex items-center justify-center mb-3"><Sparkles size={20} className="text-[var(--rose-600)]" /></div>
-            <div className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">Assistant</div>
-            <div className="text-xs text-[var(--text-tertiary)]">Personalized support</div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }} className="grid grid-cols-1 gap-3 mb-6">
+          <button onClick={() => router.push("/ai")} className="rounded-2xl bg-[var(--surface-primary)] p-5 text-left shadow-md border border-[var(--warm-200)]/60 active:scale-[0.98] transition-transform flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--rose-100)] to-[var(--rose-200)] flex items-center justify-center shrink-0"><Sparkles size={24} className="text-[var(--rose-600)]" /></div>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-0.5">
+                <div className="font-bold text-[var(--text-primary)] text-base">Mama Guard Assistant</div>
+                <ChevronRight size={18} className="text-[var(--text-tertiary)]" />
+              </div>
+              <div className="text-xs text-[var(--text-tertiary)] leading-relaxed">Understand warning signs and prepare provider summaries.</div>
+              <div className="text-[9px] text-[var(--rose-500)] font-bold uppercase tracking-wider mt-1.5">Supportive guidance only</div>
+            </div>
           </button>
-          <button onClick={() => router.push("/safety")} className="rounded-2xl bg-[var(--surface-primary)] p-4 text-left shadow-md border border-[var(--warm-200)]/60 active:scale-[0.97] transition-transform">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-100 to-rose-200 flex items-center justify-center mb-3"><Shield size={20} className="text-rose-600" /></div>
-            <div className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">Safety Plan</div>
-            <div className="text-xs text-[var(--text-tertiary)]">Emergency guidance</div>
+
+          <button onClick={() => router.push("/safety")} className="rounded-2xl bg-[var(--surface-primary)] p-5 text-left shadow-md border border-[var(--warm-200)]/60 active:scale-[0.98] transition-transform flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-100 to-rose-200 flex items-center justify-center shrink-0"><Shield size={24} className="text-rose-600" /></div>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-0.5">
+                <div className="font-bold text-[var(--text-primary)] text-base">Safety Plan</div>
+                <ChevronRight size={18} className="text-[var(--text-tertiary)]" />
+              </div>
+              <div className="text-xs text-[var(--text-tertiary)] leading-relaxed">Keep provider details and hospital info easy to find.</div>
+            </div>
           </button>
         </motion.div>
 
@@ -184,14 +208,14 @@ export default function HomePage() {
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }} className="mt-8 flex flex-col items-center gap-2 py-4">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }} className="mt-8 flex flex-col items-center gap-2 py-4 border-t border-[var(--warm-200)]/50">
           <div className="flex items-center gap-2">
             <Shield size={14} className="text-[var(--sage-500)]" />
-            <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Prototype Guidance</span>
+            <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Early Access Transparency</span>
           </div>
           <p className="text-[10px] text-[var(--text-muted)] text-center px-6 leading-tight">
-            Mama Guard is a supportive prototype. Your data is stored locally on this device.
-            This is not a medical diagnosis or monitoring service.
+            Mama Guard stores data locally on this device. Cloud synchronization is planned for a future release.
+            This tool provides supportive guidance only and is not a medical diagnosis.
           </p>
         </motion.div>
       </main>
