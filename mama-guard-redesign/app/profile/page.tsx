@@ -20,6 +20,9 @@ import {
   Calendar,
   Edit3,
   Trash2,
+  Download,
+  Info,
+  Lock,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -72,6 +75,7 @@ export default function ProfilePage() {
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [editData, setEditData] = useState<UserProfile | null>(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showPrivacyInfo, setShowPrivacyInfo] = useState(false);
 
   useEffect(() => {
     const stored = safeStorage.get<UserProfile | null>(STORAGE_KEYS.ONBOARDING, null);
@@ -218,6 +222,23 @@ export default function ProfilePage() {
       ],
     },
     {
+      title: "Data & Privacy",
+      items: [
+        {
+          icon: Lock,
+          label: "Data & Privacy Info",
+          desc: "Local storage · No cloud sync",
+          action: () => setShowPrivacyInfo(true),
+        },
+        {
+          icon: Download,
+          label: "Export my data",
+          desc: "Save your records as JSON",
+          action: () => handleExportData(),
+        },
+      ],
+    },
+    {
       title: "Support",
       items: [
         {
@@ -248,6 +269,24 @@ export default function ProfilePage() {
       navigator.clipboard.writeText(summary).then(() => alert("Summary copied to clipboard!")).catch(() => alert("Failed to copy."));
     } else {
       alert("Clipboard not available.");
+    }
+  };
+
+  const handleExportData = () => {
+    try {
+      const data = safeStorage.getAllData();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `mama-guard-export-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Export failed:", error);
+      alert("Failed to export data. Please try again.");
     }
   };
 
@@ -677,6 +716,71 @@ export default function ProfilePage() {
               <p>4. NO WARRANTY: This prototype is provided "as is" without any guarantees of accuracy or uptime.</p>
             </div>
             <button onClick={() => setShowTerms(false)} className="w-full mt-6 py-3.5 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] font-bold text-xs uppercase tracking-widest">Close</button>
+          </motion.div>
+        </div>
+      )}
+
+      {showPrivacyInfo && (
+        <div className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm flex items-center justify-center p-5">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-[var(--surface-primary)] rounded-3xl p-6 max-w-sm w-full shadow-2xl overflow-hidden"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-[var(--rose-100)] flex items-center justify-center mx-auto mb-4">
+              <Shield size={24} className="text-[var(--rose-600)]" />
+            </div>
+
+            <h3 className="text-lg font-bold text-[var(--text-primary)] text-center mb-4">
+              Data & Privacy Details
+            </h3>
+
+            <div className="space-y-4 mb-6">
+              <div className="flex gap-3">
+                <div className="w-5 h-5 rounded-full bg-[var(--warm-100)] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[var(--rose-400)]" />
+                </div>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  <strong>Local Storage:</strong> Your information is stored strictly on this device and browser.
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="w-5 h-5 rounded-full bg-[var(--warm-100)] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[var(--rose-400)]" />
+                </div>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  <strong>No Cloud Sync:</strong> This version does not sync data to any remote server. Clearing browser data will permanently remove your records.
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="w-5 h-5 rounded-full bg-[var(--warm-100)] flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[var(--rose-400)]" />
+                </div>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  <strong>Future Roadmap:</strong> Secure accounts and cloud backup are planned for a future release.
+                </p>
+              </div>
+
+              <div className="bg-[var(--warm-50)] p-3 rounded-xl border border-[var(--warm-100)]">
+                <div className="flex gap-2 mb-1.5">
+                  <Info size={14} className="text-[var(--text-muted)]" />
+                  <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Medical Disclaimer</span>
+                </div>
+                <p className="text-[10px] text-[var(--text-tertiary)] leading-normal font-medium">
+                  Mama Guard is a technology prototype. It does not provide medical diagnoses, clinical review, or contact emergency services.
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowPrivacyInfo(false)}
+              className="w-full py-3.5 rounded-2xl bg-[var(--warm-100)] text-[var(--text-secondary)] font-bold text-xs uppercase tracking-widest active:scale-[0.98] transition-all"
+            >
+              Close
+            </button>
           </motion.div>
         </div>
       )}

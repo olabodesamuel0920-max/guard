@@ -49,4 +49,20 @@ export const safeStorage = {
       console.error("Error clearing localStorage:", error);
     }
   },
+
+  getAllData: (): Record<string, any> => {
+    if (typeof window === "undefined") return {};
+    const data: Record<string, any> = {};
+    Object.values(STORAGE_KEYS).forEach((key) => {
+      try {
+        const item = localStorage.getItem(key);
+        if (item) {
+          data[key] = JSON.parse(item);
+        }
+      } catch (error) {
+        console.error(`Error reading localStorage key "${key}":`, error);
+      }
+    });
+    return data;
+  },
 };
