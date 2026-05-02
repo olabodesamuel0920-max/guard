@@ -65,7 +65,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
       <Header />
-      <main className="pt-20 pb-28 px-5">
+      <main className="pt-20 pb-28 px-5 max-w-lg mx-auto">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mb-6">
           <div className="flex items-center justify-between items-end mb-2">
             <div>

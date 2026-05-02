@@ -342,7 +342,7 @@ function CheckInContent() {
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
       <Header />
 
-      <main className="pt-20 pb-[260px] md:pb-24 px-5 max-w-lg mx-auto md:max-w-6xl">
+      <main className="pt-20 pb-[260px] md:pb-24 px-5 max-w-lg mx-auto md:max-w-7xl">
         <div className="flex items-center gap-2 mb-6 md:mb-10">
           <button
             type="button"
@@ -384,7 +384,7 @@ function CheckInContent() {
               exit={{ opacity: 0, x: -20 }}
               className="md:grid md:grid-cols-12 md:gap-10 lg:gap-16 items-start"
             >
-              <div className="md:col-span-5 lg:col-span-4 md:sticky md:top-24 space-y-6">
+              <div className="md:col-span-4 lg:col-span-4 md:sticky md:top-24 space-y-8">
                 {fromAssistant && (
                   <motion.div 
                     initial={{ opacity: 0, y: -10 }} 
@@ -416,7 +416,7 @@ function CheckInContent() {
                     <Activity size={16} />
                     <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Safety Check-in</span>
                   </div>
-                  <h1 className="text-3xl lg:text-4xl font-extrabold text-[var(--text-primary)] mb-4 leading-tight">
+                  <h1 className="text-3xl lg:text-5xl font-extrabold text-[var(--text-primary)] mb-5 leading-[1.15]">
                     Check in with your symptoms
                   </h1>
                   <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-6">
@@ -458,8 +458,8 @@ function CheckInContent() {
                 )}
               </div>
 
-              <div className="md:col-span-7 lg:col-span-8 mt-8 md:mt-0">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-8">
+              <div className="md:col-span-8 lg:col-span-8 mt-8 md:mt-0">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 mb-8">
                   {symptoms.map((symptom, index) => {
                     const isSelected = selectedSymptoms.includes(symptom.id);
                     const Icon = symptom.icon;
@@ -584,7 +584,7 @@ function CheckInContent() {
               exit={{ opacity: 0, x: -20 }}
               className="md:grid md:grid-cols-12 md:gap-10 items-start"
             >
-              <div className="md:col-span-5 lg:col-span-4 space-y-6">
+              <div className="md:col-span-4 lg:col-span-4 space-y-6">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <Sparkles size={16} className="text-[var(--rose-500)]" />
@@ -603,7 +603,7 @@ function CheckInContent() {
                 </div>
               </div>
 
-              <div className="md:col-span-7 lg:col-span-8 mt-8 md:mt-0">
+              <div className="md:col-span-8 lg:col-span-8 mt-8 md:mt-0">
                 {currentSeveritySymptom && (
                   <div className="bg-[var(--surface-primary)] rounded-3xl p-6 shadow-md border border-[var(--warm-200)] mb-6">
                     <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--warm-100)]">
@@ -678,7 +678,7 @@ function CheckInContent() {
               transition={{ duration: 0.4 }}
               className="md:grid md:grid-cols-12 md:gap-10 items-start"
             >
-              <div className="md:col-span-5 lg:col-span-5 md:sticky md:top-24">
+              <div className="md:col-span-4 lg:col-span-5 md:sticky md:top-24">
                 <div
                   className={`rounded-3xl p-6 md:p-8 mb-5 ${
                     riskLevel === "high"
@@ -746,7 +746,7 @@ function CheckInContent() {
                 </div>
               </div>
 
-              <div className="md:col-span-7 lg:col-span-7 mt-5 md:mt-0 space-y-6">
+              <div className="md:col-span-8 lg:col-span-7 mt-5 md:mt-0 space-y-6">
                 <div className="bg-white border border-[var(--warm-200)] rounded-3xl p-6 shadow-sm">
                   <div className="flex items-center gap-2 mb-4">
                     <CalendarDays size={16} className="text-[var(--text-tertiary)]" />

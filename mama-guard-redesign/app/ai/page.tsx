@@ -308,7 +308,7 @@ This summary was prepared by Mama Guard to help organize information. It is supp
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 hide-scrollbar">
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 hide-scrollbar max-w-lg mx-auto w-full">
         <AnimatePresence>
           {messages.map((msg) => (
             <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>

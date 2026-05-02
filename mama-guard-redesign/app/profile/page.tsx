@@ -275,7 +275,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
       <Header showAssistantButton={false} />
 
-      <main className="pt-20 pb-28 px-5">
+      <main className="pt-20 pb-28 px-5 max-w-lg mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}

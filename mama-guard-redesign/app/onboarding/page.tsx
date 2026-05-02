@@ -44,7 +44,7 @@ export default function OnboardingPage() {
   const SlideIcon = slides[step]?.icon;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)] flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)] flex flex-col max-w-lg mx-auto">
       <div className="pt-6 px-6">
         <div className="flex items-center gap-2 mb-8">
           {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => <div key={i} className={`h-1 flex-1 rounded-full transition-all duration-300 ${i <= step ? "bg-[var(--rose-500)]" : "bg-[var(--warm-200)]"}`} />)}

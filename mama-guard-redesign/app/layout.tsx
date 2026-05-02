@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
       </head>
       <body className="bg-[var(--bg-primary)] min-h-screen">
-        <div className="max-w-lg mx-auto min-h-screen relative">{children}</div>
+        <div className="max-w-lg md:max-w-none mx-auto min-h-screen relative">{children}</div>
       </body>
     </html>
   );
