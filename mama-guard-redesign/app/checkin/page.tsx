@@ -46,6 +46,7 @@ interface Symptom {
 interface UserData {
   name: string;
   dueDate: string;
+  providerPhone?: string;
 }
 
 interface CheckInRecord {
@@ -237,8 +238,6 @@ const symptoms: Symptom[] = [
   },
 ];
 
-// Removed old severityQuestions record in favor of severityConfigs
-
 function CheckInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -253,11 +252,7 @@ function CheckInContent() {
   const [showAssistantInsights, setShowAssistantInsights] = useState(false);
   const [followUpAnswers, setFollowUpAnswers] = useState<Record<string, string>>({});
 
-  const getUserData = () => {
-    return safeStorage.get(STORAGE_KEYS.ONBOARDING, { name: "", dueDate: "", providerPhone: "", nearestHospital: "" });
-  };
-
-  const userData = getUserData();
+  const userData = safeStorage.get<UserData>(STORAGE_KEYS.ONBOARDING, { name: "", dueDate: "" });
   const week = getGestationalWeek(userData.dueDate);
 
   const toggleSymptom = (id: string) => {
@@ -347,8 +342,8 @@ function CheckInContent() {
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
       <Header />
 
-      <main className="pt-20 pb-[260px] px-5">
-        <div className="flex items-center gap-2 mb-6">
+      <main className="pt-20 pb-[260px] md:pb-24 px-5 max-w-lg mx-auto md:max-w-6xl">
+        <div className="flex items-center gap-2 mb-6 md:mb-10">
           <button
             type="button"
             onClick={() =>
@@ -387,165 +382,195 @@ function CheckInContent() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
+              className="md:grid md:grid-cols-12 md:gap-10 lg:gap-16 items-start"
             >
-              {fromAssistant && (
-                <motion.div 
-                  initial={{ opacity: 0, y: -10 }} 
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-gradient-to-br from-rose-50 to-white border border-rose-100 rounded-3xl p-5 mb-8 shadow-sm flex gap-4 items-start relative overflow-hidden group"
-                >
-                  <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <Sparkles size={40} className="text-rose-500" />
+              <div className="md:col-span-5 lg:col-span-4 md:sticky md:top-24 space-y-6">
+                {fromAssistant && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }} 
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-gradient-to-br from-rose-50 to-white border border-rose-100 rounded-3xl p-5 shadow-sm flex gap-4 items-start relative overflow-hidden group"
+                  >
+                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                      <Sparkles size={40} className="text-rose-500" />
+                    </div>
+                    <div className="w-10 h-10 rounded-2xl bg-rose-100 flex items-center justify-center shrink-0 shadow-inner">
+                      <Sparkles size={20} className="text-rose-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[13px] font-bold text-rose-950 leading-tight mb-1">
+                        Mama Guard Assistant Handoff
+                      </p>
+                      <p className="text-[11px] text-rose-800/80 leading-relaxed font-medium">
+                        Select what you shared with the Assistant. This check-in organizes your symptoms to help you prepare clearer information for your healthcare provider.
+                      </p>
+                      <div className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-bold text-rose-600 uppercase tracking-wider bg-white/60 px-2 py-0.5 rounded-full border border-rose-100">
+                        Supportive guidance only
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+                
+                <div>
+                  <div className="flex items-center gap-2 mb-2 text-[var(--rose-600)]">
+                    <Activity size={16} />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Safety Check-in</span>
                   </div>
-                  <div className="w-10 h-10 rounded-2xl bg-rose-100 flex items-center justify-center shrink-0 shadow-inner">
-                    <Sparkles size={20} className="text-rose-600" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-[13px] font-bold text-rose-950 leading-tight mb-1">
-                      Mama Guard Assistant Handoff
-                    </p>
-                    <p className="text-[11px] text-rose-800/80 leading-relaxed font-medium">
-                      Select what you shared with the Assistant. This check-in organizes your symptoms to help you prepare clearer information for your healthcare provider.
-                    </p>
-                    <div className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-bold text-rose-600 uppercase tracking-wider bg-white/60 px-2 py-0.5 rounded-full border border-rose-100">
-                      Supportive guidance only
+                  <h1 className="text-3xl lg:text-4xl font-extrabold text-[var(--text-primary)] mb-4 leading-tight">
+                    Check in with your symptoms
+                  </h1>
+                  <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-6">
+                    Select what you are experiencing so Mama Guard can help organize your symptoms and prepare supportive next-step guidance.
+                  </p>
+                  
+                  <div className="bg-[var(--bg-secondary)] border border-[var(--warm-200)] rounded-2xl p-4 flex gap-3 shadow-sm">
+                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm border border-[var(--warm-100)]">
+                      <AlertTriangle size={16} className="text-amber-500" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[11px] text-[var(--text-primary)] font-bold mb-0.5">Medical Disclaimer</p>
+                      <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed font-medium">
+                        This tool provides supportive risk guidance only and is not a medical diagnosis. If you feel unsafe or symptoms are severe, contact emergency care immediately.
+                      </p>
                     </div>
                   </div>
-                </motion.div>
-              )}
-              <div className="mb-8">
-                <div className="flex items-center gap-2 mb-2 text-[var(--rose-600)]">
-                  <Activity size={16} />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Safety Check-in</span>
                 </div>
-                <h1 className="text-3xl font-extrabold text-[var(--text-primary)] mb-3 leading-tight">
-                  Check in with your symptoms
-                </h1>
-                <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-6">
-                  Select what you are experiencing so Mama Guard can help organize your symptoms and prepare supportive next-step guidance.
-                </p>
-                <div className="bg-[var(--bg-secondary)] border border-[var(--warm-200)] rounded-2xl p-4 flex gap-3 shadow-sm">
-                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm border border-[var(--warm-100)]">
-                    <AlertTriangle size={16} className="text-amber-500" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-[11px] text-[var(--text-primary)] font-bold mb-0.5">Medical Disclaimer</p>
-                    <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed font-medium">
-                      This tool provides supportive risk guidance only and is not a medical diagnosis. If you feel unsafe or symptoms are severe, contact emergency care immediately.
-                    </p>
-                  </div>
-                </div>
+
+                {selectedSymptoms.length > 0 && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-5 rounded-3xl bg-white border border-[var(--warm-200)] shadow-sm hidden md:block"
+                  >
+                    <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3">Currently Selected</div>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedSymptoms.map(id => {
+                        const symptom = symptoms.find(s => s.id === id);
+                        return (
+                          <span key={id} className="px-3 py-1.5 rounded-xl bg-[var(--bg-secondary)] text-[var(--text-primary)] text-xs font-semibold border border-[var(--warm-200)] flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[var(--rose-500)]" />
+                            {symptom?.label}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
               </div>
 
-              <div className="grid grid-cols-1 gap-3 mb-8">
-                {symptoms.map((symptom, index) => {
-                  const isSelected = selectedSymptoms.includes(symptom.id);
-                  const Icon = symptom.icon;
+              <div className="md:col-span-7 lg:col-span-8 mt-8 md:mt-0">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-8">
+                  {symptoms.map((symptom, index) => {
+                    const isSelected = selectedSymptoms.includes(symptom.id);
+                    const Icon = symptom.icon;
 
-                  return (
-                    <motion.button
-                      type="button"
-                      key={symptom.id}
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.03 }}
-                      onClick={() => toggleSymptom(symptom.id)}
-                      className={`relative flex items-center gap-4 p-5 rounded-3xl text-left transition-all duration-300 border-2 ${
-                        isSelected
-                          ? "border-[var(--rose-400)] bg-[var(--rose-50)] shadow-md shadow-rose-200/20"
-                          : "border-[var(--warm-200)] bg-white hover:border-[var(--warm-300)] shadow-sm"
-                      }`}
-                    >
-                      <div
-                        className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all shadow-inner ${
+                    return (
+                      <motion.button
+                        type="button"
+                        key={symptom.id}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.03 }}
+                        onClick={() => toggleSymptom(symptom.id)}
+                        className={`relative flex items-center gap-4 p-5 rounded-3xl text-left transition-all duration-300 border-2 ${
                           isSelected
-                            ? "bg-[var(--rose-500)] text-white scale-105"
-                            : "bg-[var(--bg-secondary)] text-[var(--text-tertiary)]"
+                            ? "border-[var(--rose-400)] bg-[var(--rose-50)] shadow-md shadow-rose-200/20"
+                            : "border-[var(--warm-200)] bg-white hover:border-[var(--warm-300)] shadow-sm"
                         }`}
                       >
-                        <Icon size={24} />
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center flex-wrap gap-2 mb-0.5">
-                          <span className="font-bold text-[var(--text-primary)] text-base">
-                            {symptom.label}
-                          </span>
-
-                          {symptom.severity === "high" && (
-                            <span className="px-1.5 py-0.5 rounded-full bg-rose-100 text-[9px] font-bold text-rose-700 uppercase tracking-wider">
-                              Important
-                            </span>
-                          )}
+                        <div
+                          className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all shadow-inner ${
+                            isSelected
+                              ? "bg-[var(--rose-500)] text-white scale-105"
+                              : "bg-[var(--bg-secondary)] text-[var(--text-tertiary)]"
+                          }`}
+                        >
+                          <Icon size={24} />
                         </div>
 
-                        <p className="text-xs text-[var(--text-tertiary)] leading-snug">
-                          {symptom.description}
-                        </p>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center flex-wrap gap-2 mb-0.5">
+                            <span className="font-bold text-[var(--text-primary)] text-base">
+                              {symptom.label}
+                            </span>
+
+                            {symptom.severity === "high" && (
+                              <span className="px-1.5 py-0.5 rounded-full bg-rose-100 text-[9px] font-bold text-rose-700 uppercase tracking-wider">
+                                Important
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="text-xs text-[var(--text-tertiary)] leading-snug">
+                            {symptom.description}
+                          </p>
+                        </div>
+
+                        {isSelected ? (
+                          <motion.div
+                            initial={{ scale: 0, rotate: -45 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            className="w-7 h-7 rounded-full bg-[var(--rose-500)] flex items-center justify-center flex-shrink-0 shadow-lg shadow-rose-500/30"
+                          >
+                            <Check size={16} className="text-white" strokeWidth={3} />
+                          </motion.div>
+                        ) : (
+                          <div className="w-7 h-7 rounded-full border-2 border-[var(--warm-200)] flex-shrink-0 transition-colors group-hover:border-[var(--rose-200)]" />
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+
+                <div className="md:hidden">
+                  {selectedSymptoms.length > 0 && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mb-6 p-4 rounded-2xl bg-white border border-[var(--warm-200)] shadow-sm"
+                    >
+                      <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">Selected Symptoms</div>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedSymptoms.map(id => {
+                          const symptom = symptoms.find(s => s.id === id);
+                          return (
+                            <span key={id} className="px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-primary)] text-[11px] font-medium border border-[var(--warm-200)]">
+                              {symptom?.label}
+                            </span>
+                          );
+                        })}
                       </div>
+                    </motion.div>
+                  )}
+                </div>
 
-                      {isSelected ? (
-                        <motion.div
-                          initial={{ scale: 0, rotate: -45 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          className="w-7 h-7 rounded-full bg-[var(--rose-500)] flex items-center justify-center flex-shrink-0 shadow-lg shadow-rose-500/30"
-                        >
-                          <Check size={16} className="text-white" strokeWidth={3} />
-                        </motion.div>
-                      ) : (
-                        <div className="w-7 h-7 rounded-full border-2 border-[var(--warm-200)] flex-shrink-0 transition-colors group-hover:border-[var(--rose-200)]" />
-                      )}
-                    </motion.button>
-                  );
-                })}
-              </div>
+                <div className="fixed bottom-[76px] left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-t border-[var(--warm-200)] px-5 pt-3 pb-4 shadow-[0_-8px_30px_rgb(0,0,0,0.05)] md:relative md:bottom-0 md:bg-transparent md:backdrop-blur-none md:border-t-0 md:px-0 md:pb-0 md:shadow-none md:mt-8">
+                  <div className="max-w-lg mx-auto md:max-w-none space-y-3">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedSymptoms([])}
+                      className={`w-full py-3 rounded-2xl text-center font-bold text-[10px] uppercase tracking-widest transition-all ${
+                        selectedSymptoms.length === 0
+                          ? "bg-[var(--sage-50)] text-[var(--sage-600)] border border-[var(--sage-200)]"
+                          : "bg-white text-[var(--text-tertiary)] border border-dashed border-[var(--warm-200)]"
+                      }`}
+                    >
+                      {selectedSymptoms.length === 0 ? "✅ I'm feeling fine — no symptoms" : "Clear Selection"}
+                    </button>
 
-              {selectedSymptoms.length > 0 && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mb-6 p-4 rounded-2xl bg-white border border-[var(--warm-200)] shadow-sm"
-                >
-                  <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">Selected Symptoms</div>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedSymptoms.map(id => {
-                      const symptom = symptoms.find(s => s.id === id);
-                      return (
-                        <span key={id} className="px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-primary)] text-[11px] font-medium border border-[var(--warm-200)]">
-                          {symptom?.label}
-                        </span>
-                      );
-                    })}
+                    <button
+                      type="button"
+                      disabled={selectedSymptoms.length === 0}
+                      onClick={handleSubmitSymptoms}
+                      className={`w-full py-4 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg ${
+                        selectedSymptoms.length > 0
+                          ? "bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-rose-500/20 active:scale-[0.98]"
+                          : "bg-[var(--warm-200)] text-[var(--text-muted)] cursor-not-allowed"
+                      }`}
+                    >
+                      Continue to Guidance <ChevronRight size={18} strokeWidth={3} />
+                    </button>
                   </div>
-                </motion.div>
-              )}
-
-              <div className="fixed bottom-[76px] left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-t border-[var(--warm-200)] px-5 pt-3 pb-4 shadow-[0_-8px_30px_rgb(0,0,0,0.05)]">
-                <div className="max-w-lg mx-auto space-y-3">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedSymptoms([])}
-                    className={`w-full py-3 rounded-2xl text-center font-bold text-[10px] uppercase tracking-widest transition-all ${
-                      selectedSymptoms.length === 0
-                        ? "bg-[var(--sage-50)] text-[var(--sage-600)] border border-[var(--sage-200)]"
-                        : "bg-white text-[var(--text-tertiary)] border border-dashed border-[var(--warm-200)]"
-                    }`}
-                  >
-                    {selectedSymptoms.length === 0 ? "✅ I'm feeling fine — no symptoms" : "Clear Selection"}
-                  </button>
-
-                  <button
-                    type="button"
-                    disabled={selectedSymptoms.length === 0}
-                    onClick={handleSubmitSymptoms}
-                    className={`w-full py-4 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg ${
-                      selectedSymptoms.length > 0
-                        ? "bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-rose-500/20 active:scale-[0.98]"
-                        : "bg-[var(--warm-200)] text-[var(--text-muted)] cursor-not-allowed"
-                    }`}
-                  >
-                    Continue to Guidance <ChevronRight size={18} strokeWidth={3} />
-                  </button>
                 </div>
               </div>
             </motion.div>
@@ -557,87 +582,91 @@ function CheckInContent() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
+              className="md:grid md:grid-cols-12 md:gap-10 items-start"
             >
-              <div className="mb-6">
-                <div className="flex items-center gap-2 mb-2">
-                  <Sparkles size={16} className="text-[var(--rose-500)]" />
-                  <span className="text-xs font-semibold text-[var(--rose-600)] uppercase tracking-wider">
-                    Assistant Follow-up
-                  </span>
+              <div className="md:col-span-5 lg:col-span-4 space-y-6">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles size={16} className="text-[var(--rose-500)]" />
+                    <span className="text-xs font-semibold text-[var(--rose-600)] uppercase tracking-wider">
+                      Assistant Follow-up
+                    </span>
+                  </div>
+
+                  <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
+                    Tell us a bit more
+                  </h1>
+
+                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                    These details help us give you better guidance and prepare you for a conversation with your provider.
+                  </p>
                 </div>
-
-                <h1 className="text-xl font-bold text-[var(--text-primary)] mb-2">
-                  Tell us a bit more
-                </h1>
-
-                <p className="text-sm text-[var(--text-secondary)]">
-                  These details help us give you better guidance
-                </p>
               </div>
 
-              {currentSeveritySymptom && (
-                <div className="bg-[var(--surface-primary)] rounded-2xl p-5 shadow-md border border-[var(--warm-200)] mb-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-[var(--rose-100)] flex items-center justify-center">
-                      {(() => {
-                        const SymptomIcon = currentSeveritySymptom.icon;
-
-                        return (
-                          <SymptomIcon
-                            size={20}
-                            className="text-[var(--rose-600)]"
-                          />
-                        );
-                      })()}
-                    </div>
-
-                    <div>
-                      <div className="font-semibold text-[var(--text-primary)]">
-                        {currentSeveritySymptom.label}
+              <div className="md:col-span-7 lg:col-span-8 mt-8 md:mt-0">
+                {currentSeveritySymptom && (
+                  <div className="bg-[var(--surface-primary)] rounded-3xl p-6 shadow-md border border-[var(--warm-200)] mb-6">
+                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--warm-100)]">
+                      <div className="w-12 h-12 rounded-2xl bg-[var(--rose-100)] flex items-center justify-center">
+                        {(() => {
+                          const SymptomIcon = currentSeveritySymptom.icon;
+                          return <SymptomIcon size={24} className="text-[var(--rose-600)]" />;
+                        })()}
                       </div>
 
-                      <div className="text-xs text-[var(--text-tertiary)]">
-                        Question {currentSeverityIndex + 1} of{" "}
-                        {selectedSeverityIds.length}
+                      <div>
+                        <div className="font-bold text-lg text-[var(--text-primary)]">
+                          {currentSeveritySymptom.label}
+                        </div>
+
+                        <div className="text-xs text-[var(--text-tertiary)] font-medium">
+                          Question {currentSeverityIndex + 1} of {selectedSeverityIds.length}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-3">
-                    {getCurrentSeverityConfig()?.options.map((option) => {
-                      const isSelected = followUpAnswers[currentSeveritySymptom.id] === option.label;
+                    <div className="space-y-4">
+                      <p className="text-base font-semibold text-[var(--text-primary)] mb-4">
+                        {getCurrentSeverityConfig()?.question}
+                      </p>
                       
-                      return (
-                        <button
-                          type="button"
-                          key={option.value}
-                          onClick={() => setFollowUpAnswers(prev => ({ ...prev, [currentSeveritySymptom.id]: option.label }))}
-                          className={`w-full text-left p-4 rounded-xl border-2 transition-all active:scale-[0.98] ${
-                            isSelected 
-                              ? "border-[var(--rose-400)] bg-[var(--rose-50)] shadow-sm" 
-                              : "border-[var(--warm-200)] hover:border-[var(--rose-300)]"
-                          }`}
-                        >
-                          <span className={`text-sm ${isSelected ? "text-[var(--rose-700)] font-medium" : "text-[var(--text-secondary)]"}`}>
-                            {option.label}
-                          </span>
-                        </button>
-                      );
-                    })}
+                      <div className="grid grid-cols-1 gap-3">
+                        {getCurrentSeverityConfig()?.options.map((option) => {
+                          const isSelected = followUpAnswers[currentSeveritySymptom.id] === option.label;
+                          
+                          return (
+                            <button
+                              type="button"
+                              key={option.value}
+                              onClick={() => setFollowUpAnswers(prev => ({ ...prev, [currentSeveritySymptom.id]: option.label }))}
+                              className={`w-full text-left p-5 rounded-2xl border-2 transition-all active:scale-[0.98] ${
+                                isSelected 
+                                  ? "border-[var(--rose-400)] bg-[var(--rose-50)] shadow-sm" 
+                                  : "border-[var(--warm-200)] hover:border-[var(--rose-300)] bg-white"
+                              }`}
+                            >
+                              <span className={`text-sm ${isSelected ? "text-[var(--rose-700)] font-bold" : "text-[var(--text-secondary)] font-medium"}`}>
+                                {option.label}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              <button
-                type="button"
-                onClick={handleSeverityNext}
-                className="w-full py-4 rounded-2xl bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white font-semibold shadow-lg shadow-rose-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-              >
-                {currentSeverityIndex < selectedSeverityIds.length - 1
-                  ? "Next Question"
-                  : "See Results"}{" "}
-                <ChevronRight size={20} />
-              </button>
+                <button
+                  type="button"
+                  onClick={handleSeverityNext}
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white font-bold shadow-lg shadow-rose-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                >
+                  {currentSeverityIndex < selectedSeverityIds.length - 1
+                    ? "Next Question"
+                    : "See Results"}{" "}
+                  <ChevronRight size={20} strokeWidth={3} />
+                </button>
+              </div>
             </motion.div>
           )}
 
@@ -647,270 +676,197 @@ function CheckInContent() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4 }}
+              className="md:grid md:grid-cols-12 md:gap-10 items-start"
             >
-              <div
-                className={`rounded-3xl p-6 mb-5 ${
-                  riskLevel === "high"
-                    ? "bg-gradient-to-br from-rose-50 to-red-50 border-2 border-rose-200"
-                    : riskLevel === "medium"
-                    ? "bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200"
-                    : "bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200"
-                }`}
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${
-                      riskLevel === "high"
-                        ? "bg-rose-500"
-                        : riskLevel === "medium"
-                        ? "bg-amber-500"
-                        : "bg-emerald-500"
-                    }`}
-                  >
-                    {riskLevel === "high" ? (
-                      <AlertTriangle size={28} className="text-white" />
-                    ) : riskLevel === "medium" ? (
-                      <Clock size={28} className="text-white" />
-                    ) : (
-                      <ThumbsUp size={28} className="text-white" />
-                    )}
-                  </div>
-
-                  <div>
-                    <span
-                      className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-1 block ${
+              <div className="md:col-span-5 lg:col-span-5 md:sticky md:top-24">
+                <div
+                  className={`rounded-3xl p-6 md:p-8 mb-5 ${
+                    riskLevel === "high"
+                      ? "bg-gradient-to-br from-rose-50 to-red-50 border-2 border-rose-200 shadow-rose-100/50 shadow-lg"
+                      : riskLevel === "medium"
+                      ? "bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 shadow-amber-100/50 shadow-lg"
+                      : "bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 shadow-emerald-100/50 shadow-lg"
+                  }`}
+                >
+                  <div className="flex items-center gap-4 mb-6">
+                    <div
+                      className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-md ${
                         riskLevel === "high"
-                          ? "text-rose-600"
+                          ? "bg-rose-500"
                           : riskLevel === "medium"
-                          ? "text-amber-600"
-                          : "text-emerald-600"
+                          ? "bg-amber-500"
+                          : "bg-emerald-500"
                       }`}
                     >
-                      {riskLevel === "high" ? "Urgent Action Recommended" : riskLevel === "medium" ? "Monitoring Advised" : "No Concerns Detected"}
-                    </span>
+                      {riskLevel === "high" ? (
+                        <AlertTriangle size={32} className="text-white" />
+                      ) : riskLevel === "medium" ? (
+                        <Clock size={32} className="text-white" />
+                      ) : (
+                        <ThumbsUp size={32} className="text-white" />
+                      )}
+                    </div>
 
-                    <h2 className="text-xl font-bold text-[var(--text-primary)]">
-                      {riskLevel === "high"
-                        ? "Contact Your Care Team"
-                        : riskLevel === "medium"
-                        ? "Track Symptoms Closely"
-                        : "Continue Routine Care"}
-                    </h2>
+                    <div>
+                      <span
+                        className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-1.5 block ${
+                          riskLevel === "high"
+                            ? "text-rose-600"
+                            : riskLevel === "medium"
+                            ? "text-amber-600"
+                            : "text-emerald-600"
+                        }`}
+                      >
+                        {riskLevel === "high" ? "Urgent Action Recommended" : riskLevel === "medium" ? "Monitoring Advised" : "No Concerns Detected"}
+                      </span>
+
+                      <h2 className="text-2xl font-extrabold text-[var(--text-primary)] leading-tight">
+                        {riskLevel === "high"
+                          ? "Contact Your Care Team"
+                          : riskLevel === "medium"
+                          ? "Track Symptoms Closely"
+                          : "Continue Routine Care"}
+                      </h2>
+                    </div>
                   </div>
-                </div>
 
-                <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-5 mb-5 border border-white/40 shadow-sm">
-                  <h3 className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-[0.15em] mb-3 border-b border-black/5 pb-2">Check-in Summary</h3>
-                  <div className="space-y-3">
+                  <div className={`rounded-2xl p-5 mb-2 ${
+                    riskLevel === "high" ? "bg-rose-100/50" : riskLevel === "medium" ? "bg-amber-100/50" : "bg-emerald-100/50"
+                  }`}>
+                    <p className={`text-[15px] leading-relaxed font-bold ${
+                      riskLevel === "high" ? "text-rose-950" : riskLevel === "medium" ? "text-amber-950" : "text-emerald-950"
+                    }`}>
+                      {getRiskAdvice(riskLevel, week)}
+                    </p>
+                  </div>
+
+                  <p className="text-[11px] text-[var(--text-tertiary)] italic leading-relaxed mt-4 font-medium opacity-80">
+                    Mama Guard provides supportive risk guidance only. It does not diagnose or replace professional medical care.
+                  </p>
+                </div>
+              </div>
+
+              <div className="md:col-span-7 lg:col-span-7 mt-5 md:mt-0 space-y-6">
+                <div className="bg-white border border-[var(--warm-200)] rounded-3xl p-6 shadow-sm">
+                  <div className="flex items-center gap-2 mb-4">
+                    <CalendarDays size={16} className="text-[var(--text-tertiary)]" />
+                    <h3 className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-[0.15em]">Check-in Summary · Today</h3>
+                  </div>
+                  
+                  <div className="space-y-4">
                     {selectedSymptoms.map((id) => {
                       const symptom = symptoms.find((item) => item.id === id);
                       const answer = followUpAnswers[id];
                       return symptom ? (
-                        <div key={id} className="flex flex-col gap-1">
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-[var(--text-primary)] font-bold">{symptom.label}</span>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${symptom.severity === 'high' ? 'bg-rose-100 text-rose-700' : 'bg-blue-50 text-blue-700'}`}>
+                        <div key={id} className="flex flex-col gap-2 p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--warm-100)]">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[var(--text-primary)] font-bold text-sm">{symptom.label}</span>
+                            <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${symptom.severity === 'high' ? 'bg-rose-100 text-rose-700' : 'bg-blue-50 text-blue-700'}`}>
                               {symptom.severity === 'high' ? 'Important' : 'Normal'}
                             </span>
                           </div>
                           {answer && (
-                            <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] bg-black/5 rounded-lg px-2 py-1.5">
+                            <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] bg-white/60 rounded-xl px-3 py-2 border border-black/5">
                               <Sparkles size={12} className="text-[var(--rose-500)]" />
-                              <span>{answer}</span>
+                              <span className="font-medium">{answer}</span>
                             </div>
                           )}
                         </div>
                       ) : null;
                     })}
                     {selectedSymptoms.length === 0 && (
-                      <div className="text-sm text-[var(--text-tertiary)] italic py-2">No concerning symptoms reported today.</div>
+                      <div className="flex items-center gap-3 py-4 text-emerald-700">
+                        <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                          <ShieldCheck size={20} />
+                        </div>
+                        <div className="text-sm font-bold italic">No concerning symptoms reported today.</div>
+                      </div>
                     )}
                   </div>
                 </div>
 
-                <div className={`rounded-2xl p-4 mb-2 ${
-                  riskLevel === "high" ? "bg-rose-100/50" : riskLevel === "medium" ? "bg-amber-100/50" : "bg-emerald-100/50"
-                }`}>
-                  <p className={`text-sm leading-relaxed font-semibold ${
-                    riskLevel === "high" ? "text-rose-900" : riskLevel === "medium" ? "text-amber-900" : "text-emerald-900"
-                  }`}>
-                    {getRiskAdvice(riskLevel, week)}
-                  </p>
-                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {riskLevel === "high" && (
+                    <>
+                      {userData.providerPhone ? (
+                        <a
+                          href={`tel:${userData.providerPhone}`}
+                          className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-bold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                        >
+                          <Phone size={20} /> Call Provider
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => router.push("/profile")}
+                          className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-bold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                        >
+                          <Phone size={20} /> Add Provider
+                        </button>
+                      )}
 
-                <p className="text-[10px] text-[var(--text-muted)] italic leading-tight mt-4">
-                  Mama Guard provides supportive risk guidance only. It does not diagnose or replace professional medical care.
-                </p>
-              </div>
-
-              <div className="space-y-3 mb-5">
-                {riskLevel === "high" && (
-                  <>
-                    {userData.providerPhone ? (
-                      <a
-                        href={`tel:${userData.providerPhone}`}
-                        className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
-                      >
-                        <Phone size={20} /> Call Provider ({userData.providerPhone})
-                      </a>
-                    ) : (
                       <button
                         type="button"
-                        onClick={() => router.push("/profile")}
-                        className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                        onClick={() => alert("Prototype Notice: In a real version, this would show nearby emergency care centers. Please contact local emergency services or go to the nearest emergency care center.")}
+                        className="w-full py-4 rounded-2xl bg-white border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-bold active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm"
                       >
-                        <Phone size={20} /> Add Provider Phone
+                        <MapPin size={20} /> Emergency Care
                       </button>
-                    )}
+                    </>
+                  )}
 
+                  {riskLevel === "medium" && (
                     <button
                       type="button"
-                      onClick={() => alert("Prototype Notice: In a real version, this would show nearby emergency care centers. Please contact local emergency services or go to the nearest emergency care center.")}
-                      className="w-full py-4 rounded-2xl bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-semibold active:scale-[0.98] flex items-center justify-center gap-2"
+                      onClick={() => router.push("/safety")}
+                      className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold shadow-lg shadow-amber-500/20 active:scale-[0.98] flex items-center justify-center gap-2 sm:col-span-2"
                     >
-                      <MapPin size={20} /> Find emergency care
+                      <ShieldAlert size={20} strokeWidth={2.5} /> View Safety Plan
                     </button>
-                  </>
-                )}
+                  )}
 
-                {riskLevel === "medium" && (
                   <button
                     type="button"
-                    onClick={() => router.push("/safety")}
-                    className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold shadow-lg shadow-amber-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
+                    onClick={() => {
+                      const statusText = riskLevel === "high" ? "URGENT ACTION RECOMMENDED" : riskLevel === "medium" ? "MONITORING ADVISED" : "ROUTINE MONITORING";
+                      const adviceText = getRiskAdvice(riskLevel, week);
+                      
+                      const summary = `Mama Guard Check-in Summary\n--------------------------\nDate: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}\nGestational Week: ${week}\nGuidance Level: ${statusText}\n\nSymptoms Reported:\n${selectedSymptoms.map(id => {
+                        const s = symptoms.find(item => item.id === id);
+                        const answer = followUpAnswers[id];
+                        return `• ${s ? s.label : id}${answer ? ` (${answer})` : ""}`;
+                      }).join("\n") || "No symptoms reported"}\n\nSuggested Next Steps:\n${adviceText}\n\n--------------------------\nNote: This is a prototype summary generated by Mama Guard for supportive risk guidance only. It is not a medical diagnosis or clinical record.`;
+                      
+                      if (navigator.clipboard) {
+                        navigator.clipboard.writeText(summary).then(() => alert("Summary copied! You can now paste this to your provider.")).catch(() => alert("Failed to copy. Please take a screenshot."));
+                      } else {
+                        alert("Clipboard not available. Please take a screenshot of this result.");
+                      }
+                    }}
+                    className="w-full py-4 rounded-2xl bg-white border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-bold active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm"
                   >
-                    <ShieldAlert size={20} /> View Safety Plan
+                    <Share2 size={18} className="text-[var(--rose-500)]" /> Share Summary
                   </button>
-                )}
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    const statusText = riskLevel === "high" ? "URGENT ACTION RECOMMENDED" : riskLevel === "medium" ? "MONITORING ADVISED" : "ROUTINE MONITORING";
-                    const adviceText = getRiskAdvice(riskLevel, week);
-                    
-                    const summary = `Mama Guard Check-in Summary\n--------------------------\nDate: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}\nGestational Week: ${week}\nGuidance Level: ${statusText}\n\nSymptoms Reported:\n${selectedSymptoms.map(id => {
-                      const s = symptoms.find(item => item.id === id);
-                      const answer = followUpAnswers[id];
-                      return `• ${s ? s.label : id}${answer ? ` (${answer})` : ""}`;
-                    }).join("\n") || "No symptoms reported"}\n\nSuggested Next Steps:\n${adviceText}\n\n--------------------------\nNote: This is a prototype summary generated by Mama Guard for supportive risk guidance only. It is not a medical diagnosis or clinical record.`;
-                    
-                    if (navigator.clipboard) {
-                      navigator.clipboard.writeText(summary).then(() => alert("Summary copied! You can now paste this to your provider.")).catch(() => alert("Failed to copy. Please take a screenshot."));
-                    } else {
-                      alert("Clipboard not available. Please take a screenshot of this result.");
-                    }
-                  }}
-                  className="w-full py-4 rounded-2xl bg-white border-2 border-[var(--warm-200)] text-[var(--text-primary)] font-bold active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm"
-                >
-                  <Share2 size={18} className="text-[var(--rose-500)]" /> Copy Summary for Provider
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 mb-8">
-                <button
-                  type="button"
-                  onClick={() => router.push("/home")}
-                  className="py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-semibold text-sm active:scale-[0.95] flex items-center justify-center gap-2"
-                >
-                  <ChevronLeft size={16} /> Dashboard
-                </button>
-                <button
-                  type="button"
-                  onClick={resetCheckIn}
-                  className="py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-semibold text-sm active:scale-[0.95] flex items-center justify-center gap-2"
-                >
-                  <RotateCcw size={16} /> New Check-in
-                </button>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setShowAssistantInsights((prev) => !prev)}
-                className="w-full py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-primary)] font-medium active:scale-[0.98] flex items-center justify-center gap-2 mb-4"
-              >
-                <Sparkles size={18} className="text-[var(--rose-500)]" />
-                {showAssistantInsights ? "Hide" : "View"} Assistant Insights
-              </button>
-
-              <AnimatePresence>
-                {showAssistantInsights && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden mb-5"
+                <div className="pt-6 border-t border-[var(--warm-100)] space-y-3">
+                  <button
+                    type="button"
+                    onClick={resetCheckIn}
+                    className="w-full py-4 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-bold active:scale-[0.98] flex items-center justify-center gap-2 text-sm shadow-sm"
                   >
-                    <div className="rounded-2xl bg-gradient-to-br from-[var(--rose-50)] to-[var(--bg-secondary)] p-5 border border-[var(--rose-200)]">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Sparkles size={16} className="text-[var(--rose-500)]" />
-                        <span className="text-sm font-semibold text-[var(--rose-700)]">
-                          Assistant Context
-                        </span>
-                      </div>
+                    <RotateCcw size={18} /> Start New Check-in
+                  </button>
 
-                      <div className="space-y-3 text-sm text-[var(--text-secondary)]">
-                        <p>
-                          Based on your symptoms at week {week} of pregnancy,
-                          here&apos;s what to consider:
-                        </p>
-
-                        {selectedSymptoms.includes("fever") && (
-                          <p>
-                            • Fever in the{" "}
-                            {week > 28 ? "third" : week > 12 ? "second" : "first"}{" "}
-                            trimester should be monitored closely. Stay hydrated
-                            and track your temperature.
-                          </p>
-                        )}
-
-                        {selectedSymptoms.includes("headache") && (
-                          <p>
-                            • Persistent headaches with vision changes can
-                            indicate blood pressure concerns. Rest in a dark room
-                            and monitor.
-                          </p>
-                        )}
-
-                        {selectedSymptoms.includes("bleeding") && (
-                          <p>
-                            • Any vaginal bleeding at {week} weeks warrants
-                            prompt medical evaluation, even if light.
-                          </p>
-                        )}
-
-                        {selectedSymptoms.length === 0 && (
-                          <p>
-                            • No concerning symptoms reported. Continue your
-                            prenatal vitamins and stay active with light exercise.
-                          </p>
-                        )}
-
-                        <p className="text-[var(--text-tertiary)] text-xs mt-3 pt-3 border-t border-[var(--warm-200)]">
-                          This is not a medical diagnosis. Always consult your
-                          healthcare provider for personalized medical advice.
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <button
-                type="button"
-                onClick={resetCheckIn}
-                className="w-full py-3.5 rounded-2xl bg-[var(--surface-primary)] border border-[var(--warm-200)] text-[var(--text-secondary)] font-medium active:scale-[0.98] flex items-center justify-center gap-2 text-sm"
-              >
-                <RotateCcw size={16} /> Start New Check-in
-              </button>
-
-              <button
-                type="button"
-                onClick={() => router.push("/home")}
-                className="w-full mt-4 py-3 text-[var(--rose-600)] font-semibold text-sm flex items-center justify-center gap-1"
-              >
-                Return to Home <ArrowRight size={16} />
-              </button>
+                  <button
+                    type="button"
+                    onClick={() => router.push("/home")}
+                    className="w-full py-3 text-[var(--rose-600)] font-bold text-sm flex items-center justify-center gap-2 hover:bg-rose-50 rounded-xl transition-colors"
+                  >
+                    Return to Dashboard <ArrowRight size={18} />
+                  </button>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
