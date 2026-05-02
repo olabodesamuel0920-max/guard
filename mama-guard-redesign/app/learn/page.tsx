@@ -115,6 +115,100 @@ const articles: Article[] = [
     }
   },
   { 
+    id: "4", 
+    title: "Postpartum Warning Signs", 
+    category: "postpartum", 
+    readTime: 4, 
+    type: "article", 
+    weekRelevance: [38, 44], 
+    bookmarked: false, 
+    excerpt: "Urgent symptoms to watch for in the weeks following delivery.",
+    content: {
+      intro: "Safety doesn't end with delivery. The weeks following birth are a critical time for monitoring your recovery.",
+      keyPoints: [
+        "Postpartum complications can arise up to 6 weeks after birth.",
+        "Rest is essential, but stay aware of how you feel physically and mentally.",
+        "Keep your follow-up appointments even if you feel well."
+      ],
+      whenToSeekCare: [
+        "Very heavy bleeding (soaking more than one pad an hour)",
+        "Severe, persistent headache or vision changes",
+        "Fever of 100.4°F or higher",
+        "Difficulty breathing or chest pain",
+        "Swelling, redness, or pain in one leg"
+      ]
+    }
+  },
+  { 
+    id: "5", 
+    title: "When to Call Your Provider", 
+    category: "care", 
+    readTime: 5, 
+    type: "article", 
+    weekRelevance: [1, 44], 
+    bookmarked: false, 
+    excerpt: "Guidelines for when to reach out for non-emergency but important concerns.",
+    content: {
+      intro: "Your care team is there to support you. Knowing when to call can help address concerns before they become urgent.",
+      keyPoints: [
+        "Don't worry about 'bothering' your provider with questions.",
+        "Keep a list of non-urgent questions for your scheduled visits.",
+        "Call if you notice changes that persist or worsen over time."
+      ],
+      whenToSeekCare: [
+        "Changes in vaginal discharge or unusual odors",
+        "Mild but persistent abdominal discomfort",
+        "Burning or pain during urination",
+        "Concerns about baby's behavior or feeding patterns"
+      ]
+    }
+  },
+  { 
+    id: "6", 
+    title: "Understanding Swelling", 
+    category: "warning", 
+    readTime: 4, 
+    type: "article", 
+    weekRelevance: [20, 44], 
+    bookmarked: false, 
+    excerpt: "Distinguishing between normal pregnancy swelling and signs that need attention.",
+    content: {
+      intro: "Some swelling is common in pregnancy, but certain patterns can be a sign of underlying issues.",
+      keyPoints: [
+        "Mild swelling in feet and ankles is often normal, especially at the end of the day.",
+        "Elevating your feet and staying hydrated can help with normal swelling.",
+        "Sudden or asymmetrical swelling should always be reported."
+      ],
+      whenToSeekCare: [
+        "Sudden swelling in your hands or face",
+        "Swelling in only one leg, especially if accompanied by pain or redness",
+        "Swelling that is accompanied by a severe headache or vision changes"
+      ]
+    }
+  },
+  { 
+    id: "7", 
+    title: "Your Emergency Care Plan", 
+    category: "care", 
+    readTime: 6, 
+    type: "article", 
+    weekRelevance: [1, 44], 
+    bookmarked: false, 
+    excerpt: "Steps to take now so you are prepared if an urgent situation arises.",
+    content: {
+      intro: "Being prepared can help you stay calm and act quickly if you ever face a medical emergency.",
+      keyPoints: [
+        "Keep your provider's after-hours number saved in your phone.",
+        "Know the location of your nearest emergency care center.",
+        "Have a plan for transportation and childcare if needed urgently."
+      ],
+      whenToSeekCare: [
+        "Review your plan with your partner or support person today",
+        "Ensure you have a 'go-bag' ready as you approach your due date"
+      ]
+    }
+  },
+  { 
     id: "12", 
     title: "The Fourth Trimester", 
     category: "postpartum", 
@@ -122,63 +216,40 @@ const articles: Article[] = [
     type: "article", 
     weekRelevance: [37, 44], 
     bookmarked: false, 
-    excerpt: "Safety and recovery guidance for the first weeks after birth.",
+    excerpt: "Recovery guidance and mental health awareness for the weeks after birth.",
     content: {
-      intro: "The postpartum period, often called the 'fourth trimester,' is a time of major physical and emotional transition.",
+      intro: "The postpartum period is a time of major physical and emotional transition.",
       keyPoints: [
-        "Your body needs significant time and rest to recover from birth.",
+        "Physical healing takes time—be patient with your body.",
         "Mental health is just as important as physical recovery.",
-        "Warning signs can still occur in the weeks after delivery."
+        "Social support is vital during this transition."
       ],
       whenToSeekCare: [
-        "Very heavy bleeding (soaking a pad in an hour)",
-        "Fever of 100.4°F or higher",
-        "Severe pain, redness, or swelling in one leg",
-        "Extreme sadness or anxiety that makes it hard to care for yourself"
-      ]
-    }
-  },
-  { 
-    id: "1", 
-    title: "Preparing for Your Visit", 
-    category: "care", 
-    readTime: 4, 
-    type: "article", 
-    weekRelevance: [1, 40], 
-    bookmarked: false, 
-    excerpt: "How to organize your symptoms and questions for your provider.",
-    content: {
-      intro: "Getting the most out of your prenatal visits starts with clear communication and preparation.",
-      keyPoints: [
-        "Write down questions as they come up between visits.",
-        "Organize any symptoms you've noticed by frequency and severity.",
-        "Don't hesitate to ask for clarification on anything you don't understand."
-      ],
-      whenToSeekCare: [
-        "You have questions that feel urgent or cannot wait for your next visit",
-        "You notice a new or worsening symptom that concerns you"
+        "Extreme sadness or anxiety that interferes with daily life",
+        "Thoughts of harming yourself or your baby",
+        "Difficulty bonding with your baby or feeling persistently overwhelmed"
       ]
     }
   },
   { 
     id: "2", 
-    title: "Gentle Wellness & Rest", 
+    title: "Wellness & Hydration", 
     category: "wellness", 
     readTime: 5, 
     type: "article", 
     weekRelevance: [1, 44], 
     bookmarked: false, 
-    excerpt: "Supporting your body through rest, hydration, and gentle movement.",
+    excerpt: "Supporting your body's incredible work through hydration and rest.",
     content: {
-      intro: "Wellness during pregnancy is about listening to your body and supporting its incredible work through simple, consistent habits.",
+      intro: "Simple daily habits can significantly impact how you feel throughout your pregnancy.",
       keyPoints: [
-        "Hydration supports healthy blood volume and amniotic fluid.",
-        "Rest is a productive part of your pregnancy journey.",
-        "Gentle movement can help with circulation and mood."
+        "Aim for consistent hydration throughout the day.",
+        "Listen to your body's signals for rest and activity.",
+        "Balanced nutrition supports both you and your baby's growth."
       ],
       whenToSeekCare: [
-        "You feel extreme fatigue that prevents normal daily activity",
-        "Dizziness or lightheadedness that doesn't improve with rest and fluid"
+        "Inability to keep fluids down due to severe nausea",
+        "Signs of dehydration like dark urine or extreme thirst"
       ]
     }
   }
