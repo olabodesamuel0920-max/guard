@@ -153,56 +153,60 @@ export default function ProfilePage() {
 
   const menuSections: MenuSection[] = [
     {
-      title: "Account",
+      title: "Health & Activity",
       items: [
-        {
-          icon: User,
-          label: "Personal Information",
-          desc: user?.name || "Not set",
-          action: handleEditProfile,
-        },
-        {
-          icon: Baby,
-          label: "Pregnancy Details",
-          desc: user?.dueDate
-            ? `Due ${new Date(user.dueDate).toLocaleDateString()} · ${trimester}`
-            : "Not set",
-          action: handleEditProfile,
-        },
         {
           icon: Heart,
           label: "Health History",
-          desc: `${stats.checkins} check-ins recorded`,
+          desc: stats.checkins > 0 ? `${stats.checkins} check-ins recorded` : "No history yet · Start a check-in",
           action: () => setShowHistory(true),
+        },
+        {
+          icon: Shield,
+          label: "Safety Plan",
+          desc: "Emergency contacts & hospital info",
+          action: () => router.push("/safety"),
         },
       ],
     },
     {
-      title: "Medical & Safety",
+      title: "Care Team",
       items: [
         {
-          icon: Shield,
-          label: "Safety Plan",
-          desc: "Emergency contacts & info",
-          action: () => router.push("/safety"),
-        },
-        {
-          icon: Shield,
-          label: "Doctor/Midwife",
-          desc: user?.providerPhone || "Add contact info",
+          icon: Edit3,
+          label: "Healthcare Provider",
+          desc: user?.providerPhone || "Add provider phone number",
           action: handleEditProfile,
         },
         {
           icon: FileText,
           label: "Nearest Hospital",
-          desc: user?.nearestHospital || "Add facility name",
+          desc: user?.nearestHospital || "Add nearest emergency care center",
           action: handleEditProfile,
         },
       ],
     },
     {
-      title: "Preferences",
+      title: "Settings & Privacy",
       items: [
+        {
+          icon: User,
+          label: "Personal Information",
+          desc: user?.name || "Update your profile",
+          action: handleEditProfile,
+        },
+        {
+          icon: Lock,
+          label: "Data & Privacy Info",
+          desc: "Local storage · Privacy overview",
+          action: () => setShowPrivacyInfo(true),
+        },
+        {
+          icon: Download,
+          label: "Export My Data",
+          desc: "Download records to your device",
+          action: () => handleExportData(),
+        },
         {
           icon: Bell,
           label: "Notifications",
@@ -211,53 +215,22 @@ export default function ProfilePage() {
           value: notifications,
           onToggle: handleToggleNotifications,
         },
-        {
-          icon: Shield,
-          label: "Data Sharing",
-          desc: dataSharing ? "Enabled" : "Disabled",
-          toggle: true,
-          value: dataSharing,
-          onToggle: handleToggleDataSharing,
-        },
       ],
     },
     {
-      title: "Data & Privacy",
-      items: [
-        {
-          icon: Lock,
-          label: "Data & Privacy Info",
-          desc: "Local storage · No cloud sync",
-          action: () => setShowPrivacyInfo(true),
-        },
-        {
-          icon: Download,
-          label: "Export my data",
-          desc: "Save your records as JSON",
-          action: () => handleExportData(),
-        },
-      ],
-    },
-    {
-      title: "Support",
+      title: "About Mama Guard",
       items: [
         {
           icon: Info,
-          label: "About Mama Guard",
-          desc: "Product info & mission",
+          label: "Product Mission",
+          desc: "Learn about Mama Guard early access",
           action: () => router.push("/about"),
         },
         {
           icon: HelpCircle,
-          label: "Help Center",
-          desc: "FAQs and support",
+          label: "Help Center & FAQs",
+          desc: "Get support and guidance",
           action: () => setShowHelp(true),
-        },
-        {
-          icon: FileText,
-          label: "Terms & Privacy",
-          desc: "Legal information",
-          action: () => setShowTerms(true),
         },
       ],
     },
@@ -310,67 +283,66 @@ export default function ProfilePage() {
         >
           <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-[var(--rose-200)]/20 blur-2xl" />
 
-          <div className="relative flex items-center gap-4">
+          <div className="relative flex items-center gap-5">
             <div className="relative">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[var(--rose-400)] to-[var(--rose-600)] flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-rose-200">
                 {user.name?.charAt(0) || "M"}
               </div>
 
               <button
                 type="button"
                 onClick={handleEditProfile}
-                className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[var(--surface-primary)] border-2 border-[var(--warm-200)] flex items-center justify-center shadow-sm"
+                className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-white border-2 border-rose-100 flex items-center justify-center shadow-md active:scale-90 transition-transform"
               >
-                <Edit3 size={12} className="text-[var(--text-tertiary)]" />
+                <Edit3 size={14} className="text-rose-600" />
               </button>
             </div>
 
-            <div className="flex-1">
-              <h1 className="text-xl font-bold text-[var(--text-primary)] mb-0.5">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl font-extrabold text-[var(--text-primary)] mb-0.5 truncate">
                 {user.name}
               </h1>
 
-              <p className="text-sm text-[var(--text-secondary)] mb-1">
-                {user.status === "pregnant" ? "Pregnant" : "Postpartum"}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
+                  {user.status === "pregnant" ? "Pregnant" : "Postpartum"}
+                </span>
+                {week > 0 && (
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-tertiary)] bg-[var(--bg-secondary)] px-2 py-0.5 rounded-full border border-[var(--warm-200)]">
+                    Week {week} · {trimester}
+                  </span>
+                )}
+              </div>
+              <p className="text-[10px] text-[var(--text-muted)] mt-2 font-medium">
+                Early Access · Records stored on this device only
               </p>
-
-              {week > 0 && (
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full bg-[var(--rose-100)] text-xs font-semibold text-[var(--rose-700)]">
-                    Week {week}
-                  </span>
-                  <span className="text-xs text-[var(--text-tertiary)]">
-                    {trimester}
-                  </span>
-                </div>
-              )}
             </div>
           </div>
 
-          <div className="relative grid grid-cols-3 gap-3 mt-5 pt-5 border-t border-[var(--warm-200)]/60">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[var(--text-primary)]">
+          <div className="relative grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-[var(--warm-200)]/60">
+            <div className="text-center group">
+              <div className="text-2xl font-extrabold text-[var(--text-primary)] group-active:scale-110 transition-transform">
                 {stats.checkins}
               </div>
-              <div className="text-[11px] text-[var(--text-tertiary)]">
+              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
                 Check-ins
               </div>
             </div>
 
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[var(--text-primary)]">
+            <div className="text-center group">
+              <div className="text-2xl font-extrabold text-[var(--text-primary)] group-active:scale-110 transition-transform">
                 {stats.articles}
               </div>
-              <div className="text-[11px] text-[var(--text-tertiary)]">
-                Articles
+              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                Read
               </div>
             </div>
 
-            <div className="text-center">
-              <div className="text-2xl font-bold text-[var(--text-primary)]">
-                {stats.streak}
+            <div className="text-center group">
+              <div className="text-2xl font-extrabold text-[var(--text-primary)] group-active:scale-110 transition-transform flex items-center justify-center gap-1">
+                {stats.streak} <span className="text-sm">🔥</span>
               </div>
-              <div className="text-[11px] text-[var(--text-tertiary)] uppercase font-bold tracking-tighter">
+              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
                 Streak
               </div>
             </div>
@@ -578,60 +550,56 @@ export default function ProfilePage() {
             <div className="flex-1 overflow-y-auto p-5 space-y-4">
               {history.length > 0 ? (
                 history.map((entry, i) => (
-                  <div key={i} className="bg-[var(--surface-primary)] rounded-2xl p-5 border border-[var(--warm-200)] shadow-sm">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-0.5">
-                          {new Date(entry.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </span>
-                        <span className="text-[10px] text-[var(--text-tertiary)]">
-                          {new Date(entry.date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
-                        </span>
+                  <div key={i} className="bg-white rounded-[24px] p-6 border border-[var(--warm-200)] shadow-sm">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1">
+                          {new Date(entry.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })} · {new Date(entry.date).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
+                        </div>
+                        <div className="text-sm font-bold text-[var(--text-primary)]">
+                          Check-in at Week {entry.week || 'Unknown'}
+                        </div>
                       </div>
-                      <span className={`px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-widest ${
-                        entry.risk === 'high' ? 'bg-rose-100 text-rose-600 border border-rose-200' : 
-                        entry.risk === 'medium' ? 'bg-amber-100 text-amber-600 border border-amber-200' : 
-                        'bg-emerald-100 text-emerald-600 border border-emerald-200'
+                      <span className={`px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border-2 ${
+                        entry.risk === 'high' ? 'bg-rose-50 text-rose-600 border-rose-100' : 
+                        entry.risk === 'medium' ? 'bg-amber-50 text-amber-600 border-amber-100' : 
+                        'bg-emerald-50 text-emerald-600 border-emerald-100'
                       }`}>
-                        {entry.risk} Risk
+                        {entry.risk} Risk Guidance
                       </span>
                     </div>
                     
-                    <div className="flex flex-wrap gap-1.5 mb-4">
+                    <div className="flex flex-wrap gap-1.5 mb-5">
                       {entry.symptoms.length > 0 ? (
                         entry.symptoms.map((s: string) => (
-                          <span key={s} className="px-2.5 py-1 bg-[var(--warm-50)] rounded-lg text-[10px] font-medium text-[var(--text-secondary)] border border-[var(--warm-100)]">{s}</span>
+                          <span key={s} className="px-2.5 py-1 bg-[var(--bg-secondary)] rounded-lg text-[10px] font-bold text-[var(--text-secondary)] border border-[var(--warm-200)]">{s}</span>
                         ))
                       ) : (
-                        <span className="text-xs text-[var(--text-muted)] italic">No symptoms reported</span>
+                        <span className="text-[11px] text-[var(--text-muted)] italic font-medium">No concerning symptoms reported</span>
                       )}
                     </div>
-
-                    {entry.followUpAnswers && Object.keys(entry.followUpAnswers).length > 0 && (
-                      <div className="pt-3 border-t border-[var(--warm-100)] space-y-1.5 mb-4">
-                        {Object.entries(entry.followUpAnswers).map(([key, val]) => (
-                          <div key={key} className="flex justify-between text-[11px]">
-                            <span className="text-[var(--text-tertiary)] capitalize">{key}:</span>
-                            <span className="font-bold text-[var(--text-secondary)]">{val as string}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
+                    
                     <button 
                       onClick={() => handleCopyHistoryItem(entry)}
-                      className="w-full py-2.5 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 active:scale-[0.98]"
+                      className="w-full py-3 rounded-xl bg-[var(--bg-secondary)] text-[var(--text-primary)] text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 active:scale-[0.98] transition-all border border-[var(--warm-200)]"
                     >
-                      <FileText size={14} /> Copy Summary
+                      <FileText size={16} className="text-rose-500" /> Copy Provider Summary
                     </button>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-20">
-                  <div className="w-16 h-16 rounded-full bg-[var(--warm-100)] flex items-center justify-center mx-auto mb-4">
-                    <Heart size={24} className="text-[var(--warm-300)]" />
+                <div className="text-center py-24 px-10">
+                  <div className="w-20 h-20 rounded-3xl bg-[var(--bg-secondary)] flex items-center justify-center mx-auto mb-6 shadow-inner">
+                    <Heart size={32} className="text-[var(--warm-300)]" />
                   </div>
-                  <p className="text-[var(--text-tertiary)] text-sm font-medium">No check-ins yet.</p>
+                  <p className="text-[var(--text-primary)] font-bold mb-2">No health history yet</p>
+                  <p className="text-[var(--text-tertiary)] text-xs leading-relaxed mb-8">Your recorded check-ins will appear here to help you track trends over time.</p>
+                  <button 
+                    onClick={() => { setShowHistory(false); router.push('/checkin'); }}
+                    className="w-full py-4 rounded-2xl bg-rose-600 text-white font-bold text-sm shadow-lg shadow-rose-200 active:scale-[0.95] transition-all"
+                  >
+                    Start First Check-in
+                  </button>
                 </div>
               )}
             </div>
