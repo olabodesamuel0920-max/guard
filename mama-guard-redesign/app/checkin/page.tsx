@@ -242,6 +242,7 @@ function CheckInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const fromAssistant = searchParams.get("from") === "assistant";
+  const incomingSymptom = searchParams.get("symptom");
 
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<
@@ -389,24 +390,29 @@ function CheckInContent() {
                   <motion.div 
                     initial={{ opacity: 0, y: -10 }} 
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-gradient-to-br from-rose-50 to-white border border-rose-100 rounded-3xl p-5 shadow-sm flex gap-4 items-start relative overflow-hidden group"
+                    className="bg-gradient-to-br from-[var(--rose-50)] to-white border border-[var(--rose-100)] rounded-3xl p-5 shadow-sm flex gap-4 items-start relative overflow-hidden group"
                   >
                     <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                      <Sparkles size={40} className="text-rose-500" />
+                      <Sparkles size={40} className="text-[var(--rose-500)]" />
                     </div>
-                    <div className="w-10 h-10 rounded-2xl bg-rose-100 flex items-center justify-center shrink-0 shadow-inner">
-                      <Sparkles size={20} className="text-rose-600" />
+                    <div className="w-10 h-10 rounded-2xl bg-[var(--rose-100)] flex items-center justify-center shrink-0 shadow-inner">
+                      <Sparkles size={20} className="text-[var(--rose-600)]" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-[13px] font-bold text-rose-950 leading-tight mb-1">
-                        Mama Guard Assistant Handoff
+                      <p className="text-[13px] font-bold text-[var(--rose-950)] leading-tight mb-1">
+                        Assistant Handoff
                       </p>
-                      <p className="text-[11px] text-rose-800/80 leading-relaxed font-medium">
-                        Select what you shared with the Assistant. This check-in organizes your symptoms to help you prepare clearer information for your healthcare provider.
+                      <p className="text-[11px] text-[var(--rose-800)]/80 leading-relaxed font-medium mb-2">
+                        The Assistant suggested a structured check-in so you can organize your symptoms and prepare next-step guidance for your provider.
                       </p>
-                      <div className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-bold text-rose-600 uppercase tracking-wider bg-white/60 px-2 py-0.5 rounded-full border border-rose-100">
-                        Supportive guidance only
-                      </div>
+                      {incomingSymptom && (
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[var(--rose-200)] shadow-sm">
+                          <Activity size={12} className="text-[var(--rose-600)]" />
+                          <span className="text-[10px] font-bold text-[var(--rose-700)] uppercase tracking-wider">
+                            Reported concern: {decodeURIComponent(incomingSymptom)}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 )}

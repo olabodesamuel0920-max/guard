@@ -126,7 +126,7 @@ function generateResponse(input: string): {
         { label: "Call Provider", icon: Phone, action: "call" },
         { label: "Find emergency care", icon: AlertTriangle, action: "er" },
         { label: "Provider Summary", icon: FileText, action: "summary" },
-        { label: "Start Check-in", icon: Activity, action: "checkin" },
+        { label: "Start Check-in", icon: Activity, action: `checkin?symptom=${encodeURIComponent(matchedCritical.label)}` },
       ],
       structuredWarning: {
         title: `Urgent Notice: ${matchedCritical.label}`,
@@ -168,7 +168,7 @@ function generateResponse(input: string): {
         : `Thank you for sharing how you're feeling. I can provide supportive guidance, but it's important to track these symptoms formally to share with your provider.\n\nWould you like to log this in a structured check-in?`, 
       type: "text",
       actions: [
-        { label: "Log in Check-in", icon: Activity, action: "checkin" },
+        { label: "Log in Check-in", icon: Activity, action: `checkin?symptom=${encodeURIComponent(isNormal ? "Normal Pregnancy Symptoms" : "General Concern")}` },
         { label: "Provider Summary", icon: FileText, action: "summary" },
         { label: "Read Article", icon: BookOpen, action: "learn" },
       ]
@@ -413,8 +413,12 @@ This summary was prepared by Mama Guard to help organize information. It is supp
                           <button 
                             key={action.action} 
                             onClick={() => { 
-                              if (action.action === "checkin") router.push("/checkin?from=assistant"); 
-                              if (action.action === "learn") router.push("/learn"); 
+                              if (action.action.startsWith("checkin")) {
+                                const baseUrl = "/checkin";
+                                const query = action.action.includes("?") ? `${action.action}&from=assistant` : `${action.action}?from=assistant`;
+                                router.push(query.startsWith("/") ? query : `/${query}`);
+                              } 
+                              else if (action.action === "learn") router.push("/learn"); 
                               if (action.action === "summary") handleProviderSummary();
                               if (action.action === "safety") router.push("/safety");
                               if (action.action === "profile") router.push("/profile");
