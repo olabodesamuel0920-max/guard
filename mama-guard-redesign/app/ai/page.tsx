@@ -43,7 +43,7 @@ const quickPromptGroups = [
       { label: "Severe headache", icon: AlertTriangle, prompt: "I have a severe headache" },
       { label: "Baby moving less", icon: Baby, prompt: "My baby is moving less" },
       { label: "Dizzy or faint", icon: Activity, prompt: "I feel dizzy or faint" },
-      { label: "Bleeding or Fluid", icon: Shield, prompt: "I have bleeding or fluid leaking" },
+      { label: "Bleeding or fluid leaking", icon: Shield, prompt: "I have bleeding or fluid leaking" },
     ]
   },
   {
@@ -51,7 +51,7 @@ const quickPromptGroups = [
     prompts: [
       { label: "Build Safety Plan", icon: Shield, prompt: "Help me build my safety plan" },
       { label: "Provider Summary", icon: FileText, prompt: "Help me prepare a provider summary" },
-      { label: "What to tell Dr.", icon: Stethoscope, prompt: "What should I tell my provider?" },
+      { label: "What to tell provider", icon: Stethoscope, prompt: "What should I tell my provider?" },
     ]
   },
   {
