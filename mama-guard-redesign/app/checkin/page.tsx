@@ -212,21 +212,21 @@ const symptoms: Symptom[] = [
     label: "Swelling",
     description: "In face, hands, or eyes",
     icon: Heart,
-    severity: "medium",
+    severity: "high",
   },
   {
     id: "cramps",
     label: "Abdominal cramps",
     description: "Persistent or painful cramping",
     icon: Activity,
-    severity: "medium",
+    severity: "high",
   },
   {
     id: "tiredness",
     label: "Extreme Fatigue",
     description: "Overwhelming or fainting",
     icon: Clock,
-    severity: "medium",
+    severity: "high",
   },
   {
     id: "self_harm",
@@ -347,7 +347,7 @@ function CheckInContent() {
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
       <Header />
 
-      <main className="pt-20 pb-28 px-5">
+      <main className="pt-20 pb-[260px] px-5">
         <div className="flex items-center gap-2 mb-6">
           <button
             type="button"
@@ -425,12 +425,15 @@ function CheckInContent() {
                   Select what you are experiencing so Mama Guard can help organize your symptoms and prepare supportive next-step guidance.
                 </p>
                 <div className="bg-[var(--bg-secondary)] border border-[var(--warm-200)] rounded-2xl p-4 flex gap-3 shadow-sm">
-                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
+                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm border border-[var(--warm-100)]">
                     <AlertTriangle size={16} className="text-amber-500" />
                   </div>
-                  <p className="text-[10px] text-[var(--text-muted)] leading-tight font-medium">
-                    <strong>Medical Disclaimer:</strong> This tool provides supportive risk guidance only and is not a medical diagnosis. If you feel unsafe or symptoms are severe, contact emergency care immediately.
-                  </p>
+                  <div className="flex-1">
+                    <p className="text-[11px] text-[var(--text-primary)] font-bold mb-0.5">Medical Disclaimer</p>
+                    <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed font-medium">
+                      This tool provides supportive risk guidance only and is not a medical diagnosis. If you feel unsafe or symptoms are severe, contact emergency care immediately.
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -517,31 +520,33 @@ function CheckInContent() {
                 </motion.div>
               )}
 
-              <div className="sticky bottom-24 left-0 right-0 pt-4 bg-gradient-to-t from-[var(--bg-cream)] via-[var(--bg-cream)] to-transparent">
-                <button
-                  type="button"
-                  onClick={() => setSelectedSymptoms([])}
-                  className={`w-full py-4 rounded-3xl text-center font-bold text-xs uppercase tracking-widest transition-all mb-4 ${
-                    selectedSymptoms.length === 0
-                      ? "bg-white text-[var(--sage-600)] border-2 border-[var(--sage-200)] shadow-sm"
-                      : "bg-transparent text-[var(--text-tertiary)] border-2 border-dashed border-[var(--warm-200)] hover:border-[var(--rose-200)]"
-                  }`}
-                >
-                  {selectedSymptoms.length === 0 ? "✅ I'm feeling fine — no symptoms" : "Clear All Selection"}
-                </button>
+              <div className="fixed bottom-[76px] left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-t border-[var(--warm-200)] px-5 pt-3 pb-4 shadow-[0_-8px_30px_rgb(0,0,0,0.05)]">
+                <div className="max-w-lg mx-auto space-y-3">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSymptoms([])}
+                    className={`w-full py-3 rounded-2xl text-center font-bold text-[10px] uppercase tracking-widest transition-all ${
+                      selectedSymptoms.length === 0
+                        ? "bg-[var(--sage-50)] text-[var(--sage-600)] border border-[var(--sage-200)]"
+                        : "bg-white text-[var(--text-tertiary)] border border-dashed border-[var(--warm-200)]"
+                    }`}
+                  >
+                    {selectedSymptoms.length === 0 ? "✅ I'm feeling fine — no symptoms" : "Clear Selection"}
+                  </button>
 
-                <button
-                  type="button"
-                  disabled={selectedSymptoms.length === 0}
-                  onClick={handleSubmitSymptoms}
-                  className={`w-full py-5 rounded-3xl font-bold text-base transition-all flex items-center justify-center gap-2 shadow-xl ${
-                    selectedSymptoms.length > 0
-                      ? "bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-rose-500/30 active:scale-[0.98]"
-                      : "bg-[var(--warm-200)] text-[var(--text-muted)] cursor-not-allowed grayscale"
-                  }`}
-                >
-                  Continue to Guidance <ChevronRight size={20} strokeWidth={3} />
-                </button>
+                  <button
+                    type="button"
+                    disabled={selectedSymptoms.length === 0}
+                    onClick={handleSubmitSymptoms}
+                    className={`w-full py-4 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg ${
+                      selectedSymptoms.length > 0
+                        ? "bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-rose-500/20 active:scale-[0.98]"
+                        : "bg-[var(--warm-200)] text-[var(--text-muted)] cursor-not-allowed"
+                    }`}
+                  >
+                    Continue to Guidance <ChevronRight size={18} strokeWidth={3} />
+                  </button>
+                </div>
               </div>
             </motion.div>
           )}
