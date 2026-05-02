@@ -21,7 +21,7 @@ export function MedicalDisclaimer({ variant = "normal", className = "" }: Medica
           <div className="space-y-2">
             <div className="font-bold text-sm">Emergency Notice</div>
             <p className="text-sm leading-relaxed">
-              This may need urgent medical attention. Contact your healthcare provider now or go to the nearest emergency center if symptoms are severe.
+              This may need urgent medical attention. Contact your healthcare provider now or go to the nearest emergency care center if symptoms are severe.
             </p>
           </div>
         </div>
@@ -36,7 +36,7 @@ export function MedicalDisclaimer({ variant = "normal", className = "" }: Medica
         <div className="space-y-1">
           <div className="font-semibold text-xs text-[var(--text-primary)]">Medical Disclaimer</div>
           <p className="text-xs leading-relaxed">
-            Mama Guard is a support tool and does not provide a medical diagnosis. If symptoms are severe, worsening, or you feel unsafe, contact your healthcare provider or visit the nearest emergency center.
+            Mama Guard is a support tool and does not provide a medical diagnosis. If symptoms are severe, worsening, or you feel unsafe, contact your healthcare provider or visit the nearest emergency care center.
           </p>
         </div>
       </div>
