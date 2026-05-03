@@ -341,7 +341,7 @@ function CheckInContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
-      <Header />
+      <Header status={currentStep === "result" ? (riskLevel === "high" ? "urgent" : riskLevel === "medium" ? "review" : "safe") : "safe"} />
 
       <main className="pt-20 pb-[260px] md:pb-24 px-5 max-w-lg mx-auto md:max-w-7xl">
         <div className="flex items-center gap-2 mb-6 md:mb-10">
@@ -807,7 +807,7 @@ function CheckInContent() {
                           onClick={() => router.push("/profile")}
                           className="w-full py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-bold shadow-lg shadow-rose-500/20 active:scale-[0.98] flex items-center justify-center gap-2"
                         >
-                          <Phone size={20} /> Add Provider
+                          <Phone size={20} /> Add Provider Contact
                         </button>
                       )}
 

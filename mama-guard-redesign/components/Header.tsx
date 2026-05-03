@@ -3,10 +3,18 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getGestationalWeek, getTrimester, cn } from "@/lib/utils";
-import { Sparkles, Shield } from "lucide-react";
+import { Sparkles, Shield, ShieldAlert, Clock } from "lucide-react";
 import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 
-export function Header({ showAssistantButton = true }: { showAssistantButton?: boolean }) {
+export type HeaderStatus = "safe" | "urgent" | "review";
+
+export function Header({ 
+  showAssistantButton = true,
+  status = "safe"
+}: { 
+  showAssistantButton?: boolean;
+  status?: HeaderStatus;
+}) {
   const router = useRouter();
   const [user, setUser] = useState<{ name: string; dueDate: string } | null>(null);
   const [scrolled, setScrolled] = useState(false);
@@ -24,6 +32,36 @@ export function Header({ showAssistantButton = true }: { showAssistantButton?: b
   const week = user ? getGestationalWeek(user.dueDate) : 0;
   const trimester = getTrimester(week);
 
+  const statusConfigs = {
+    safe: {
+      label: "Safe",
+      icon: Shield,
+      bg: "bg-[var(--sage-100)]",
+      border: "border-[var(--sage-200)]",
+      text: "text-[var(--sage-700)]",
+      iconColor: "text-[var(--sage-600)]"
+    },
+    urgent: {
+      label: "Needs Care",
+      icon: ShieldAlert,
+      bg: "bg-rose-100",
+      border: "border-rose-200",
+      text: "text-rose-700",
+      iconColor: "text-rose-600"
+    },
+    review: {
+      label: "Review",
+      icon: Clock,
+      bg: "bg-amber-100",
+      border: "border-amber-200",
+      text: "text-amber-700",
+      iconColor: "text-amber-600"
+    }
+  };
+
+  const config = statusConfigs[status];
+  const StatusIcon = config.icon;
+
   return (
     <header className={cn(
       "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
@@ -40,9 +78,16 @@ export function Header({ showAssistantButton = true }: { showAssistantButton?: b
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-[var(--sage-100)] border border-[var(--sage-200)]">
-            <Shield size={12} className="text-[var(--sage-600)]" />
-            <span className="text-[10px] font-semibold text-[var(--sage-700)] uppercase tracking-wider">Safe</span>
+          <div className={cn(
+            "flex items-center gap-1 px-2.5 py-1 rounded-full border transition-colors duration-300",
+            config.bg,
+            config.border
+          )}>
+            <StatusIcon size={12} className={config.iconColor} />
+            <span className={cn(
+              "text-[10px] font-semibold uppercase tracking-wider",
+              config.text
+            )}>{config.label}</span>
           </div>
           {showAssistantButton && (
             <button 
