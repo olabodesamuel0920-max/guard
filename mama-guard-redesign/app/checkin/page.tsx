@@ -100,7 +100,7 @@ const severityConfigs: Record<string, SeverityConfig> = {
     options: [
       { label: "Spotting", value: "spotting", riskModifier: 1 },
       { label: "Light (like period start)", value: "light", riskModifier: 2 },
-      { label: "Heavy (soaking a pad)", value: "heavy", riskModifier: 2 },
+      { label: "Heavy (soaking through one or more pads in an hour)", value: "heavy", riskModifier: 2 },
     ],
   },
   movement: {

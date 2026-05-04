@@ -44,12 +44,12 @@ export default function SafetyPlanPage() {
   }, []);
 
   const emergencySigns = [
-    "Severe vaginal bleeding (soaking a pad in an hour)",
+    "Fever of 100.4°F (38°C) or higher",
+    "Heavy vaginal bleeding (soaking through one or more pads in an hour)",
     "Severe headache that won't go away or gets worse",
     "Changes in vision (blurriness, spots, flashes)",
     "Significant decrease in baby's movement",
     "Severe abdominal pain or cramping",
-    "Fever of 100.4°F (38°C) or higher",
     "Chest pain, fast-beating heart, or trouble breathing",
     "Sudden swelling in face, hands, or eyes",
     "Dizziness, fainting, or extreme fatigue",
@@ -90,7 +90,7 @@ export default function SafetyPlanPage() {
           </p>
           <div className="bg-rose-50 border border-rose-100 rounded-2xl p-4">
             <p className="text-[10px] text-rose-800 leading-tight font-medium">
-              <strong>Emergency Note:</strong> Mama Guard does not contact emergency services. If you feel unsafe or symptoms are severe, contact your healthcare provider or local emergency care immediately.
+              <strong>Emergency Note:</strong> Mama Guard does not contact emergency services or your care team automatically. If you feel unsafe or symptoms are severe, contact your healthcare provider or local emergency care immediately.
             </p>
           </div>
         </motion.div>        <section className="mb-8">
@@ -148,19 +148,7 @@ export default function SafetyPlanPage() {
         <section className="mb-8">
           <h3 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3 px-1">Warning Signs to Watch For</h3>
           <div className="bg-[var(--surface-primary)] rounded-3xl overflow-hidden shadow-sm border border-[var(--warm-200)] divide-y divide-[var(--warm-100)]">
-            {[
-              "Fever 100.4°F / 38°C or higher",
-              "Heavy bleeding or fluid leaking",
-              "Severe headache that won't go away",
-              "Vision changes (blurring, spots, flashes)",
-              "Sudden swelling of face or hands",
-              "Chest pain, racing heart, or shortness of breath",
-              "Reduced baby movement",
-              "Severe abdominal pain or stomach cramps",
-              "Severe nausea or vomiting",
-              "Dizziness, fainting, or seizures",
-              "Thoughts of harming yourself or baby"
-            ].map((sign, i) => (
+            {emergencySigns.map((sign, i) => (
               <div key={i} className="flex items-center gap-4 p-4 hover:bg-[var(--warm-50)] transition-colors">
                 <div className="w-2 h-2 rounded-full bg-rose-400 shrink-0 shadow-sm shadow-rose-200" />
                 <span className="text-sm font-medium text-[var(--text-secondary)] leading-tight">{sign}</span>

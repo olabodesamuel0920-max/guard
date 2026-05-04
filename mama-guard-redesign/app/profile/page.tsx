@@ -32,6 +32,7 @@ interface UserProfile {
   dueDate: string;
   providerPhone?: string;
   nearestHospital?: string;
+  emergencyContact?: string;
 }
 
 type ActionMenuItem = {
@@ -183,6 +184,18 @@ export default function ProfilePage() {
           label: "Nearest Hospital",
           desc: user?.nearestHospital || "Add nearest emergency care center",
           action: handleEditProfile,
+        },
+        {
+          icon: Heart,
+          label: "Emergency Contact",
+          desc: user?.emergencyContact || "Add a trusted contact person",
+          action: handleEditProfile,
+        },
+        {
+          icon: Shield,
+          label: "View Safety Plan",
+          desc: "Full protocol & warning signs",
+          action: () => router.push("/safety"),
         },
       ],
     },
@@ -643,6 +656,16 @@ export default function ProfilePage() {
                   value={editData.nearestHospital || ""} 
                   onChange={e => setEditData({...editData, nearestHospital: e.target.value})}
                   placeholder="e.g. City General"
+                  className="w-full mt-1 bg-[var(--bg-secondary)] border border-[var(--warm-200)] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--rose-400)]"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase ml-1 tracking-widest">Emergency Contact</label>
+                <input 
+                  type="text" 
+                  value={editData.emergencyContact || ""} 
+                  onChange={e => setEditData({...editData, emergencyContact: e.target.value})}
+                  placeholder="e.g. Partner, Parent, or Friend"
                   className="w-full mt-1 bg-[var(--bg-secondary)] border border-[var(--warm-200)] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--rose-400)]"
                 />
               </div>
