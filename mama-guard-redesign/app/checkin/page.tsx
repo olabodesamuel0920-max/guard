@@ -805,14 +805,35 @@ function CheckInContent() {
                         <div key={id} className="flex flex-col gap-2 p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--warm-100)]">
                           <div className="flex items-center justify-between">
                             <span className="text-[var(--text-primary)] font-bold text-sm">{symptom.label}</span>
-                            <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${symptom.severity === 'high' ? 'bg-rose-100 text-rose-700' : 'bg-blue-50 text-blue-700'}`}>
-                              {symptom.severity === 'high' ? 'Important' : 'Normal'}
-                            </span>
+                            {(() => {
+                              let label = symptom.severity === 'high' ? 'Important' : 'Review';
+                              let color = symptom.severity === 'high' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700';
+                              
+                              if (id === 'headache') {
+                                const redFlags = ["vision", "swelling", "breathing", "bleeding", "movement", "self_harm"];
+                                const hasRedFlags = selectedSymptoms.some(sid => redFlags.includes(sid));
+                                if (answer === "7-10 (Severe or worsening)" || hasRedFlags) {
+                                  label = "Important";
+                                  color = "bg-rose-100 text-rose-700";
+                                }
+                                // Otherwise stays 'Review' with amber styling
+                              }
+                              
+                              return (
+                                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${color}`}>
+                                  {label}
+                                </span>
+                              );
+                            })()}
                           </div>
                           {answer && (
                             <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] bg-white/60 rounded-xl px-3 py-2 border border-black/5">
                               <Sparkles size={12} className="text-[var(--rose-500)]" />
-                              <span className="font-medium">{answer}</span>
+                              <span className="font-medium">
+                                {id === 'fever' && answer === 'Under 100.4°F' 
+                                  ? "Chills or feeling feverish; temperature under 100.4°F" 
+                                  : answer}
+                              </span>
                             </div>
                           )}
                         </div>
@@ -882,7 +903,10 @@ function CheckInContent() {
                         return `• ${s ? s.label : id}`;
                       }).join("\n") || "No symptoms reported"}\n\nSeverity/details:\n${selectedSymptoms.map(id => {
                         const s = symptoms.find(item => item.id === id);
-                        const answer = followUpAnswers[id];
+                        let answer = followUpAnswers[id];
+                        if (id === 'fever' && answer === 'Under 100.4°F') {
+                          answer = "Chills or feeling feverish; temperature under 100.4°F";
+                        }
                         return `• ${s?.label}: ${answer || "Standard severity"}`;
                       }).join("\n") || "No details"}\n\nSuggested next step:\n${adviceText}\n\nCare team contact:\n- Provider phone: ${userData.providerPhone || "Not added yet"}\n- Nearest hospital: ${userData.nearestHospital || "Not added yet"}\n\nImportant note:\nMama Guard provides supportive organization and risk guidance only. It does not diagnose or replace professional medical care.`;
                       
