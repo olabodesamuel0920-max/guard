@@ -161,10 +161,10 @@ const symptoms: Symptom[] = [
   },
   {
     id: "headache",
-    label: "Severe headache",
-    description: "Persistent or intense pain",
+    label: "Headache",
+    description: "Persistent, intense, or worsening pain",
     icon: Brain,
-    severity: "high",
+    severity: "medium",
   },
   {
     id: "vision",
@@ -262,19 +262,41 @@ function CheckInContent() {
     );
   };
 
-  const calculateRisk = (): RiskLevel => {
+  const calculateRisk = (currentSymptoms: string[], answers: Record<string, string>): RiskLevel => {
     const selected = symptoms.filter((symptom) =>
-      selectedSymptoms.includes(symptom.id)
+      currentSymptoms.includes(symptom.id)
     );
 
+    // High severity symptoms like fever still trigger high risk immediately
     if (selected.some((symptom) => symptom.severity === "high")) return "high";
+
+    // Nuanced Headache Logic
+    if (currentSymptoms.includes("headache")) {
+      const headacheAnswer = answers["headache"];
+      
+      // Headache + 7-10 Severe/worsening = NEEDS CARE
+      if (headacheAnswer === "7-10 (Severe or worsening)") return "high";
+
+      // Headache + Red Flags = NEEDS CARE
+      const redFlags = ["vision", "swelling", "breathing", "bleeding", "movement", "self_harm"];
+      const fatigueAnswer = answers["tiredness"];
+      const hasFainting = fatigueAnswer === "Accompanied by fainting/dizziness";
+      
+      if (currentSymptoms.some(id => redFlags.includes(id)) || hasFainting) {
+        return "high";
+      }
+      
+      // Headache + 1-3 Mild or 4-6 Moderate = REVIEW
+      return "medium";
+    }
+
     if (selected.some((symptom) => symptom.severity === "medium")) return "medium";
 
     return "low";
   };
 
   const handleSubmitSymptoms = () => {
-    const risk = calculateRisk();
+    const risk = calculateRisk(selectedSymptoms, {});
     setRiskLevel(risk);
     
     const followUpIds = getSelectedSeverityIds();
@@ -311,7 +333,9 @@ function CheckInContent() {
     if (currentSeverityIndex < selected.length - 1) {
       setCurrentSeverityIndex((prev) => prev + 1);
     } else {
-      saveCheckIn(riskLevel, followUpAnswers);
+      const finalRisk = calculateRisk(selectedSymptoms, followUpAnswers);
+      setRiskLevel(finalRisk);
+      saveCheckIn(finalRisk, followUpAnswers);
       setCurrentStep("result");
     }
   };
@@ -390,7 +414,7 @@ function CheckInContent() {
                   <motion.div 
                     initial={{ opacity: 0, y: -10 }} 
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-gradient-to-br from-[var(--rose-50)] to-white border border-[var(--rose-100)] rounded-3xl p-5 shadow-sm flex gap-4 items-start relative overflow-hidden group"
+                    className="bg-gradient-to-br from-[var(--rose-50)] to-white border border-[var(--rose-100)] rounded-3xl p-4 sm:p-5 shadow-sm flex gap-4 items-start relative overflow-hidden group"
                   >
                     <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
                       <Sparkles size={40} className="text-[var(--rose-500)]" />
@@ -402,8 +426,11 @@ function CheckInContent() {
                       <p className="text-[13px] font-bold text-[var(--rose-950)] leading-tight mb-1">
                         Assistant Handoff
                       </p>
-                      <p className="text-[11px] text-[var(--rose-800)]/80 leading-relaxed font-medium mb-2">
+                      <p className="text-[11px] text-[var(--rose-800)]/80 leading-relaxed font-medium mb-2 hidden sm:block">
                         The Assistant suggested a structured check-in so you can organize your symptoms and prepare next-step guidance for your provider.
+                      </p>
+                      <p className="text-[11px] text-[var(--rose-800)]/80 leading-relaxed font-medium mb-2 sm:hidden">
+                        Use this check-in to organize your concern for your provider.
                       </p>
                       {incomingSymptom && (
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[var(--rose-200)] shadow-sm">
@@ -500,7 +527,7 @@ function CheckInContent() {
                               {symptom.label}
                             </span>
 
-                            {symptom.severity === "high" && (
+                            {(symptom.severity === "high" || symptom.id === "headache") && (
                               <span className="px-1.5 py-0.5 rounded-full bg-rose-100 text-[9px] font-bold text-rose-700 uppercase tracking-wider">
                                 Important
                               </span>
@@ -745,6 +772,14 @@ function CheckInContent() {
                       {getRiskAdvice(riskLevel, week)}
                     </p>
                   </div>
+
+                  {selectedSymptoms.includes("headache") && riskLevel !== "high" && (
+                    <div className="mt-4 p-4 rounded-2xl bg-amber-100/50 border border-amber-200">
+                      <p className="text-[11px] text-amber-900 font-medium leading-relaxed">
+                        If the headache does not go away, gets worse, or comes with vision changes, swelling, dizziness, chest pain, or reduced baby movement, contact your healthcare provider or emergency care.
+                      </p>
+                    </div>
+                  )}
 
                   <p className="text-[11px] text-[var(--text-tertiary)] italic leading-relaxed mt-4 font-medium opacity-80">
                     Mama Guard provides supportive risk guidance only. It does not diagnose or replace professional medical care.
