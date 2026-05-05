@@ -468,10 +468,10 @@ export default function ProfilePage() {
 
               <div className="flex-1">
                 <div className="font-semibold text-[var(--sage-800)] text-sm">
-                  Worker Portal Demo
+                  Stakeholder Preview: Worker Portal
                 </div>
                 <div className="text-xs text-[var(--sage-600)]">
-                  Mock patient alerts & caseload
+                  Demo-only preview for future care team workflows
                 </div>
               </div>
 

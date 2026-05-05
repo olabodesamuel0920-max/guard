@@ -211,11 +211,11 @@ export default function HomePage() {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.5 }} className="mt-8 flex flex-col items-center gap-2 py-4 border-t border-[var(--warm-200)]/50">
           <div className="flex items-center gap-2">
             <Shield size={14} className="text-[var(--sage-500)]" />
-            <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Early Access Transparency</span>
+            <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Early Access Privacy</span>
           </div>
           <p className="text-[10px] text-[var(--text-muted)] text-center px-6 leading-tight">
-            Mama Guard stores data locally on this device. Cloud synchronization is planned for a future release.
-            This tool provides supportive guidance only and is not a medical diagnosis.
+            Mama Guard uses privacy-first local-device storage. Cloud synchronization is a future roadmap item.
+            This tool provides supportive guidance only and is not a medical diagnosis. Mama Guard does not contact emergency services automatically.
           </p>
         </motion.div>
       </main>
