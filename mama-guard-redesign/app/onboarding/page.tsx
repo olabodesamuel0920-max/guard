@@ -8,9 +8,9 @@ import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
 
 const slides = [
-  { id: "welcome", title: "Welcome to Mama Guard", subtitle: "A supportive prototype for your maternal health journey", icon: Heart, color: "from-rose-400 to-rose-600" },
-  { id: "features", title: "Personalized Support", subtitle: "Daily check-ins and educational resources tailored to your week", icon: Sparkles, color: "from-violet-400 to-violet-600" },
-  { id: "safety", title: "Safe & Private", subtitle: "Your information is stored privately on this device for this prototype.", icon: Shield, color: "from-emerald-400 to-emerald-600" },
+  { id: "welcome", title: "Welcome to Mama Guard", subtitle: "Your early-access maternal safety companion", icon: Heart, color: "from-rose-400 to-rose-600" },
+  { id: "features", title: "Personalized Support", subtitle: "Organize symptoms and access resources tailored to your week", icon: Sparkles, color: "from-violet-400 to-violet-600" },
+  { id: "safety", title: "Privacy First", subtitle: "Your information is stored safely on this device for your privacy.", icon: Shield, color: "from-emerald-400 to-emerald-600" },
 ];
 
 export default function OnboardingPage() {
@@ -68,7 +68,7 @@ export default function OnboardingPage() {
                   <span className="text-rose-500">Mama Guard</span>
                 </h1>
                 <p className="text-[var(--text-secondary)] text-lg mb-8 leading-relaxed">
-                  Supportive guidance for your maternal health journey.
+                  Personalized safety support for your pregnancy and postpartum journey.
                 </p>
 
                 <div className="space-y-4 mb-8">
@@ -97,7 +97,7 @@ export default function OnboardingPage() {
 
                 <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-800 text-[11px] font-medium leading-tight">
                   <Shield size={14} className="shrink-0" />
-                  <span>Privacy First: All data is stored locally on this device only. This is a medical prototype.</span>
+                  <span>Privacy First: All data is stored locally on this device. This is an early-access health companion.</span>
                 </div>
               </div>
             ) : step === 1 || step === 2 ? (
@@ -172,7 +172,7 @@ export default function OnboardingPage() {
                 </div>
                 <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-4">You&apos;re all set!</h1>
                 <p className="text-[var(--text-secondary)] mb-8 text-sm leading-relaxed">
-                  Remember: Mama Guard stores data <strong>on this device only</strong>. This is a prototype and not a substitute for professional medical care.
+                  Remember: Mama Guard stores data <strong>on this device only</strong>. This is an early-access tool and not a substitute for professional medical care.
                 </p>
                 <MedicalDisclaimer />
               </div>

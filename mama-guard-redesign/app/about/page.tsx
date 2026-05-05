@@ -51,7 +51,7 @@ export default function AboutPage() {
           className="text-center mb-12"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--rose-100)] text-[var(--rose-700)] text-[10px] font-bold uppercase tracking-wider mb-4">
-            <Zap size={12} /> Early Access Prototype
+            <Zap size={12} /> Early Access Companion
           </div>
           <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-4 tracking-tight">
             About Mama Guard
@@ -136,7 +136,7 @@ export default function AboutPage() {
               Data & Privacy
             </h2>
             <p className="text-xs leading-relaxed mb-4 opacity-90">
-              In this version, your data is stored <strong>locally on your device</strong>. Mama Guard does not currently sync to any cloud server.
+              In this early-access phase, Mama Guard uses a <strong>privacy-first architecture</strong> where your data is stored locally on your device.
             </p>
             <ul className="space-y-2 mb-6">
               <li className="flex gap-2 text-[10px] opacity-80">
@@ -164,7 +164,7 @@ export default function AboutPage() {
             </h2>
           </div>
           <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-3">
-            The Mama Guard Assistant provides supportive pregnancy guidance and helps explain warning signs.
+            The Mama Guard Assistant provides supportive guidance to help you organize symptoms and understand warning signs.
           </p>
           <div className="bg-[var(--warm-50)] p-3 rounded-xl border border-[var(--warm-100)] flex gap-3">
             <Info size={16} className="text-[var(--text-muted)] flex-shrink-0" />
@@ -177,14 +177,14 @@ export default function AboutPage() {
         {/* Future Vision */}
         <section className="mb-12 px-1">
           <h2 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">
-            Future Vision
+            Product Roadmap
           </h2>
           <div className="grid grid-cols-1 gap-2">
             {[
-              "Secure accounts & cloud sync",
-              "Multilingual support (Pidgin, Yoruba, etc.)",
-              "Provider collaboration tools",
-              "Medical review of all educational content"
+              "Secure accounts & cross-device cloud sync",
+              "Expanded multilingual support (Pidgin, Yoruba, etc.)",
+              "Healthcare provider collaboration interface",
+              "Full clinical review of all educational modules"
             ].map((text) => (
               <div key={text} className="flex items-center gap-3 text-[11px] text-[var(--text-secondary)]">
                 <ArrowRight size={12} className="text-[var(--warm-300)]" />
