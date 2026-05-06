@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { BottomNav } from "@/components/BottomNav";
@@ -80,6 +81,10 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const stored = safeStorage.get<UserProfile | null>(STORAGE_KEYS.ONBOARDING, null);
+    if (!stored) {
+      router.replace("/onboarding");
+      return;
+    }
     setUser(stored);
 
     const savedNotifications = safeStorage.get(STORAGE_KEYS.NOTIFICATIONS, true);
@@ -89,13 +94,13 @@ export default function ProfilePage() {
     setDataSharing(savedDataSharing);
 
     // Calculate stats
-    const checkins = safeStorage.get<any[]>(STORAGE_KEYS.CHECKINS, []);
+    const checkins = safeStorage.get<any[]>(STORAGE_KEYS.CHECKINS, []) || [];
     setHistory([...checkins].reverse()); // Latest first
-    const articlesRead = safeStorage.get<string[]>(STORAGE_KEYS.ARTICLES_READ, []);
+    const articlesRead = safeStorage.get<string[]>(STORAGE_KEYS.ARTICLES_READ, []) || [];
     
     // Simple streak calculation (consecutive days)
     let streak = 0;
-    if (checkins.length > 0) {
+    if (checkins && checkins.length > 0) {
       const dates = checkins.map(c => new Date(c.date).toDateString());
       const uniqueDates = Array.from(new Set(dates)).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
       
@@ -122,7 +127,7 @@ export default function ProfilePage() {
       articles: articlesRead.length,
       streak
     });
-  }, []);
+  }, [router]);
 
   const handleEditProfile = () => {
     setEditData(user);
