@@ -95,38 +95,47 @@ export default function ProfilePage() {
 
     // Calculate stats
     const checkins = safeStorage.get<any[]>(STORAGE_KEYS.CHECKINS, []) || [];
-    setHistory([...checkins].reverse()); // Latest first
-    const articlesRead = safeStorage.get<string[]>(STORAGE_KEYS.ARTICLES_READ, []) || [];
-    
-    // Simple streak calculation (consecutive days)
-    let streak = 0;
-    if (checkins && checkins.length > 0) {
-      const dates = checkins.map(c => new Date(c.date).toDateString());
-      const uniqueDates = Array.from(new Set(dates)).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+    if (Array.isArray(checkins)) {
+      setHistory([...checkins].reverse()); // Latest first
       
-      const today = new Date().toDateString();
-      const yesterday = new Date(Date.now() - 86400000).toDateString();
-      
-      if (uniqueDates[0] === today || uniqueDates[0] === yesterday) {
-        streak = 1;
-        for (let i = 0; i < uniqueDates.length - 1; i++) {
-          const current = new Date(uniqueDates[i]);
-          const next = new Date(uniqueDates[i + 1]);
-          const diff = (current.getTime() - next.getTime()) / 86400000;
-          if (diff <= 1.1) {
-            streak++;
-          } else {
-            break;
+      // Simple streak calculation (consecutive days)
+      let streak = 0;
+      if (checkins.length > 0) {
+        const dates = checkins
+          .filter(c => c && c.date)
+          .map(c => new Date(c.date).toDateString());
+        const uniqueDates = Array.from(new Set(dates)).sort((a, b) => {
+          const timeA = new Date(a).getTime() || 0;
+          const timeB = new Date(b).getTime() || 0;
+          return timeB - timeA;
+        });
+        
+        const today = new Date().toDateString();
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+        
+        if (uniqueDates[0] === today || uniqueDates[0] === yesterday) {
+          streak = 1;
+          for (let i = 0; i < uniqueDates.length - 1; i++) {
+            const current = new Date(uniqueDates[i]);
+            const next = new Date(uniqueDates[i + 1]);
+            const diff = (current.getTime() - next.getTime()) / 86400000;
+            if (diff <= 1.1) {
+              streak++;
+            } else {
+              break;
+            }
           }
         }
       }
-    }
 
-    setStats({
-      checkins: checkins.length,
-      articles: articlesRead.length,
-      streak
-    });
+      const articlesRead = safeStorage.get<string[]>(STORAGE_KEYS.ARTICLES_READ, []) || [];
+      
+      setStats({
+        checkins: checkins.length,
+        articles: Array.isArray(articlesRead) ? articlesRead.length : 0,
+        streak
+      });
+    }
   }, [router]);
 
   const handleEditProfile = () => {
@@ -287,7 +296,17 @@ export default function ProfilePage() {
     }
   };
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col items-center justify-center p-10 text-center">
+        <div className="w-16 h-16 rounded-3xl bg-rose-100 flex items-center justify-center mb-6 animate-pulse">
+          <User size={32} className="text-rose-600" />
+        </div>
+        <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Loading Profile...</h2>
+        <p className="text-sm text-[var(--text-tertiary)] max-w-xs">Please wait while we fetch your local records.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
@@ -588,7 +607,7 @@ export default function ProfilePage() {
                     </div>
                     
                     <div className="flex flex-wrap gap-1.5 mb-5">
-                      {entry.symptoms.length > 0 ? (
+                      {entry.symptoms && Array.isArray(entry.symptoms) && entry.symptoms.length > 0 ? (
                         entry.symptoms.map((s: string) => (
                           <span key={s} className="px-2.5 py-1 bg-[var(--bg-secondary)] rounded-lg text-[10px] font-bold text-[var(--text-secondary)] border border-[var(--warm-200)]">{s}</span>
                         ))
