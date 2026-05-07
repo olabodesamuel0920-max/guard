@@ -67,7 +67,7 @@ export function Header({
       "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
       scrolled ? "bg-[var(--surface-glass)] backdrop-blur-xl border-b border-[var(--warm-200)]/50 shadow-sm" : "bg-transparent"
     )}>
-      <div className="max-w-lg mx-auto flex items-center justify-between px-5 h-16">
+      <div className="max-w-lg md:max-w-6xl mx-auto flex items-center justify-between px-5 h-16">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[var(--rose-300)] to-[var(--rose-500)] flex items-center justify-center shadow-md">
             <span className="text-white text-sm font-bold">{user?.name?.charAt(0) || "M"}</span>

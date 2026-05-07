@@ -370,7 +370,7 @@ function CheckInContent() {
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
       <Header status={currentStep === "result" ? (riskLevel === "high" ? "urgent" : riskLevel === "medium" ? "review" : "safe") : "safe"} />
 
-      <main className="pt-20 pb-[260px] md:pb-24 px-5 max-w-lg mx-auto md:max-w-7xl">
+      <main className="pt-20 pb-[260px] md:pb-24 px-5 max-w-lg mx-auto md:max-w-6xl">
         <div className="flex items-center gap-2 mb-6 md:mb-10">
           <button
             type="button"
@@ -410,7 +410,7 @@ function CheckInContent() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="md:grid md:grid-cols-12 md:gap-10 lg:gap-16 items-start"
+              className="md:grid md:grid-cols-12 md:gap-10 lg:gap-12 items-start"
             >
               <div className="md:col-span-4 lg:col-span-4 md:sticky md:top-24 space-y-8">
                 {fromAssistant && (
@@ -495,7 +495,7 @@ function CheckInContent() {
               </div>
 
               <div className="md:col-span-8 lg:col-span-8 mt-8 md:mt-0">
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 mb-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-8">
                   {symptoms.map((symptom, index) => {
                     const isSelected = selectedSymptoms.includes(symptom.id);
                     const Icon = symptom.icon;
@@ -581,24 +581,24 @@ function CheckInContent() {
                 </div>
 
                 <div className="fixed bottom-[76px] left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-t border-[var(--warm-200)] px-5 pt-3 pb-4 shadow-[0_-8px_30px_rgb(0,0,0,0.05)] md:relative md:bottom-0 md:bg-transparent md:backdrop-blur-none md:border-t-0 md:px-0 md:pb-0 md:shadow-none md:mt-8">
-                  <div className="max-w-lg mx-auto md:max-w-none space-y-3">
+                  <div className="max-w-lg mx-auto md:max-w-none md:grid md:grid-cols-3 md:gap-3 md:space-y-0 space-y-3">
                     <button
                       type="button"
                       onClick={() => setSelectedSymptoms([])}
-                      className={`w-full py-3 rounded-2xl text-center font-bold text-[10px] uppercase tracking-widest transition-all ${
+                      className={`w-full py-3 md:py-4 rounded-2xl text-center font-bold text-[10px] md:text-xs uppercase tracking-widest transition-all md:col-span-1 ${
                         selectedSymptoms.length === 0
                           ? "bg-[var(--sage-50)] text-[var(--sage-600)] border border-[var(--sage-200)]"
                           : "bg-white text-[var(--text-tertiary)] border border-dashed border-[var(--warm-200)]"
                       }`}
                     >
-                      {selectedSymptoms.length === 0 ? "✅ I'm feeling fine — no symptoms" : "Clear Selection"}
+                      {selectedSymptoms.length === 0 ? "✅ I'm feeling fine" : "Clear"}
                     </button>
 
                     <button
                       type="button"
                       disabled={selectedSymptoms.length === 0}
                       onClick={handleSubmitSymptoms}
-                      className={`w-full py-4 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg ${
+                      className={`w-full py-4 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg md:col-span-2 ${
                         selectedSymptoms.length > 0
                           ? "bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-rose-500/20 active:scale-[0.98]"
                           : "bg-[var(--warm-200)] text-[var(--text-muted)] cursor-not-allowed"

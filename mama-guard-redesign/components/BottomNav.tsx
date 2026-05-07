@@ -24,7 +24,7 @@ export function BottomNav() {
     <nav className="fixed md:relative bottom-0 left-0 right-0 z-50 md:z-auto">
       <div className="h-4 bg-gradient-to-t from-[var(--bg-primary)] to-transparent pointer-events-none" />
       <div className="bg-[var(--surface-glass)] backdrop-blur-xl border-t border-[var(--warm-200)]/60 pb-[env(safe-area-inset-bottom,0px)]">
-        <div className="max-w-lg mx-auto flex items-center justify-around px-2 py-2">
+        <div className="max-w-lg md:max-w-6xl mx-auto flex items-center justify-around px-2 py-2">
           {navItems.map((item) => {
             const active = isActive(item.path);
             const Icon = item.icon;
