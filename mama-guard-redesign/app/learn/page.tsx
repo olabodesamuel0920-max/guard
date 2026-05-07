@@ -293,7 +293,7 @@ export default function LearnPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
       <Header showAssistantButton={false} />
-      <main className="pt-20 pb-28 px-5 max-w-lg mx-auto">
+      <main className="pt-20 pb-28 px-5 max-w-lg lg:max-w-5xl xl:max-w-6xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-extrabold text-[var(--text-primary)] mb-2 leading-tight">Learn warning signs & next steps</h1>
           <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
@@ -358,7 +358,7 @@ export default function LearnPage() {
             <p className="text-xs text-[var(--text-secondary)]">Showing content relevant to <span className="font-semibold text-[var(--rose-700)]">Week {userWeek}</span> first</p>
           </motion.div>
         )}
-        <div className="grid grid-cols-1 gap-4 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 mb-8">
           {sortedArticles.map((article, index) => {
             const isRelevant = article.weekRelevance && userWeek >= article.weekRelevance[0] && userWeek <= article.weekRelevance[1];
             const categoryLabel = categories.find(c => c.id === article.category)?.label || article.category;
@@ -446,7 +446,14 @@ export default function LearnPage() {
       <AnimatePresence>
         {selectedArticle && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm" onClick={() => setSelectedArticle(null)}>
-            <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 300 }} className="absolute bottom-0 left-0 right-0 bg-[var(--bg-primary)] rounded-t-3xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <motion.div 
+              initial={{ y: "100%" }} 
+              animate={{ y: 0 }} 
+              exit={{ y: "100%" }} 
+              transition={{ type: "spring", damping: 25, stiffness: 300 }} 
+              className="absolute bottom-0 lg:bottom-auto lg:top-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 left-0 right-0 bg-[var(--bg-primary)] rounded-t-3xl lg:rounded-3xl max-h-[90vh] lg:max-h-[85vh] w-full lg:max-w-2xl overflow-y-auto shadow-2xl" 
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="sticky top-0 bg-[var(--bg-primary)] rounded-t-3xl border-b border-[var(--warm-200)] px-5 py-4 flex items-center justify-between z-10">
                 <h2 className="font-bold text-[var(--text-primary)] text-lg pr-4">{selectedArticle.title}</h2>
                 <button onClick={() => setSelectedArticle(null)} className="w-8 h-8 rounded-full bg-[var(--warm-100)] flex items-center justify-center flex-shrink-0"><XIcon size={16} className="text-[var(--text-secondary)]" /></button>
