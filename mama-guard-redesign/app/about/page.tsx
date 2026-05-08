@@ -29,7 +29,7 @@ export default function AboutPage() {
     { icon: FileText, title: "Care Info", desc: "Prepare organized summaries for your healthcare team." },
     { icon: Users, title: "Care Team", desc: "Keep provider and hospital contacts in one secure place." },
     { icon: Shield, title: "Safety Plan", desc: "Access emergency steps and contacts instantly." },
-    { icon: Baby, title: "Guidance", desc: "Evidence-based pregnancy and postpartum support." }
+    { icon: Baby, title: "Guidance", desc: "Evidence-informed pregnancy and postpartum support." }
   ];
 
   const steps = [
@@ -184,7 +184,7 @@ export default function AboutPage() {
               "Secure accounts & cross-device cloud sync",
               "Expanded multilingual support (Pidgin, Yoruba, etc.)",
               "Healthcare provider collaboration interface",
-              "Full clinical review of all educational modules"
+              "Independent medical/safety review of educational modules"
             ].map((text) => (
               <div key={text} className="flex items-center gap-3 text-[11px] text-[var(--text-secondary)]">
                 <ArrowRight size={12} className="text-[var(--warm-300)]" />

@@ -54,14 +54,14 @@ export default function WorkerPage() {
           <button onClick={() => router.back()} className="w-9 h-9 rounded-full bg-[var(--warm-100)] flex items-center justify-center active:scale-95"><ArrowLeft size={18} className="text-[var(--text-secondary)]" /></button>
           <div className="flex-1">
             <h1 className="font-bold text-[var(--text-primary)] text-base">Demo Worker Portal</h1>
-            <p className="text-[11px] text-[var(--text-tertiary)]">Mock patient data for prototype preview only</p>
+            <p className="text-[11px] text-[var(--text-tertiary)]">Mock patient data for early-access preview only</p>
           </div>
           <div className="w-9 h-9 rounded-full bg-[var(--sage-100)] flex items-center justify-center"><Stethoscope size={18} className="text-[var(--sage-600)]" /></div>
         </div>
       </header>
 
       <div className="bg-[var(--text-primary)] text-white text-[10px] py-1.5 px-5 text-center font-bold tracking-widest uppercase">
-        Prototype preview only. No real patient data is stored or transmitted.
+        Early-access preview only. No real patient data is stored or transmitted.
       </div>
 
       <main className="px-5 py-4 pb-10">

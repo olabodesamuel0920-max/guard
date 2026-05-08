@@ -178,7 +178,7 @@ function generateResponse(input: string): {
   if (lower.includes("baby") && lower.includes("week")) return { content: `At this stage, your baby is reaching many milestones! \n\nHighlights:\n• Major organs are maturing\n• Hearing development is progressing\n• Movement is becoming more rhythmic\n\nHealth Reminders:\n• Continue prenatal vitamins\n• Maintain high hydration\n• Monitor daily kick counts if in the third trimester\n\nPlease share any concerns about your baby's growth with your provider.`, type: "text" };
 
   return { 
-    content: `Thank you for sharing. I'm here to provide supportive prototype guidance.\n\nImportant:\n• I am a prototype, not a medical professional.\n• For any concerns or urgent symptoms, contact your provider immediately.\n• This guidance is for educational purposes only.\n\nHow else can I support you today?`, 
+    content: `Thank you for sharing. I'm here to provide supportive early-access guidance.\n\nImportant:\n• I am an early-access companion, not a medical professional.\n• For any concerns or urgent symptoms, contact your provider immediately.\n• This guidance is for educational purposes only.\n\nHow else can I support you today?`, 
     type: "text" 
   };
 }

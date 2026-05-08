@@ -269,7 +269,7 @@ export default function ProfilePage() {
   };
 
   const handleCopyHistoryItem = (entry: any) => {
-    const summary = `Mama Guard Check-in Summary:\nDate: ${new Date(entry.date).toLocaleDateString()}\nRisk: ${entry.risk.toUpperCase()}\nSymptoms: ${entry.symptoms.join(", ")}\nSuggested Next Step: ${entry.risk === "high" ? "Contact healthcare provider immediately" : entry.risk === "medium" ? "Monitor and consult provider" : "Continue routine care"}\n\nThis is prototype guidance and not a medical diagnosis.`;
+    const summary = `Mama Guard Check-in Summary:\nDate: ${new Date(entry.date).toLocaleDateString()}\nRisk: ${entry.risk.toUpperCase()}\nSymptoms: ${entry.symptoms.join(", ")}\nSuggested Next Step: ${entry.risk === "high" ? "Contact healthcare provider immediately" : entry.risk === "medium" ? "Monitor and consult provider" : "Continue routine care"}\n\nThis is early-access guidance and not a medical diagnosis.`;
     
     if (navigator.clipboard) {
       navigator.clipboard.writeText(summary).then(() => alert("Summary copied to clipboard!")).catch(() => alert("Failed to copy."));
@@ -613,7 +613,7 @@ export default function ProfilePage() {
 
         <div className="text-center pb-4">
           <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
-            Mama Guard Prototype v3.0
+            Mama Guard Early Access v3.0
           </p>
         </div>
         </div>
@@ -639,7 +639,7 @@ export default function ProfilePage() {
 
             <p className="text-sm text-[var(--text-secondary)] text-center mb-6 leading-relaxed">
               This will erase your profile, check-in history, and all saved
-              prototype data. This action cannot be undone.
+              early-access data. This action cannot be undone.
             </p>
 
             <div className="space-y-2.5">
@@ -804,11 +804,11 @@ export default function ProfilePage() {
             <div className="space-y-4 text-sm text-[var(--text-secondary)] leading-relaxed">
               <div>
                 <p className="font-bold text-[var(--text-primary)] mb-1">What is Mama Guard?</p>
-                <p>A supportive prototype designed to help track maternal health symptoms and provide educational guidance.</p>
+                <p>A supportive early-access tool designed to help track maternal health symptoms and provide educational guidance.</p>
               </div>
               <div>
                 <p className="font-bold text-[var(--text-primary)] mb-1">Is this a medical app?</p>
-                <p>No. This is a technology prototype. It does not provide medical diagnoses, clinical review, or emergency dispatch.</p>
+                <p>No. This is an early-access technology companion. It does not provide medical diagnoses, clinical review, or emergency dispatch.</p>
               </div>
               <div>
                 <p className="font-bold text-[var(--text-primary)] mb-1">How do I share my data?</p>
@@ -825,10 +825,10 @@ export default function ProfilePage() {
           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[var(--surface-primary)] rounded-3xl p-6 max-w-sm w-full shadow-2xl max-h-[80vh] overflow-y-auto">
             <h3 className="text-lg font-bold text-[var(--text-primary)] mb-4">Terms & Privacy</h3>
             <div className="space-y-4 text-[11px] text-[var(--text-tertiary)] leading-relaxed uppercase tracking-tight font-bold">
-              <p>1. PROTOTYPE ONLY: This application is for demonstration purposes. Do not rely on it for medical decisions.</p>
+              <p>1. EARLY ACCESS ONLY: This application is for early-access purposes. Do not rely on it for medical decisions.</p>
               <p>2. LOCAL STORAGE: Your data is stored only on this browser/device. We do not transmit or backup your data to any server.</p>
               <p>3. NO EMERGENCY SERVICES: Mama Guard does not contact 911 or any emergency responders. Always call emergency services yourself in urgent cases.</p>
-              <p>4. NO WARRANTY: This prototype is provided "as is" without any guarantees of accuracy or uptime.</p>
+              <p>4. NO WARRANTY: This tool is provided "as is" without any guarantees of accuracy or uptime.</p>
             </div>
             <button onClick={() => setShowTerms(false)} className="w-full mt-6 py-3.5 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] font-bold text-xs uppercase tracking-widest">Close</button>
           </motion.div>
@@ -884,7 +884,7 @@ export default function ProfilePage() {
                   <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Medical Disclaimer</span>
                 </div>
                 <p className="text-[10px] text-[var(--text-tertiary)] leading-normal font-medium">
-                  Mama Guard is a technology prototype. It does not provide medical diagnoses, clinical review, or contact emergency services.
+                  Mama Guard is an early-access technology companion. It does not provide medical diagnoses, clinical review, or contact emergency services.
                 </p>
               </div>
             </div>

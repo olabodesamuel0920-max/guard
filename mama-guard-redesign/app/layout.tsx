@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Mama Guard — Your Maternal Health Companion",
-  description: "A private, supportive maternal health prototype for pregnancy tracking, symptom checking, and care guidance.",
+  description: "A private, supportive maternal health early-access companion for pregnancy tracking, symptom checking, and care guidance.",
 };
 
 export const viewport: Viewport = {

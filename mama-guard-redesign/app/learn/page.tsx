@@ -499,13 +499,13 @@ export default function LearnPage() {
 
                     <div className="pt-4 border-t border-[var(--warm-100)]">
                       <p className="text-[10px] text-[var(--text-muted)] italic leading-tight">
-                        This content is provided for educational purposes as part of this prototype and is not a substitute for professional medical advice, diagnosis, or treatment.
+                        This content is provided for educational purposes as part of this early-access tool and is not a substitute for professional medical advice, diagnosis, or treatment.
                       </p>
                     </div>
                   </div>
                 ) : (
                   <div className="py-10 text-center">
-                    <p className="text-sm text-[var(--text-tertiary)]">Detailed content coming soon for this prototype article.</p>
+                    <p className="text-sm text-[var(--text-tertiary)]">Detailed content coming soon for this early-access article.</p>
                   </div>
                 )}
                 
