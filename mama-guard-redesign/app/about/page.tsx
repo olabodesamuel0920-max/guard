@@ -174,7 +174,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Future Vision */}
+        {/* Product Roadmap */}
         <section className="mb-12 px-1">
           <h2 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">
             Product Roadmap

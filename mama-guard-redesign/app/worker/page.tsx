@@ -53,15 +53,15 @@ export default function WorkerPage() {
         <div className="max-w-lg mx-auto flex items-center gap-3">
           <button onClick={() => router.back()} className="w-9 h-9 rounded-full bg-[var(--warm-100)] flex items-center justify-center active:scale-95"><ArrowLeft size={18} className="text-[var(--text-secondary)]" /></button>
           <div className="flex-1">
-            <h1 className="font-bold text-[var(--text-primary)] text-base">Demo Worker Portal</h1>
-            <p className="text-[11px] text-[var(--text-tertiary)]">Mock patient data for early-access preview only</p>
+            <h1 className="font-bold text-[var(--text-primary)] text-base">Stakeholder Preview: Worker Portal</h1>
+            <p className="text-[11px] text-[var(--text-tertiary)]">Preview-only sample data for future care team workflows</p>
           </div>
           <div className="w-9 h-9 rounded-full bg-[var(--sage-100)] flex items-center justify-center"><Stethoscope size={18} className="text-[var(--sage-600)]" /></div>
         </div>
       </header>
 
       <div className="bg-[var(--text-primary)] text-white text-[10px] py-1.5 px-5 text-center font-bold tracking-widest uppercase">
-        Early-access preview only. No real patient data is stored or transmitted.
+        Stakeholder preview only. This page uses sample data and is not connected to real patients, hospitals, or emergency services.
       </div>
 
       <main className="px-5 py-4 pb-10">
@@ -77,7 +77,7 @@ export default function WorkerPage() {
               <h3 className="text-xs font-bold text-amber-800 uppercase tracking-widest mb-1">Safety & Demo Notice</h3>
               <p className="text-[11px] text-amber-700 leading-relaxed font-medium">
                 This portal demonstrates how health workers could monitor alerts. 
-                In a real deployment, this would be behind secure hospital networks and professional clinician authentication.
+                In a real deployment, access controls, privacy safeguards, and healthcare governance would be required before use.
               </p>
             </div>
           </div>
