@@ -312,167 +312,259 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
       <Header showAssistantButton={false} />
 
-      <main className="pt-20 pb-28 px-5 max-w-lg mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-3xl bg-gradient-to-br from-[var(--rose-50)] via-[var(--bg-secondary)] to-[var(--bg-cream)] p-6 mb-6 shadow-lg border border-[var(--rose-200)]/40 relative overflow-hidden"
-        >
-          <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-[var(--rose-200)]/20 blur-2xl" />
+      <main className="pt-20 pb-28 px-5 max-w-lg lg:max-w-6xl mx-auto">
+        <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-7">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-3xl bg-gradient-to-br from-[var(--rose-50)] via-[var(--bg-secondary)] to-[var(--bg-cream)] p-6 mb-6 shadow-lg border border-[var(--rose-200)]/40 relative overflow-hidden"
+            >
+              <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-[var(--rose-200)]/20 blur-2xl" />
 
-          <div className="relative flex items-center gap-5">
-            <div className="relative">
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-rose-200">
-                {user.name?.charAt(0) || "M"}
-              </div>
+              <div className="relative flex items-center gap-5">
+                <div className="relative">
+                  <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-rose-200">
+                    {user.name?.charAt(0) || "M"}
+                  </div>
 
-              <button
-                type="button"
-                onClick={handleEditProfile}
-                className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-white border-2 border-rose-100 flex items-center justify-center shadow-md active:scale-90 transition-transform"
-              >
-                <Edit3 size={14} className="text-rose-600" />
-              </button>
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <h1 className="text-2xl font-extrabold text-[var(--text-primary)] mb-0.5 truncate">
-                {user.name}
-              </h1>
-
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
-                  {user.status === "pregnant" ? "Pregnant" : "Postpartum"}
-                </span>
-                {week > 0 && (
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-tertiary)] bg-[var(--bg-secondary)] px-2 py-0.5 rounded-full border border-[var(--warm-200)]">
-                    Week {week} · {trimester}
-                  </span>
-                )}
-              </div>
-              <p className="text-[10px] text-[var(--text-muted)] mt-2 font-medium">
-                Early Access · Records stored on this device only
-              </p>
-            </div>
-          </div>
-
-          <div className="relative grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-[var(--warm-200)]/60">
-            <div className="text-center group">
-              <div className="text-2xl font-extrabold text-[var(--text-primary)] group-active:scale-110 transition-transform">
-                {stats.checkins}
-              </div>
-              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
-                Check-ins
-              </div>
-            </div>
-
-            <div className="text-center group">
-              <div className="text-2xl font-extrabold text-[var(--text-primary)] group-active:scale-110 transition-transform">
-                {stats.articles}
-              </div>
-              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
-                Read
-              </div>
-            </div>
-
-            <div className="text-center group">
-              <div className="text-2xl font-extrabold text-[var(--text-primary)] group-active:scale-110 transition-transform flex items-center justify-center gap-1">
-                {stats.streak} <span className="text-sm">🔥</span>
-              </div>
-              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
-                Streak
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {menuSections.map((section, sectionIndex) => (
-          <motion.div
-            key={section.title}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 + sectionIndex * 0.05 }}
-            className="mb-6"
-          >
-            <h2 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3 px-1">
-              {section.title}
-            </h2>
-
-            <div className="bg-[var(--surface-primary)] rounded-2xl shadow-sm border border-[var(--warm-200)]/60 overflow-hidden">
-              {section.items.map((item, itemIndex) => {
-                const Icon = item.icon;
-                const isLast = itemIndex === section.items.length - 1;
-
-                return (
                   <button
                     type="button"
-                    key={item.label}
-                    onClick={() => {
-                      if ("action" in item && item.action) {
-                        item.action();
-                      }
-                    }}
-                    className={`w-full text-left flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-[var(--warm-50)] ${
-                      !isLast ? "border-b border-[var(--warm-100)]" : ""
-                    }`}
+                    onClick={handleEditProfile}
+                    className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-white border-2 border-rose-100 flex items-center justify-center shadow-md active:scale-90 transition-transform"
                   >
-                    <div className="w-9 h-9 rounded-xl bg-[var(--warm-100)] flex items-center justify-center flex-shrink-0">
-                      <Icon
-                        size={17}
-                        className="text-[var(--text-tertiary)]"
-                      />
-                    </div>
+                    <Edit3 size={14} className="text-rose-600" />
+                  </button>
+                </div>
 
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-[var(--text-primary)] text-sm">
-                        {item.label}
-                      </div>
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-2xl font-extrabold text-[var(--text-primary)] mb-0.5 truncate">
+                    {user.name}
+                  </h1>
 
-                      <div className="text-xs text-[var(--text-tertiary)] truncate pr-4">
-                        {item.desc}
-                      </div>
-                    </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100">
+                      {user.status === "pregnant" ? "Pregnant" : "Postpartum"}
+                    </span>
+                    {week > 0 && (
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-tertiary)] bg-[var(--bg-secondary)] px-2 py-0.5 rounded-full border border-[var(--warm-200)]">
+                        Week {week} · {trimester}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-[var(--text-muted)] mt-2 font-medium">
+                    Early Access · Records stored on this device only
+                  </p>
+                </div>
+              </div>
 
-                    {item.toggle ? (
-                      <div
-                        role="switch"
-                        aria-checked={item.value}
-                        tabIndex={0}
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          item.onToggle();
-                        }}
-                        onKeyDown={(event) => {
-                          if (event.key === "Enter" || event.key === " ") {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            item.onToggle();
-                          }
-                        }}
-                        className={`w-11 h-6 rounded-full transition-all relative flex-shrink-0 ${
-                          item.value
-                            ? "bg-[var(--rose-500)]"
-                            : "bg-[var(--warm-300)]"
-                        }`}
-                      >
-                        <div
-                          className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all ${
-                            item.value ? "left-[22px]" : "left-0.5"
-                          }`}
+              <div className="relative grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-[var(--warm-200)]/60">
+                <div className="text-center group">
+                  <div className="text-2xl font-extrabold text-[var(--text-primary)] group-active:scale-110 transition-transform">
+                    {stats.checkins}
+                  </div>
+                  <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                    Check-ins
+                  </div>
+                </div>
+
+                <div className="text-center group">
+                  <div className="text-2xl font-extrabold text-[var(--text-primary)] group-active:scale-110 transition-transform">
+                    {stats.articles}
+                  </div>
+                  <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                    Read
+                  </div>
+                </div>
+
+                <div className="text-center group">
+                  <div className="text-2xl font-extrabold text-[var(--text-primary)] group-active:scale-110 transition-transform flex items-center justify-center gap-1">
+                    {stats.streak} <span className="text-sm">🔥</span>
+                  </div>
+                  <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest">
+                    Streak
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+          {menuSections.slice(0, 2).map((section, sectionIndex) => (
+            <motion.div
+              key={section.title}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + sectionIndex * 0.05 }}
+              className="mb-6"
+            >
+              <h2 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3 px-1">
+                {section.title}
+              </h2>
+
+              <div className="bg-[var(--surface-primary)] rounded-2xl shadow-sm border border-[var(--warm-200)]/60 overflow-hidden">
+                {section.items.map((item, itemIndex) => {
+                  const Icon = item.icon;
+                  const isLast = itemIndex === section.items.length - 1;
+
+                  return (
+                    <button
+                      type="button"
+                      key={item.label}
+                      onClick={() => {
+                        if ("action" in item && item.action) {
+                          item.action();
+                        }
+                      }}
+                      className={`w-full text-left flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-[var(--warm-50)] ${
+                        !isLast ? "border-b border-[var(--warm-100)]" : ""
+                      }`}
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-[var(--warm-100)] flex items-center justify-center flex-shrink-0">
+                        <Icon
+                          size={17}
+                          className="text-[var(--text-tertiary)]"
                         />
                       </div>
-                    ) : (
-                      <ChevronRight
-                        size={16}
-                        className="text-[var(--warm-300)] flex-shrink-0"
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
-        ))}
+
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-[var(--text-primary)] text-sm">
+                          {item.label}
+                        </div>
+
+                        <div className="text-xs text-[var(--text-tertiary)] truncate pr-4">
+                          {item.desc}
+                        </div>
+                      </div>
+
+                      {item.toggle ? (
+                        <div
+                          role="switch"
+                          aria-checked={item.value}
+                          tabIndex={0}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            item.onToggle();
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              item.onToggle();
+                            }
+                          }}
+                          className={`w-11 h-6 rounded-full transition-all relative flex-shrink-0 ${
+                            item.value
+                              ? "bg-[var(--rose-500)]"
+                              : "bg-[var(--warm-300)]"
+                          }`}
+                        >
+                          <div
+                            className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all ${
+                              item.value ? "left-[22px]" : "left-0.5"
+                            }`}
+                          />
+                        </div>
+                      ) : (
+                        <ChevronRight
+                          size={16}
+                          className="text-[var(--warm-300)] flex-shrink-0"
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="lg:col-span-5">
+          {menuSections.slice(2, 4).map((section, sectionIndex) => (
+            <motion.div
+              key={section.title}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + sectionIndex * 0.05 }}
+              className="mb-6"
+            >
+              <h2 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3 px-1">
+                {section.title}
+              </h2>
+
+              <div className="bg-[var(--surface-primary)] rounded-2xl shadow-sm border border-[var(--warm-200)]/60 overflow-hidden">
+                {section.items.map((item, itemIndex) => {
+                  const Icon = item.icon;
+                  const isLast = itemIndex === section.items.length - 1;
+
+                  return (
+                    <button
+                      type="button"
+                      key={item.label}
+                      onClick={() => {
+                        if ("action" in item && item.action) {
+                          item.action();
+                        }
+                      }}
+                      className={`w-full text-left flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-[var(--warm-50)] ${
+                        !isLast ? "border-b border-[var(--warm-100)]" : ""
+                      }`}
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-[var(--warm-100)] flex items-center justify-center flex-shrink-0">
+                        <Icon
+                          size={17}
+                          className="text-[var(--text-tertiary)]"
+                        />
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-[var(--text-primary)] text-sm">
+                          {item.label}
+                        </div>
+
+                        <div className="text-xs text-[var(--text-tertiary)] truncate pr-4">
+                          {item.desc}
+                        </div>
+                      </div>
+
+                      {item.toggle ? (
+                        <div
+                          role="switch"
+                          aria-checked={item.value}
+                          tabIndex={0}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            item.onToggle();
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              item.onToggle();
+                            }
+                          }}
+                          className={`w-11 h-6 rounded-full transition-all relative flex-shrink-0 ${
+                            item.value
+                              ? "bg-[var(--rose-500)]"
+                              : "bg-[var(--warm-300)]"
+                          }`}
+                        >
+                          <div
+                            className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all ${
+                              item.value ? "left-[22px]" : "left-0.5"
+                            }`}
+                          />
+                        </div>
+                      ) : (
+                        <ChevronRight
+                          size={16}
+                          className="text-[var(--warm-300)] flex-shrink-0"
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          ))}
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -524,7 +616,9 @@ export default function ProfilePage() {
             Mama Guard Prototype v3.0
           </p>
         </div>
-      </main>
+        </div>
+      </div>
+    </main>
 
       <BottomNav />
 
