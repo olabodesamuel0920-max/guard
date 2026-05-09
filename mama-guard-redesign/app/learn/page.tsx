@@ -292,7 +292,7 @@ export default function LearnPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
-      <Header showAssistantButton={false} />
+      <Header title="Learn" />
       <main className="pt-20 pb-28 px-5 max-w-lg lg:max-w-5xl xl:max-w-6xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-extrabold text-[var(--text-primary)] mb-2 leading-tight">Learn warning signs & next steps</h1>

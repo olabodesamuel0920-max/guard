@@ -62,17 +62,7 @@ export default function SafetyPlanPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--surface-glass)] backdrop-blur-xl border-b border-[var(--warm-200)]/50 h-16">
-        <div className="max-w-lg lg:max-w-6xl mx-auto px-5 h-full flex items-center gap-3">
-          <button 
-            onClick={() => router.back()} 
-            className="w-9 h-9 rounded-full bg-[var(--warm-100)] flex items-center justify-center active:scale-95"
-          >
-            <ArrowLeft size={18} className="text-[var(--text-secondary)]" />
-          </button>
-          <h1 className="font-bold text-[var(--text-primary)] text-lg">Safety Plan</h1>
-        </div>
-      </header>
+      <Header title="Safety Plan" />
 
       <main className="pt-20 pb-28 px-5 max-w-lg lg:max-w-6xl mx-auto">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8 items-start">

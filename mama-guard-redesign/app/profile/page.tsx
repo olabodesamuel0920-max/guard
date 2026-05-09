@@ -310,7 +310,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
-      <Header showAssistantButton={false} />
+      <Header title="My Profile" />
 
       <main className="pt-20 pb-28 px-5 max-w-lg lg:max-w-6xl mx-auto">
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">

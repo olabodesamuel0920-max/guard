@@ -10,10 +10,12 @@ export type HeaderStatus = "safe" | "urgent" | "review";
 
 export function Header({ 
   showAssistantButton = true,
-  status = "safe"
+  status = "safe",
+  title
 }: { 
   showAssistantButton?: boolean;
   status?: HeaderStatus;
+  title?: string;
 }) {
   const router = useRouter();
   const [user, setUser] = useState<{ name: string; dueDate: string } | null>(null);
@@ -64,40 +66,71 @@ export function Header({
 
   return (
     <header className={cn(
-      "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-      scrolled ? "bg-[var(--surface-glass)] backdrop-blur-xl border-b border-[var(--warm-200)]/50 shadow-sm" : "bg-transparent"
+      "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 py-3 md:px-6 md:py-4",
+      scrolled ? "bg-[var(--surface-glass)]/80 backdrop-blur-xl border-b border-[var(--warm-200)]/50 shadow-sm" : "bg-transparent"
     )}>
-      <div className="max-w-lg md:max-w-6xl mx-auto flex items-center justify-between px-5 h-16">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[var(--rose-300)] to-[var(--rose-500)] flex items-center justify-center shadow-md">
-            <span className="text-white text-sm font-bold">{user?.name?.charAt(0) || "M"}</span>
+      <div className="max-w-lg md:max-w-6xl mx-auto flex items-center justify-between gap-4">
+        {/* Logo & User Group */}
+        <div className="flex items-center gap-3 overflow-hidden">
+          <div 
+            onClick={() => router.push("/home")}
+            className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] flex items-center justify-center shadow-glow shrink-0 cursor-pointer active:scale-95 transition-transform"
+          >
+            <Shield size={18} className="text-white" />
           </div>
-          <div className="flex flex-col">
-            <span className="text-[15px] font-semibold text-[var(--text-primary)] leading-tight">{user?.name || "Welcome"}</span>
-            {week > 0 && <span className="text-[11px] text-[var(--text-tertiary)] leading-tight">Week {week} · {trimester}</span>}
+          
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="text-[15px] md:text-lg font-bold tracking-tight text-[var(--text-primary)] truncate">
+                {title || "Mama Guard"}
+              </span>
+              {!title && (
+                <div className={cn(
+                  "hidden sm:flex items-center gap-1 px-2 py-0.5 rounded-full border shrink-0",
+                  config.bg,
+                  config.border
+                )}>
+                  <StatusIcon size={10} className={config.iconColor} />
+                  <span className={cn(
+                    "text-[8px] font-bold uppercase tracking-wider",
+                    config.text
+                  )}>{config.label}</span>
+                </div>
+              )}
+            </div>
+            {!title && user?.name && (
+              <span className="text-[10px] text-[var(--text-tertiary)] font-medium truncate opacity-80">
+                {user.name} · Week {week}
+              </span>
+            )}
           </div>
         </div>
-        <div className="flex items-center gap-2">
+
+        {/* Action Group */}
+        <div className="flex items-center gap-2 shrink-0">
           <div className={cn(
-            "flex items-center gap-1 px-2.5 py-1 rounded-full border transition-colors duration-300",
+            "flex sm:hidden items-center gap-1 px-2 py-1 rounded-full border",
             config.bg,
             config.border
           )}>
-            <StatusIcon size={12} className={config.iconColor} />
-            <span className={cn(
-              "text-[10px] font-semibold uppercase tracking-wider",
-              config.text
-            )}>{config.label}</span>
+            <StatusIcon size={10} className={config.iconColor} />
           </div>
+
           {showAssistantButton && (
             <button 
               onClick={() => router.push("/ai")} 
-              className="flex items-center gap-1.5 pl-3 pr-3.5 py-1.5 rounded-full bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-md active:scale-95 transition-all"
+              className="flex items-center gap-1.5 px-3 md:px-4 py-2 rounded-full bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-premium active:scale-95 transition-all hover:opacity-90"
               aria-label="Open Mama Guard Assistant"
             >
-              <Sparkles size={14} strokeWidth={2.5} />
-              <span className="text-[12px] font-semibold">Assistant</span>
+              <Sparkles size={14} className="animate-pulse" />
+              <span className="text-[11px] md:text-xs font-bold uppercase tracking-wider">Assistant</span>
             </button>
+          )}
+
+          {user?.name && (
+            <div className="hidden md:flex w-9 h-9 rounded-full bg-white border border-[var(--warm-200)] items-center justify-center shadow-sm">
+              <span className="text-[var(--rose-600)] text-xs font-bold uppercase">{user.name.charAt(0)}</span>
+            </div>
           )}
         </div>
       </div>

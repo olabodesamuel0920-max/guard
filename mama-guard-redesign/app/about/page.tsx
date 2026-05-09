@@ -41,7 +41,7 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
-      <Header showAssistantButton={false} />
+      <Header title="About Mama Guard" showAssistantButton={true} />
 
       <main className="pt-24 pb-32 px-5">
         {/* Hero Section */}
