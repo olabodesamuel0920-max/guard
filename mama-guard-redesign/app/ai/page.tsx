@@ -295,14 +295,14 @@ This summary was prepared by Mama Guard to help organize information. It is supp
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] to-[var(--bg-cream)] flex flex-col">
-      <header className="shrink-0 bg-[var(--surface-glass)] backdrop-blur-xl border-b border-[var(--warm-200)]/50 px-5 py-3">
+      <header className="shrink-0 bg-[var(--surface-glass)] backdrop-blur-xl border-b border-[var(--warm-200)]/40 px-5 py-4 shadow-sm z-50">
         <div className="max-w-lg mx-auto flex items-center gap-3">
-          <button onClick={() => router.back()} className="w-9 h-9 rounded-full bg-[var(--warm-100)] flex items-center justify-center active:scale-95"><ArrowLeft size={18} className="text-[var(--text-secondary)]" /></button>
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--rose-400)] to-[var(--rose-600)] flex items-center justify-center"><Sparkles size={18} className="text-white" /></div>
+          <button onClick={() => router.back()} className="w-10 h-10 rounded-full bg-white/50 border border-[var(--warm-200)]/60 flex items-center justify-center active:scale-95 shadow-sm transition-all hover:bg-white"><ArrowLeft size={18} className="text-[var(--text-secondary)]" /></button>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[var(--rose-400)] to-[var(--rose-600)] flex items-center justify-center shadow-glow"><Sparkles size={20} className="text-white" /></div>
             <div>
-              <div className="font-semibold text-[var(--text-primary)] text-sm leading-tight">Supportive pregnancy guidance</div>
-              <div className="text-[11px] text-[var(--text-tertiary)] flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[var(--sage-500)] inline-block" />Supportive guidance only · Not a diagnosis</div>
+              <div className="font-bold text-[var(--text-primary)] text-sm tracking-tight">Supportive guidance</div>
+              <div className="text-[10px] text-[var(--text-tertiary)] flex items-center gap-1.5 font-medium"><span className="w-1.5 h-1.5 rounded-full bg-[var(--sage-500)] inline-block animate-pulse" />Early Access · No Diagnosis</div>
             </div>
           </div>
         </div>
@@ -311,9 +311,9 @@ This summary was prepared by Mama Guard to help organize information. It is supp
       <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 hide-scrollbar max-w-lg mx-auto w-full">
         <AnimatePresence>
           {messages.map((msg) => (
-            <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[85%] ${msg.role === "user" ? "bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] text-white rounded-2xl rounded-tr-sm px-4 py-3" : msg.type === "warning" ? "bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl rounded-tl-sm px-4 py-3" : "bg-[var(--surface-primary)] border border-[var(--warm-200)] rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm"}`}>
-                {msg.role === "assistant" && <div className="flex items-center gap-1.5 mb-2"><Sparkles size={12} className={msg.type === "warning" ? "text-amber-500" : "text-[var(--rose-500)]"} /><span className={`text-[10px] font-semibold uppercase tracking-wider ${msg.type === "warning" ? "text-amber-600" : "text-[var(--rose-600)]"}`}>{msg.type === "warning" ? "Urgent Information" : "Assistant Guidance"}</span></div>}
+            <motion.div key={msg.id} initial={{ opacity: 0, y: 10, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.4, ease: "easeOut" }} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+              <div className={`max-w-[88%] ${msg.role === "user" ? "bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] text-white rounded-[var(--radius-2xl)] rounded-tr-sm px-4 py-3.5 shadow-premium" : msg.type === "warning" ? "bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-[var(--radius-2xl)] rounded-tl-sm px-4 py-3.5 shadow-md" : "bg-white glass-card border border-[var(--warm-200)]/60 rounded-[var(--radius-2xl)] rounded-tl-sm px-4 py-3.5 shadow-sm"}`}>
+                {msg.role === "assistant" && <div className="flex items-center gap-2 mb-2.5"><Sparkles size={12} className={msg.type === "warning" ? "text-amber-500" : "text-[var(--rose-500)]"} /><span className={`text-[10px] font-bold uppercase tracking-[0.1em] ${msg.type === "warning" ? "text-amber-600" : "text-[var(--rose-600)]"}`}>{msg.type === "warning" ? "Urgent Information" : "Assistant Guidance"}</span></div>}
                 
                 {msg.type === "summary" && msg.summaryData ? (
                   <div className="space-y-3">
@@ -472,16 +472,16 @@ This summary was prepared by Mama Guard to help organize information. It is supp
                       <button 
                         key={prompt.label} 
                         onClick={() => handleSend(prompt.prompt)} 
-                        className={`flex items-center gap-2 p-3 rounded-2xl border shadow-sm text-left active:scale-[0.98] transition-all ${
+                        className={`flex items-center gap-3 p-3 rounded-[var(--radius-2xl)] border shadow-sm text-left active:scale-[0.98] transition-all hover-lift ${
                           isUrgent 
-                            ? "bg-rose-50/50 border-rose-100 hover:bg-rose-50" 
-                            : "bg-[var(--surface-primary)] border-[var(--warm-200)] hover:bg-[var(--warm-50)]"
+                            ? "bg-rose-50/70 border-rose-100 hover:bg-rose-50 shadow-rose-100/50" 
+                            : "bg-white glass-card border-[var(--warm-200)]/60 hover:bg-white"
                         }`}
                       >
-                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isUrgent ? "bg-rose-100" : "bg-[var(--warm-100)]"}`}>
-                          <Icon size={14} className={isUrgent ? "text-rose-600" : "text-[var(--rose-500)]"} />
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-inner ${isUrgent ? "bg-rose-100" : "bg-[var(--warm-100)]"}`}>
+                          <Icon size={16} className={isUrgent ? "text-rose-600" : "text-[var(--rose-500)]"} />
                         </div>
-                        <span className={`text-[11px] font-semibold ${isUrgent ? "text-rose-900" : "text-[var(--text-secondary)]"} leading-tight`}>{prompt.label}</span>
+                        <span className={`text-[11px] font-bold tracking-tight ${isUrgent ? "text-rose-900" : "text-[var(--text-secondary)]"} leading-tight`}>{prompt.label}</span>
                       </button>
                     );
                   })}
@@ -492,14 +492,14 @@ This summary was prepared by Mama Guard to help organize information. It is supp
         )}
       </div>
 
-      <div className="shrink-0 bg-[var(--surface-glass)] backdrop-blur-xl border-t border-[var(--warm-200)]/50 px-5 py-3 pb-[calc(12px+env(safe-area-inset-bottom,0px))]">
-        <div className="max-w-lg mx-auto flex items-end gap-2">
-          <div className="flex-1 bg-[var(--surface-primary)] border border-[var(--warm-200)] rounded-2xl px-4 py-3 shadow-sm">
-            <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }} placeholder="Ask about symptoms, nutrition, baby development..." rows={1} className="w-full text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] bg-transparent resize-none outline-none" style={{ minHeight: "20px" }} />
+      <div className="shrink-0 bg-white/70 backdrop-blur-2xl border-t border-[var(--warm-200)]/40 px-5 py-4 pb-[calc(16px+env(safe-area-inset-bottom,0px))] shadow-premium">
+        <div className="max-w-lg mx-auto flex items-end gap-3">
+          <div className="flex-1 bg-white border border-[var(--warm-200)]/60 rounded-[var(--radius-2xl)] px-4 py-3.5 shadow-sm transition-all focus-within:border-[var(--rose-300)] focus-within:shadow-md">
+            <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }} placeholder="Ask about symptoms, nutrition..." rows={1} className="w-full text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] bg-transparent resize-none outline-none font-medium" style={{ minHeight: "22px" }} />
           </div>
-          <button onClick={() => handleSend()} disabled={!input.trim() || isLoading} className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${input.trim() && !isLoading ? "bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-md" : "bg-[var(--warm-200)] text-[var(--text-muted)]"}`}><Send size={18} /></button>
+          <button onClick={() => handleSend()} disabled={!input.trim() || isLoading} className={`w-12 h-12 rounded-[var(--radius-2xl)] flex items-center justify-center transition-all shadow-premium active:scale-95 ${input.trim() && !isLoading ? "bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-rose-500/30" : "bg-[var(--warm-200)] text-[var(--text-muted)]"}`}><Send size={20} /></button>
         </div>
-        <p className="text-[10px] text-[var(--text-muted)] text-center mt-2 font-medium">Supportive guidance only · Not a diagnosis</p>
+        <p className="text-[10px] text-[var(--text-muted)] text-center mt-3 font-bold uppercase tracking-wider opacity-60">Supportive guidance only · Not a diagnosis</p>
       </div>
     </div>
   );

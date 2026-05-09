@@ -85,30 +85,32 @@ export default function HomePage() {
               </p>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--rose-50)] via-[#FFF5F0] to-[var(--bg-secondary)] p-6 lg:p-8 shadow-lg border border-[var(--rose-200)]/40">
-              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-[var(--rose-200)]/20 blur-2xl" />
-              <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-[var(--rose-300)]/15 blur-xl" />
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }} className="relative overflow-hidden rounded-[var(--radius-3xl)] glass-card p-6 lg:p-8 shadow-premium">
+              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-[var(--rose-200)]/30 blur-2xl" />
+              <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-[var(--rose-300)]/20 blur-xl" />
               <div className="relative">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <div className="flex items-center gap-2 mb-1"><Baby size={16} className="text-[var(--rose-500)]" /><span className="text-xs font-semibold text-[var(--rose-600)] uppercase tracking-wider">{trimester}</span></div>
-                    <div className="text-4xl lg:text-5xl font-extrabold text-[var(--text-primary)] mb-1">Week {week}</div>
+                    <div className="flex items-center gap-2 mb-1.5"><Baby size={16} className="text-[var(--rose-500)]" /><span className="text-xs font-bold text-[var(--rose-600)] uppercase tracking-wider">{trimester}</span></div>
+                    <div className="text-4xl lg:text-5xl font-extrabold text-[var(--text-primary)] mb-1 tracking-tight">Week {week}</div>
                     <div className="text-sm lg:text-base text-[var(--text-secondary)] font-medium">Baby is the size of a {babySize.fruit}</div>
                   </div>
-                  <div className="text-5xl lg:text-7xl select-none" role="img" aria-label={babySize.fruit}>{babySize.emoji}</div>
+                  <div className="text-5xl lg:text-7xl select-none drop-shadow-xl transform hover:scale-110 transition-transform duration-500" role="img" aria-label={babySize.fruit}>{babySize.emoji}</div>
                 </div>
                 <div className="mb-4">
-                  <div className="flex justify-between text-xs text-[var(--text-tertiary)] mb-1.5 font-bold uppercase tracking-wider"><span>Week 0</span><span>Week 40</span></div>
-                  <div className="h-3 bg-[var(--rose-100)] rounded-full overflow-hidden shadow-inner">
-                    <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 1, delay: 0.3, ease: "easeOut" }} className="h-full bg-gradient-to-r from-[var(--rose-400)] to-[var(--rose-600)] rounded-full shadow-sm" />
+                  <div className="flex justify-between text-[10px] text-[var(--text-tertiary)] mb-2 font-bold uppercase tracking-[0.1em]"><span>Week 0</span><span>Week 40</span></div>
+                  <div className="h-4 bg-[var(--rose-100)]/50 rounded-full overflow-hidden shadow-inner p-0.5">
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 1.2, delay: 0.5, ease: [0.34, 1.56, 0.64, 1] }} className="h-full bg-gradient-to-r from-[var(--rose-400)] to-[var(--rose-600)] rounded-full shadow-sm relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+                    </motion.div>
                   </div>
                 </div>
-                {nextMilestone && <div className="flex items-center gap-2 text-xs lg:text-sm text-[var(--text-tertiary)] font-medium"><Calendar size={13} className="text-[var(--rose-400)]" /><span>{nextMilestone.label} in {nextMilestone.week - week} weeks</span></div>}
+                {nextMilestone && <div className="flex items-center gap-2 text-xs lg:text-sm text-[var(--text-tertiary)] font-bold uppercase tracking-tight"><Calendar size={13} className="text-[var(--rose-400)]" /><span>{nextMilestone.label} in {nextMilestone.week - week} weeks</span></div>}
               </div>
             </motion.div>
 
             {lastCheckIn && (
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }} className="rounded-2xl bg-[var(--surface-primary)] p-6 shadow-md border border-[var(--warm-200)]/60">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="rounded-[var(--radius-2xl)] bg-white p-6 shadow-md border border-[var(--warm-200)]/60 hover:shadow-lg transition-shadow">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2"><Heart size={16} className={lastCheckIn.risk === "high" ? "text-rose-500" : lastCheckIn.risk === "medium" ? "text-amber-500" : "text-emerald-500"} /><span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest">Latest Check-in</span></div>
                   <div className="text-[10px] font-bold text-[var(--text-tertiary)] bg-[var(--warm-100)] px-2.5 py-1 rounded-full uppercase">{getRelativeTime(lastCheckIn.date)}</div>
@@ -116,14 +118,14 @@ export default function HomePage() {
                 
                 <div className="flex items-center justify-between mb-5">
                   <div>
-                    <div className={`text-xl lg:text-2xl font-extrabold ${lastCheckIn.risk === "high" ? "text-rose-600" : lastCheckIn.risk === "medium" ? "text-amber-600" : "text-emerald-600"}`}>
+                    <div className={`text-xl lg:text-2xl font-extrabold tracking-tight ${lastCheckIn.risk === "high" ? "text-rose-600" : lastCheckIn.risk === "medium" ? "text-amber-600" : "text-emerald-600"}`}>
                       {lastCheckIn.risk.charAt(0).toUpperCase() + lastCheckIn.risk.slice(1)} Risk
                     </div>
-                    <div className="text-xs lg:text-sm text-[var(--text-tertiary)] font-medium">Reported on {new Date(lastCheckIn.date).toLocaleDateString()}</div>
+                    <div className="text-xs lg:text-sm text-[var(--text-tertiary)] font-medium italic">Reported on {new Date(lastCheckIn.date).toLocaleDateString()}</div>
                   </div>
                   <button 
                     onClick={() => router.push("/profile")}
-                    className="p-2.5 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] hover:bg-[var(--warm-200)] transition-colors"
+                    className="p-2.5 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] hover:bg-[var(--warm-200)] transition-colors shadow-sm"
                   >
                     <Clock size={20} />
                   </button>
@@ -139,8 +141,8 @@ export default function HomePage() {
                 )}
                 
                 <div className="flex gap-3">
-                  <button onClick={() => router.push("/checkin")} className="flex-1 py-3 rounded-xl bg-[var(--rose-100)] text-[var(--rose-700)] text-xs font-bold hover:bg-[var(--rose-200)] transition-all active:scale-[0.98]">New Check-in</button>
-                  <button onClick={() => router.push("/profile")} className="flex-1 py-3 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] text-xs font-bold hover:bg-[var(--warm-200)] transition-all active:scale-[0.98]">View History</button>
+                  <button onClick={() => router.push("/checkin")} className="flex-1 py-3 rounded-xl bg-[var(--rose-100)] text-[var(--rose-700)] text-xs font-bold hover:bg-[var(--rose-200)] transition-all active:scale-[0.98] shadow-sm">New Check-in</button>
+                  <button onClick={() => router.push("/profile")} className="flex-1 py-3 rounded-xl bg-[var(--warm-100)] text-[var(--text-secondary)] text-xs font-bold hover:bg-[var(--warm-200)] transition-all active:scale-[0.98] shadow-sm">View History</button>
                 </div>
               </motion.div>
             )}
@@ -148,42 +150,47 @@ export default function HomePage() {
 
           {/* Right Column: Actions & Education */}
           <div className="lg:col-span-5 space-y-6">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="mb-2">
-              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-3 px-1">Primary Actions</div>
-              <button onClick={() => router.push("/checkin")} className="w-full relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] p-6 text-left shadow-xl shadow-rose-500/20 active:scale-[0.98] transition-transform">
-                <div className="absolute top-0 right-0 w-28 h-28 bg-white/10 rounded-full -translate-y-8 translate-x-8" />
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="mb-2">
+              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-4 px-1">Primary Actions</div>
+              <button onClick={() => router.push("/checkin")} className="w-full relative overflow-hidden rounded-[var(--radius-2xl)] bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] p-6 text-left shadow-premium hover:scale-[1.02] transition-transform duration-300 group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8 group-hover:scale-110 transition-transform duration-500" />
                 <div className="relative flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0"><Activity size={24} className="text-white" /></div>
+                    <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 shadow-lg backdrop-blur-sm"><Activity size={28} className="text-white" /></div>
                     <div>
-                      <div className="text-white font-bold text-lg mb-0.5">Start Check-in</div>
-                      <div className="text-white/80 text-xs leading-snug max-w-[200px]">Log symptoms and create clearer information for your care team.</div>
+                      <div className="text-white font-bold text-xl mb-0.5 tracking-tight">Start Check-in</div>
+                      <div className="text-white/80 text-xs leading-snug max-w-[200px] font-medium">Log symptoms and create clearer information for your care team.</div>
                     </div>
                   </div>
-                  <ChevronRight size={24} className="text-white/70" />
+                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                    <ChevronRight size={20} className="text-white" />
+                  </div>
                 </div>
               </button>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }} className="grid grid-cols-1 gap-4 mb-2">
-              <button onClick={() => router.push("/ai")} className="rounded-2xl bg-[var(--surface-primary)] p-5 text-left shadow-md border border-[var(--warm-200)]/60 active:scale-[0.98] transition-transform hover:border-[var(--rose-200)] flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--rose-100)] to-[var(--rose-200)] flex items-center justify-center shrink-0"><Sparkles size={24} className="text-[var(--rose-600)]" /></div>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="grid grid-cols-1 gap-4 mb-2">
+              <button onClick={() => router.push("/ai")} className="rounded-[var(--radius-2xl)] bg-white p-5 text-left shadow-md border border-[var(--warm-200)]/60 hover-lift flex items-center gap-4 group">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--rose-100)] to-[var(--rose-200)] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"><Sparkles size={24} className="text-[var(--rose-600)]" /></div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-0.5">
                     <div className="font-bold text-[var(--text-primary)] text-base">Mama Guard Assistant</div>
-                    <ChevronRight size={18} className="text-[var(--text-tertiary)]" />
+                    <ChevronRight size={18} className="text-[var(--text-tertiary)] group-hover:translate-x-1 transition-transform" />
                   </div>
                   <div className="text-xs text-[var(--text-tertiary)] leading-relaxed font-medium">Understand warning signs and prepare provider summaries.</div>
-                  <div className="text-[9px] text-[var(--rose-500)] font-bold uppercase tracking-wider mt-1.5">Supportive guidance only</div>
+                  <div className="text-[9px] text-[var(--rose-500)] font-bold uppercase tracking-wider mt-1.5 flex items-center gap-1.5">
+                    <span className="w-1 h-1 rounded-full bg-[var(--rose-400)] animate-ping" />
+                    Supportive guidance only
+                  </div>
                 </div>
               </button>
 
-              <button onClick={() => router.push("/safety")} className="rounded-2xl bg-[var(--surface-primary)] p-5 text-left shadow-md border border-[var(--warm-200)]/60 active:scale-[0.98] transition-transform hover:border-[var(--rose-200)] flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-100 to-rose-200 flex items-center justify-center shrink-0"><Shield size={24} className="text-rose-600" /></div>
+              <button onClick={() => router.push("/safety")} className="rounded-[var(--radius-2xl)] bg-white p-5 text-left shadow-md border border-[var(--warm-200)]/60 hover-lift flex items-center gap-4 group">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-100 to-rose-200 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"><Shield size={24} className="text-rose-600" /></div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-0.5">
                     <div className="font-bold text-[var(--text-primary)] text-base">Safety Plan</div>
-                    <ChevronRight size={18} className="text-[var(--text-tertiary)]" />
+                    <ChevronRight size={18} className="text-[var(--text-tertiary)] group-hover:translate-x-1 transition-transform" />
                   </div>
                   <div className="text-xs text-[var(--text-tertiary)] leading-relaxed font-medium">Keep provider details and hospital info easy to find.</div>
                 </div>
