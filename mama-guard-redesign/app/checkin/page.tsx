@@ -534,7 +534,9 @@ function CheckInContent() {
 
               <div className="md:col-span-8 lg:col-span-8 mt-8 md:mt-0">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-8">
-                  {symptoms.map((symptom, index) => {
+                  {[...symptoms]
+                    .sort((a, b) => (a.id === suggestedSymptomId ? -1 : b.id === suggestedSymptomId ? 1 : 0))
+                    .map((symptom, index) => {
                     const isSelected = selectedSymptoms.includes(symptom.id);
                     const Icon = symptom.icon;
 

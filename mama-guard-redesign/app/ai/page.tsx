@@ -85,7 +85,7 @@ function generateResponse(input: string): {
       content: "Feverish feelings (under 100.4°F)",
       type: "warning",
       actions: [
-        { label: "Start Check-in", icon: Activity, action: "checkin?symptom=Feverish feelings" },
+        { label: "Start Check-in", icon: Activity, action: "checkin?symptom=Feverish feelings&from=assistant" },
         { label: "Provider Summary", icon: FileText, action: "summary" },
       ],
       structuredWarning: {
@@ -152,7 +152,7 @@ function generateResponse(input: string): {
       type: "warning",
       actions: [
         { label: "Call Provider", icon: Phone, action: "call" },
-        { label: "Start Check-in", icon: Activity, action: "checkin?symptom=Reduced movement" },
+        { label: "Start Check-in", icon: Activity, action: "checkin?symptom=Reduced movement&from=assistant" },
       ],
       structuredWarning: {
         title: "Urgent: Change in Movement",
@@ -217,7 +217,7 @@ function generateResponse(input: string): {
       content: "Abdominal Pain or Cramps",
       type: "warning",
       actions: [
-        { label: "Start Check-in", icon: Activity, action: "checkin?symptom=Abdominal pain" },
+        { label: "Start Check-in", icon: Activity, action: "checkin?symptom=Abdominal pain&from=assistant" },
         { label: "Call Provider", icon: Phone, action: "call" },
       ],
       structuredWarning: {
@@ -295,7 +295,7 @@ function generateResponse(input: string): {
       actions: [
         { label: "Call Provider", icon: Phone, action: "call" },
         { label: "Find emergency care", icon: AlertTriangle, action: "er" },
-        { label: "Start Check-in", icon: Activity, action: `checkin?symptom=${encodeURIComponent(matchedCritical.label)}` },
+        { label: "Start Check-in", icon: Activity, action: `checkin?symptom=${encodeURIComponent(matchedCritical.label)}&from=assistant` },
       ],
       structuredWarning: {
         title: `Urgent Notice: ${matchedCritical.label}`,
@@ -336,7 +336,7 @@ function generateResponse(input: string): {
         : `Thank you for sharing how you're feeling. I can provide supportive guidance, but it's important to track these symptoms formally to share with your provider.\n\nWould you like to log this in a structured check-in?`, 
       type: "text",
       actions: [
-        { label: "Log in Check-in", icon: Activity, action: `checkin?symptom=${encodeURIComponent(isNormal ? "Normal Pregnancy Symptoms" : "General Concern")}` },
+        { label: "Log in Check-in", icon: Activity, action: `checkin?symptom=${encodeURIComponent(isNormal ? "Normal Pregnancy Symptoms" : "General Concern")}&from=assistant` },
         { label: "Provider Summary", icon: FileText, action: "summary" },
         { label: "Read Article", icon: BookOpen, action: "learn" },
       ]
