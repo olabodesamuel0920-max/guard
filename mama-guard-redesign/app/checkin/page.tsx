@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState, type ElementType } from "react";
+import { Suspense, useState, useEffect, type ElementType } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Header } from "@/components/Header";
 import { BottomNav } from "@/components/BottomNav";
@@ -247,6 +247,7 @@ function CheckInContent() {
   const incomingSymptom = searchParams.get("symptom");
 
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
+  const [suggestedSymptomId, setSuggestedSymptomId] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<
     "symptoms" | "severity" | "result"
   >("symptoms");
@@ -256,8 +257,8 @@ function CheckInContent() {
   const [followUpAnswers, setFollowUpAnswers] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState(false);
 
-  // Handle pre-selected symptom from AI Assistant
-  useState(() => {
+  // Handle suggested symptom from AI Assistant
+  useEffect(() => {
     if (incomingSymptom) {
       // Find the symptom ID that matches the label or ID
       const matchedSymptom = symptoms.find(s => 
@@ -265,10 +266,10 @@ function CheckInContent() {
         s.label.toLowerCase().includes(incomingSymptom.toLowerCase())
       );
       if (matchedSymptom) {
-        setSelectedSymptoms([matchedSymptom.id]);
+        setSuggestedSymptomId(matchedSymptom.id);
       }
     }
-  });
+  }, [incomingSymptom]);
 
   const userData = safeStorage.get<UserData>(STORAGE_KEYS.ONBOARDING, { name: "", dueDate: "" });
   const week = getGestationalWeek(userData.dueDate);
@@ -467,16 +468,16 @@ function CheckInContent() {
                         Assistant Handoff
                       </p>
                       <p className="text-[11px] text-[var(--rose-800)]/80 leading-relaxed font-medium mb-2 hidden sm:block">
-                        The Assistant suggested a structured check-in so you can organize your symptoms and prepare next-step guidance for your provider.
+                        Assistant suggested reviewing symptoms based on your conversation. Please confirm what you are experiencing below.
                       </p>
                       <p className="text-[11px] text-[var(--rose-800)]/80 leading-relaxed font-medium mb-2 sm:hidden">
-                        Use this check-in to organize your concern for your provider.
+                        Please confirm your symptoms below.
                       </p>
-                      {incomingSymptom && (
+                      {suggestedSymptomId && (
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[var(--rose-200)] shadow-sm">
-                          <Activity size={12} className="text-[var(--rose-600)]" />
+                          <Sparkles size={12} className="text-[var(--rose-600)]" />
                           <span className="text-[10px] font-bold text-[var(--rose-700)] uppercase tracking-wider">
-                            Reported concern: {decodeURIComponent(incomingSymptom)}
+                            Suggested: {symptoms.find(s => s.id === suggestedSymptomId)?.label}
                           </span>
                         </div>
                       )}
@@ -537,6 +538,8 @@ function CheckInContent() {
                     const isSelected = selectedSymptoms.includes(symptom.id);
                     const Icon = symptom.icon;
 
+                    const isSuggested = suggestedSymptomId === symptom.id;
+
                     return (
                       <motion.button
                         type="button"
@@ -548,6 +551,8 @@ function CheckInContent() {
                         className={`relative flex items-center gap-4 p-5 rounded-[var(--radius-3xl)] text-left transition-all duration-300 border-2 hover-lift group ${
                           isSelected
                             ? "border-[var(--rose-400)] bg-[var(--rose-50)] shadow-premium"
+                            : isSuggested
+                            ? "border-[var(--rose-200)] bg-[var(--rose-50)]/30 ring-2 ring-[var(--rose-200)]/20 shadow-sm"
                             : "border-[var(--warm-200)] glass-card hover:border-[var(--warm-300)]"
                         }`}
                       >
