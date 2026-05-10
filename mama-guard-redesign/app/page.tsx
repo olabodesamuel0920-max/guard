@@ -26,17 +26,51 @@ export default function RootPage() {
   if (!isLoaded) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)] flex flex-col items-center justify-center px-6 py-12">
-      <div className="max-w-md w-full text-center space-y-10">
+    <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)] flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
+      {/* 3D-Lite Floating Background Elements */}
+      <motion.div
+        animate={{ 
+          y: [0, -20, 0],
+          x: [0, 10, 0],
+          rotate: [0, 5, 0]
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-[10%] -left-20 w-64 h-64 bg-[var(--rose-200)]/10 rounded-full blur-[80px] pointer-events-none"
+      />
+      <motion.div
+        animate={{ 
+          y: [0, 25, 0],
+          x: [0, -15, 0],
+        }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="absolute bottom-[20%] -right-20 w-80 h-80 bg-[var(--rose-300)]/10 rounded-full blur-[100px] pointer-events-none"
+      />
+
+      <div className="max-w-md w-full text-center space-y-10 relative z-10">
         {/* Hero Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="w-20 h-20 rounded-[28px] bg-gradient-to-br from-[var(--rose-400)] to-[var(--rose-600)] flex items-center justify-center mx-auto mb-8 shadow-xl shadow-rose-500/20 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-            <Heart size={40} className="text-white relative z-10" />
+          <div className="relative mx-auto mb-8 w-24 h-24 perspective-1000">
+            <motion.div 
+              whileHover={{ rotateY: 15, rotateX: -10, scale: 1.05 }}
+              className="w-20 h-20 rounded-[28px] bg-gradient-to-br from-[var(--rose-400)] to-[var(--rose-600)] flex items-center justify-center mx-auto shadow-xl shadow-rose-500/20 relative overflow-hidden group transform-style-3d"
+            >
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              {/* Front Layer */}
+              <Heart size={40} className="text-white relative z-20 translate-z-20" />
+              {/* 3D Depth Layer */}
+              <div className="absolute inset-0 bg-black/10 blur-[2px] translate-z-[-10px] rounded-[28px]" />
+            </motion.div>
+            
+            {/* Ambient Glow */}
+            <motion.div 
+              animate={{ opacity: [0.4, 0.7, 0.4], scale: [1, 1.1, 1] }}
+              transition={{ duration: 4, repeat: Infinity }}
+              className="absolute inset-0 bg-rose-400/20 rounded-full blur-2xl -z-10"
+            />
           </div>
           
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--rose-100)] text-[var(--rose-700)] text-[10px] font-bold uppercase tracking-wider mb-6 border border-[var(--rose-200)]">
@@ -63,7 +97,11 @@ export default function RootPage() {
             { icon: Shield, title: "Warning Signs", desc: "Recognize red flags early." },
             { icon: Users, title: "Care Readiness", desc: "Prepare provider summaries." }
           ].map((item, i) => (
-            <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-white/50 backdrop-blur-sm border border-[var(--warm-200)]/60 shadow-sm text-left">
+            <motion.div 
+              key={i} 
+              whileHover={{ scale: 1.02, y: -4, rotateX: 2, rotateY: -2 }}
+              className="flex items-center gap-4 p-4 rounded-2xl bg-white/60 backdrop-blur-md border border-[var(--warm-200)]/60 shadow- premium-sm text-left transition-all duration-300"
+            >
               <div className="w-10 h-10 rounded-xl bg-[var(--rose-50)] flex items-center justify-center text-[var(--rose-600)] shrink-0 shadow-inner">
                 <item.icon size={20} />
               </div>
@@ -71,7 +109,7 @@ export default function RootPage() {
                 <h3 className="font-bold text-[var(--text-primary)] text-sm">{item.title}</h3>
                 <p className="text-xs text-[var(--text-tertiary)] font-medium">{item.desc}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
 

@@ -73,8 +73,9 @@ export default function AboutPage() {
                 key={f.title}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
+                whileHover={{ y: -5, rotateX: 2, rotateY: -2, scale: 1.02 }}
                 transition={{ delay: i * 0.05 }}
-                className="bg-[var(--surface-primary)] p-4 rounded-3xl border border-[var(--warm-200)] shadow-sm"
+                className="bg-[var(--surface-primary)] p-4 rounded-3xl border border-[var(--warm-200)] shadow-premium-sm transition-all duration-300 transform-style-3d perspective-1000"
               >
                 <div className="w-9 h-9 rounded-xl bg-[var(--warm-100)] flex items-center justify-center mb-3 shadow-inner">
                   <f.icon size={18} className="text-[var(--rose-500)]" />
@@ -93,12 +94,16 @@ export default function AboutPage() {
           </h2>
           <div className="space-y-6">
             {steps.map((s, i) => (
-              <div key={s.title} className="flex gap-4 group">
-                <div className="text-xl font-black text-[var(--warm-200)] leading-none pt-0.5 group-hover:text-[var(--rose-200)] transition-colors">
+              <div key={s.title} className="flex gap-4 group items-start">
+                <motion.div 
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+                  className="text-xl font-black text-[var(--warm-200)] leading-none pt-0.5 group-hover:text-[var(--rose-300)] transition-colors drop-shadow-sm"
+                >
                   {s.number}
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-[var(--text-primary)] mb-1">{s.title}</h3>
+                </motion.div>
+                <div className="relative">
+                  <h3 className="text-sm font-bold text-[var(--text-primary)] mb-1 group-hover:text-[var(--rose-600)] transition-colors">{s.title}</h3>
                   <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-medium">{s.desc}</p>
                 </div>
               </div>

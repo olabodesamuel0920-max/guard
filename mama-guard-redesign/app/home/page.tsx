@@ -85,22 +85,48 @@ export default function HomePage() {
               </p>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }} className="relative overflow-hidden rounded-[var(--radius-3xl)] glass-card p-6 lg:p-8 shadow-premium">
-              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-[var(--rose-200)]/30 blur-2xl" />
-              <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-[var(--rose-300)]/20 blur-xl" />
-              <div className="relative">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              whileHover={{ rotateX: 1, rotateY: -1, y: -2 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }} 
+              className="relative overflow-hidden rounded-[var(--radius-3xl)] glass-card p-6 lg:p-8 shadow-premium perspective-1000 transform-style-3d"
+            >
+              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-[var(--rose-200)]/30 blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-[var(--rose-300)]/20 blur-xl pointer-events-none" />
+              <div className="relative z-10 translate-z-10">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <div className="flex items-center gap-2 mb-1.5"><Baby size={16} className="text-[var(--rose-500)]" /><span className="text-xs font-bold text-[var(--rose-600)] uppercase tracking-wider">{trimester}</span></div>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <motion.div
+                        animate={{ y: [0, -2, 0] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        <Baby size={16} className="text-[var(--rose-500)]" />
+                      </motion.div>
+                      <span className="text-xs font-bold text-[var(--rose-600)] uppercase tracking-wider">{trimester}</span>
+                    </div>
                     <div className="text-4xl lg:text-5xl font-extrabold text-[var(--text-primary)] mb-1 tracking-tight">Week {week}</div>
                     <div className="text-sm lg:text-base text-[var(--text-secondary)] font-medium">Baby is the size of a {babySize.fruit}</div>
                   </div>
-                  <div className="text-5xl lg:text-7xl select-none drop-shadow-xl transform hover:scale-110 transition-transform duration-500" role="img" aria-label={babySize.fruit}>{babySize.emoji}</div>
+                  <motion.div 
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    className="text-5xl lg:text-7xl select-none drop-shadow-2xl cursor-default" 
+                    role="img" 
+                    aria-label={babySize.fruit}
+                  >
+                    {babySize.emoji}
+                  </motion.div>
                 </div>
                 <div className="mb-4">
                   <div className="flex justify-between text-[10px] text-[var(--text-tertiary)] mb-2 font-bold uppercase tracking-[0.1em]"><span>Week 0</span><span>Week 40</span></div>
-                  <div className="h-4 bg-[var(--rose-100)]/50 rounded-full overflow-hidden shadow-inner p-0.5">
-                    <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 1.2, delay: 0.5, ease: [0.34, 1.56, 0.64, 1] }} className="h-full bg-gradient-to-r from-[var(--rose-400)] to-[var(--rose-600)] rounded-full shadow-sm relative overflow-hidden">
+                  <div className="h-4 bg-[var(--rose-100)]/50 rounded-full overflow-hidden shadow-inner p-0.5 relative">
+                    <motion.div 
+                      initial={{ width: 0 }} 
+                      animate={{ width: `${progress}%` }} 
+                      transition={{ duration: 1.2, delay: 0.5, ease: [0.34, 1.56, 0.64, 1] }} 
+                      className="h-full bg-gradient-to-r from-[var(--rose-400)] to-[var(--rose-600)] rounded-full shadow-sm relative overflow-hidden"
+                    >
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
                     </motion.div>
                   </div>
@@ -152,11 +178,23 @@ export default function HomePage() {
           <div className="lg:col-span-5 space-y-6">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="mb-2">
               <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-4 px-1">Daily Safety Priority</div>
-              <button onClick={() => router.push("/checkin")} className="w-full relative overflow-hidden rounded-[var(--radius-2xl)] bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] p-6 text-left shadow-premium hover:scale-[1.02] transition-transform duration-300 group">
-                <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-12 translate-x-12 group-hover:scale-110 transition-transform duration-700" />
+              <motion.button 
+                whileHover={{ scale: 1.01, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => router.push("/checkin")} 
+                className="w-full relative overflow-hidden rounded-[var(--radius-2xl)] bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] p-6 text-left shadow-[0_20px_40px_rgba(225,66,121,0.25),inset_0_1px_1px_rgba(255,255,255,0.3)] group"
+              >
+                <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-12 translate-x-12 group-hover:scale-110 transition-transform duration-700 pointer-events-none" />
                 <div className="relative flex items-center justify-between">
                   <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 shadow-lg backdrop-blur-md border border-white/30"><Activity size={32} className="text-white" /></div>
+                    <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 shadow-lg backdrop-blur-md border border-white/30">
+                      <motion.div
+                        animate={{ scale: [1, 1.1, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        <Activity size={32} className="text-white" />
+                      </motion.div>
+                    </div>
                     <div>
                       <div className="text-white font-bold text-2xl mb-0.5 tracking-tight">Daily Check-in</div>
                       <div className="text-white/80 text-sm leading-snug max-w-[220px] font-medium italic">3 minutes to assess and organize your maternal safety.</div>
@@ -166,7 +204,7 @@ export default function HomePage() {
                     <ChevronRight size={24} className="text-white" />
                   </div>
                 </div>
-              </button>
+              </motion.button>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="grid grid-cols-1 gap-4 mb-2">
