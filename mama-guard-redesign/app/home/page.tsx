@@ -6,7 +6,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { Header } from "@/components/Header";
 import { AssistantFloatingButton } from "@/components/AssistantFloatingButton";
 import { getGestationalWeek, getTrimester, getBabySize, getGreeting, getRelativeTime } from "@/lib/utils";
-import { Heart, Activity, BookOpen, ChevronRight, Calendar, Sparkles, Shield, CheckCircle2, Clock, Baby, Zap, ArrowRight } from "lucide-react";
+import { Heart, Activity, BookOpen, ChevronRight, Calendar, Sparkles, Shield, CheckCircle2, Clock, Baby, Zap, ArrowRight, FileText } from "lucide-react";
 import { motion } from "framer-motion";
 import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 
