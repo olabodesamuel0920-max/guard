@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, Send, Loader2, Heart, Baby, Activity, Shield, AlertTriangle, CheckCircle2, Stethoscope, BookOpen, Phone, X, FileText, User } from "lucide-react";
+import { ArrowLeft, Sparkles, Send, Loader2, Heart, Baby, Activity, Shield, AlertTriangle, CheckCircle2, Stethoscope, BookOpen, Phone, X, FileText, User, Thermometer } from "lucide-react";
 import { safeStorage, STORAGE_KEYS } from "@/lib/storage";
 import { MedicalDisclaimer } from "@/components/MedicalDisclaimer";
 import { getGestationalWeek, getTrimester } from "@/lib/utils";
@@ -38,12 +38,20 @@ interface UserProfile {
 
 const quickPromptGroups = [
   {
+    category: "Monitoring support",
+    prompts: [
+      { label: "Feverish < 100.4°F", icon: Thermometer, prompt: "I feel feverish but my temperature is under 100.4°F" },
+      { label: "What to tell provider", icon: Stethoscope, prompt: "Help me prepare what to tell my provider" },
+      { label: "Warning signs", icon: Shield, prompt: "What warning signs should I watch for?" },
+    ]
+  },
+  {
     category: "Urgent symptoms",
     prompts: [
       { label: "Severe headache", icon: AlertTriangle, prompt: "I have a severe headache" },
       { label: "Baby moving less", icon: Baby, prompt: "My baby is moving less" },
       { label: "Dizzy or faint", icon: Activity, prompt: "I feel dizzy or faint" },
-      { label: "Bleeding or fluid leaking", icon: Shield, prompt: "I have bleeding or fluid leaking" },
+      { label: "Bleeding or leaking", icon: Shield, prompt: "I have bleeding or fluid leaking" },
     ]
   },
   {
@@ -51,14 +59,6 @@ const quickPromptGroups = [
     prompts: [
       { label: "Build Safety Plan", icon: Shield, prompt: "Help me build my safety plan" },
       { label: "Provider Summary", icon: FileText, prompt: "Help me prepare a provider summary" },
-      { label: "What to tell provider", icon: Stethoscope, prompt: "What should I tell my provider?" },
-    ]
-  },
-  {
-    category: "Learn",
-    prompts: [
-      { label: "Warning signs", icon: Shield, prompt: "What warning signs should I watch for?" },
-      { label: "Movement meaning", icon: Activity, prompt: "What does reduced movement mean?" },
       { label: "Urgent care timing", icon: Heart, prompt: "When should I seek urgent care?" },
     ]
   }
@@ -80,6 +80,30 @@ function generateResponse(input: string): {
 } {
   const lower = input.toLowerCase();
 
+  // Specific case for feverish under 100.4
+  if (lower.includes("feverish") && (lower.includes("under 100.4") || lower.includes("below 100.4") || lower.includes("low fever"))) {
+    return {
+      content: `If you feel feverish but your temperature is under 100.4°F (38°C), here are some supportive care steps while you monitor:\n\n• Rest and drink plenty of water or clear fluids if able.\n• Recheck your temperature every 2-4 hours.\n• Write down when the symptoms started and any other changes you feel.\n• Contact your provider if symptoms continue, worsen, or reach 100.4°F or higher.\n\nWould you like to log this in a check-in to track it formally?`,
+      type: "text",
+      actions: [
+        { label: "Log in Check-in", icon: Activity, action: "checkin?symptom=Feverish feelings" },
+        { label: "What to tell provider", icon: Stethoscope, action: "Help me prepare what to tell my provider" },
+      ]
+    };
+  }
+
+  // Specific case for preparing what to tell provider
+  if (lower.includes("prepare") && lower.includes("tell") && lower.includes("provider")) {
+    return {
+      content: `To help your provider understand your concern, try to have these details ready:\n\n1. Exactly when the symptom started.\n2. How often it happens or if it's constant.\n3. Anything that makes it better or worse.\n4. Any other symptoms like vision changes or swelling.\n\nYou can use the "Provider Summary" tool below to organize this information automatically from your Mama Guard records.`,
+      type: "text",
+      actions: [
+        { label: "Provider Summary", icon: FileText, action: "summary" },
+        { label: "Start Check-in", icon: Activity, action: "checkin" },
+      ]
+    };
+  }
+
   // Escalation for critical symptoms
   const criticalSymptoms = [
     { keywords: ["bleed", "hemorrhage", "leaking", "fluid", "gush"], label: "Bleeding or Leaking" },
@@ -91,7 +115,7 @@ function generateResponse(input: string): {
     { keywords: ["breath", "shortness of breath", "chest pain", "heart racing", "fast heartbeat", "racing heart", "trouble breathing"], label: "Chest or Breathing Issues" },
     { keywords: ["abdominal pain", "stomach pain", "intense cramp", "severe pain"], label: "Severe Abdominal Pain" },
     { keywords: ["nausea", "vomiting", "throw up", "cannot keep food down"], label: "Severe Nausea/Vomiting" },
-    { keywords: ["dizzy", "faint", "passed out", "seizure", "fit", "twitching"], label: "Dizziness or Seizures" },
+    { keywords: ["leg_pain", "severe pain in one leg", "redness in leg", "pain in arm"], label: "Leg or Arm Pain" },
     { keywords: ["harm", "suicide", "hurt myself", "hurt baby", "self-harm"], label: "Mental Health Urgent Concerns" },
     { keywords: ["tired", "exhausted", "extreme tiredness", "fatigue"], label: "Extreme Fatigue" },
   ];
@@ -116,7 +140,7 @@ function generateResponse(input: string): {
       nextStep = "Contact a crisis line, your provider, or go to emergency care immediately.";
       whatToTell = "Tell them honestly how you are feeling so they can support you.";
     } else if (lower.includes("fever")) {
-      whyItMatters = "A high fever can indicate an infection that may affect you or the baby.";
+      whyItMatters = "A high fever (100.4°F or higher) can indicate an infection that may affect you or the baby.";
     }
 
     return { 
