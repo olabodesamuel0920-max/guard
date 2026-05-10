@@ -54,53 +54,89 @@ export default function WorkerPage() {
           <button onClick={() => router.back()} className="w-10 h-10 rounded-full bg-white/50 border border-[var(--warm-200)]/60 flex items-center justify-center active:scale-95 shadow-sm transition-all hover:bg-white"><ArrowLeft size={18} className="text-[var(--text-secondary)]" /></button>
           <div className="flex-1">
             <h1 className="font-bold text-[var(--text-primary)] text-base tracking-tight">Stakeholder Preview</h1>
-            <p className="text-[10px] text-[var(--text-tertiary)] font-medium leading-none mt-0.5">Worker Portal · Conceptual Demo</p>
+            <p className="text-[10px] text-[var(--text-tertiary)] font-medium leading-none mt-0.5">Worker Portal · Analytical Prototype</p>
           </div>
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[var(--sage-400)] to-[var(--sage-600)] flex items-center justify-center shadow-lg shadow-sage-500/20 text-white"><Stethoscope size={20} /></div>
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] flex items-center justify-center shadow-lg shadow-rose-500/20 text-white"><Users size={20} /></div>
         </div>
       </header>
 
       <div className="bg-[var(--text-primary)] text-white text-[9px] py-2 px-5 text-center font-bold tracking-[0.2em] uppercase">
-        Live Stakeholder Preview Only · Sample Data
+        Live Stakeholder Preview Only · Sample Data · Non-Clinical Environment
       </div>
 
       <main className="px-5 py-6 pb-12 max-w-lg mx-auto">
-        <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-5 mb-6 border border-[var(--warm-200)] shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-5">
-            <ShieldAlert size={80} />
-          </div>
-          <div className="flex items-start gap-4 relative z-10">
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0 text-amber-600 border border-amber-100">
-              <ShieldAlert size={24} />
+        {/* Stakeholder Demo Guide */}
+        <div className="mb-8 p-6 rounded-[var(--radius-3xl)] bg-gradient-to-br from-white to-[var(--bg-cream)] border border-[var(--warm-200)] shadow-premium relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-[0.03] rotate-12 scale-150"><Zap size={100} /></div>
+          <h3 className="text-xs font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+            <Sparkles size={18} className="text-[var(--rose-500)]" />
+            Stakeholder Demo Guide
+          </h3>
+          <div className="space-y-4">
+            <div className="flex gap-4">
+              <div className="w-8 h-8 rounded-xl bg-[var(--rose-50)] flex items-center justify-center shrink-0 border border-[var(--rose-100)] text-[var(--rose-600)]"><Activity size={16} /></div>
+              <div>
+                <p className="text-[11px] font-bold text-[var(--text-primary)] mb-1">Risk-Prioritized Caseload</p>
+                <p className="text-[10px] text-[var(--text-tertiary)] leading-tight">Mothers are automatically sorted by risk level based on local device reports, allowing workers to focus on urgent cases first.</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-[10px] font-bold text-amber-800 uppercase tracking-[0.2em] mb-1.5">Safety & Demo Notice</h3>
-              <p className="text-[11px] text-amber-800 leading-relaxed font-medium">
-                This interface demonstrates how community health workers could monitor prioritized alerts. 
-                Full deployment would require healthcare governance and secure data gateways.
-              </p>
+            <div className="flex gap-4">
+              <div className="w-8 h-8 rounded-xl bg-[var(--rose-50)] flex items-center justify-center shrink-0 border border-[var(--rose-100)] text-[var(--rose-600)]"><MapPin size={16} /></div>
+              <div>
+                <p className="text-[11px] font-bold text-[var(--text-primary)] mb-1">Regional Health Insights</p>
+                <p className="text-[10px] text-[var(--text-tertiary)] leading-tight">Aggregated anonymized trends help administrators allocate resources to districts with higher symptom frequency.</p>
+              </div>
             </div>
           </div>
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-2 gap-3 mb-5">
-          <div className="rounded-2xl bg-[var(--surface-primary)] p-4 shadow-sm border border-[var(--warm-200)]/60">
-            <div className="flex items-center gap-2 mb-2"><Users size={16} className="text-[var(--text-tertiary)]" /><span className="text-[11px] font-semibold text-[var(--text-muted)] uppercase">Caseload</span></div>
-            <div className="text-2xl font-bold text-[var(--text-primary)]">{stats.total}</div>
-            <div className="text-[11px] text-[var(--text-tertiary)] font-medium">{stats.todayCheckins} checked in today</div>
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-2 gap-4 mb-6">
+          <div className="rounded-2xl bg-white p-5 shadow-sm border border-[var(--warm-200)]">
+            <div className="flex items-center gap-2 mb-2"><Users size={16} className="text-[var(--text-tertiary)]" /><span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Total Active</span></div>
+            <div className="text-3xl font-extrabold text-[var(--text-primary)] tracking-tight">{stats.total}</div>
+            <div className="text-[10px] text-[var(--text-tertiary)] font-bold uppercase mt-1">{stats.todayCheckins} Today</div>
           </div>
-          <div className="rounded-2xl bg-gradient-to-br from-rose-50 to-red-50 p-4 shadow-sm border border-rose-200/60">
-            <div className="flex items-center gap-2 mb-2"><ShieldAlert size={16} className="text-rose-500" /><span className="text-[11px] font-semibold text-rose-600 uppercase">High Risk</span></div>
-            <div className="text-2xl font-bold text-rose-700">{stats.highRisk}</div>
-            <div className="text-[11px] text-rose-500 font-medium">{stats.followUp} need follow-up</div>
+          <div className="rounded-2xl bg-gradient-to-br from-rose-50 to-white p-5 shadow-sm border border-rose-100">
+            <div className="flex items-center gap-2 mb-2"><ShieldAlert size={16} className="text-rose-500" /><span className="text-[10px] font-bold text-rose-600 uppercase tracking-wider">Urgent Alerts</span></div>
+            <div className="text-3xl font-extrabold text-rose-700 tracking-tight">{stats.highRisk}</div>
+            <div className="text-[10px] text-rose-500 font-bold uppercase mt-1">{stats.followUp} Pending</div>
           </div>
         </motion.div>
 
-        {stats.highRisk > 0 && <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="rounded-2xl bg-gradient-to-r from-rose-500 to-red-500 p-4 mb-5 shadow-lg shadow-rose-500/20 text-white"><div className="flex items-center gap-3"><AlertTriangle size={22} className="flex-shrink-0" /><div><div className="font-bold text-sm">{stats.highRisk} urgent patient{stats.highRisk > 1 ? "s" : ""} need{stats.highRisk === 1 ? "s" : ""} attention</div><div className="text-white/80 text-xs font-medium">Review red-flag symptoms immediately</div></div></div></motion.div>}
+        {stats.highRisk > 0 && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }} 
+            animate={{ opacity: 1, scale: 1 }} 
+            transition={{ delay: 0.1 }} 
+            className="rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 p-4 mb-8 shadow-premium text-white relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 p-4 opacity-10 rotate-12 scale-150"><ShieldAlert size={60} /></div>
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm border border-white/30">
+                <AlertTriangle size={24} className="text-white" />
+              </div>
+              <div>
+                <div className="font-extrabold text-sm uppercase tracking-wider">System Alert</div>
+                <div className="text-white/90 text-xs font-bold leading-tight mt-0.5">{stats.highRisk} critical cases require immediate follow-up.</div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
-        <div className="flex gap-2 mb-4">
-          <div className="flex-1 relative"><Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" /><input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search patients..." className="w-full bg-[var(--surface-primary)] border border-[var(--warm-200)] rounded-xl pl-10 pr-4 py-2.5 text-sm focus:border-[var(--rose-400)] focus:outline-none shadow-sm" /></div>
-          <button className="w-10 h-10 rounded-xl bg-[var(--surface-primary)] border border-[var(--warm-200)] flex items-center justify-center shadow-sm active:scale-95 transition-transform"><Filter size={16} className="text-[var(--text-tertiary)]" /></button>
+        <div className="flex gap-2 mb-6">
+          <div className="flex-1 relative">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+            <input 
+              type="text" 
+              value={searchQuery} 
+              onChange={(e) => setSearchQuery(e.target.value)} 
+              placeholder="Search by name or district..." 
+              className="w-full bg-white border border-[var(--warm-200)] rounded-2xl pl-10 pr-4 py-3 text-sm font-medium focus:border-[var(--rose-400)] focus:ring-2 focus:ring-[var(--rose-100)] focus:outline-none shadow-sm transition-all" 
+            />
+          </div>
+          <button className="w-12 h-12 rounded-2xl bg-white border border-[var(--warm-200)] flex items-center justify-center shadow-sm active:scale-95 hover:bg-[var(--bg-secondary)] transition-all">
+            <Filter size={18} className="text-[var(--text-tertiary)]" />
+          </button>
         </div>
 
         <div className="flex gap-2 overflow-x-auto hide-scrollbar mb-5 -mx-1 px-1">

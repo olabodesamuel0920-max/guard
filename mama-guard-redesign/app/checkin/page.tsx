@@ -737,215 +737,213 @@ function CheckInContent() {
               transition={{ duration: 0.4 }}
               className="md:grid md:grid-cols-12 md:gap-10 items-start"
             >
-              <div className="md:col-span-4 lg:col-span-5 md:sticky md:top-24">
+              {/* Left Column: Risk Status */}
+              <div className="md:col-span-5 lg:col-span-5 md:sticky md:top-24 mb-6 md:mb-0">
                 <div
-                  className={`rounded-3xl p-6 md:p-8 mb-5 ${
+                  className={`rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-premium ${
                     riskLevel === "high"
-                      ? "bg-gradient-to-br from-rose-50 to-red-50 border-2 border-rose-200 shadow-rose-100/50 shadow-lg"
+                      ? "bg-gradient-to-br from-rose-50 to-red-50 border-2 border-rose-200"
                       : riskLevel === "medium"
-                      ? "bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 shadow-amber-100/50 shadow-lg"
-                      : "bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 shadow-emerald-100/50 shadow-lg"
+                      ? "bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200"
+                      : "bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200"
                   }`}
                 >
-                  <div className="flex items-center gap-4 mb-6">
-                    <div
-                      className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-md ${
-                        riskLevel === "high"
-                          ? "bg-rose-500"
-                          : riskLevel === "medium"
-                          ? "bg-amber-500"
-                          : "bg-emerald-500"
-                      }`}
-                    >
-                      {riskLevel === "high" ? (
-                        <AlertTriangle size={32} className="text-white" />
-                      ) : riskLevel === "medium" ? (
-                        <Clock size={32} className="text-white" />
-                      ) : (
-                        <ThumbsUp size={32} className="text-white" />
-                      )}
-                    </div>
+                  <div className="absolute top-0 right-0 p-4 opacity-5 rotate-12 scale-150">
+                    {riskLevel === "high" ? <ShieldAlert size={120} /> : riskLevel === "medium" ? <Clock size={120} /> : <ShieldCheck size={120} />}
+                  </div>
 
-                    <div>
-                      <span
-                        className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-1.5 block ${
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-4 mb-8">
+                      <div
+                        className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg border-2 ${
                           riskLevel === "high"
-                            ? "text-rose-600"
+                            ? "bg-rose-500 border-rose-400 text-white"
                             : riskLevel === "medium"
-                            ? "text-amber-600"
-                            : "text-emerald-600"
+                            ? "bg-amber-500 border-amber-400 text-white"
+                            : "bg-emerald-500 border-emerald-400 text-white"
                         }`}
                       >
-                        {riskLevel === "high" ? "Urgent Action Recommended" : riskLevel === "medium" ? "Monitoring Advised" : "No Concerns Detected"}
-                      </span>
+                        {riskLevel === "high" ? (
+                          <AlertTriangle size={32} />
+                        ) : riskLevel === "medium" ? (
+                          <Clock size={32} />
+                        ) : (
+                          <ThumbsUp size={32} />
+                        )}
+                      </div>
 
-                      <h2 className="text-2xl font-extrabold text-[var(--text-primary)] leading-tight">
-                        {riskLevel === "high"
-                          ? "Contact Your Care Team"
-                          : riskLevel === "medium"
-                          ? "Track Symptoms Closely"
-                          : "Continue Routine Care"}
-                      </h2>
+                      <div>
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <div className={`w-2 h-2 rounded-full ${riskLevel === 'high' ? 'bg-rose-500 animate-pulse' : riskLevel === 'medium' ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+                          <span className={`text-[10px] font-extrabold uppercase tracking-[0.2em] ${
+                            riskLevel === "high" ? "text-rose-600" : riskLevel === "medium" ? "text-amber-600" : "text-emerald-600"
+                          }`}>
+                            {riskLevel === "high" ? "Urgent Priority" : riskLevel === "medium" ? "Monitoring Review" : "Routine Wellness"}
+                          </span>
+                        </div>
+
+                        <h2 className="text-2xl lg:text-3xl font-extrabold text-[var(--text-primary)] leading-tight tracking-tight">
+                          {riskLevel === "high"
+                            ? "Provider Review Required"
+                            : riskLevel === "medium"
+                            ? "Active Monitoring"
+                            : "Healthy Baseline"}
+                        </h2>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className={`rounded-2xl p-5 ${
+                        riskLevel === "high" ? "bg-white/60 border border-rose-100" : riskLevel === "medium" ? "bg-white/60 border border-amber-100" : "bg-white/60 border border-emerald-100"
+                      }`}>
+                        <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">What this means</div>
+                        <p className={`text-sm leading-relaxed font-bold ${
+                          riskLevel === "high" ? "text-rose-950" : riskLevel === "medium" ? "text-amber-950" : "text-emerald-950"
+                        }`}>
+                          {getRiskAdvice(riskLevel, week)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 hidden md:block">
+                  <div className="bg-white rounded-3xl p-6 border border-[var(--warm-200)] shadow-sm">
+                    <h3 className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3">Maternal Safety Intent</h3>
+                    <p className="text-[11px] text-[var(--text-secondary)] leading-relaxed font-medium">
+                      This assessment is designed to bridge the gap between symptom onset and clinical review. By organizing your concerns now, you provide your care team with higher-quality data for their evaluation.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Findings & Actions */}
+              <div className="md:col-span-7 lg:col-span-7 space-y-6">
+                {/* Findings Summary Card */}
+                <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-[var(--warm-200)] relative overflow-hidden">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-bold text-[var(--text-primary)]">Summary of Findings</h3>
+                    <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest bg-[var(--bg-secondary)] px-3 py-1 rounded-full">
+                      Logged {new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                     </div>
                   </div>
 
-                  <div className={`rounded-2xl p-5 mb-2 ${
-                    riskLevel === "high" ? "bg-rose-100/50" : riskLevel === "medium" ? "bg-amber-100/50" : "bg-emerald-100/50"
-                  }`}>
-                    <p className={`text-[15px] leading-relaxed font-bold ${
-                      riskLevel === "high" ? "text-rose-950" : riskLevel === "medium" ? "text-amber-950" : "text-emerald-950"
-                    }`}>
-                      {getRiskAdvice(riskLevel, week)}
-                    </p>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {selectedSymptoms.map((id) => {
+                      const symptom = symptoms.find((s) => s.id === id);
+                      return (
+                        <div
+                          key={id}
+                          className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--warm-200)] text-[13px] font-bold text-[var(--text-primary)]"
+                        >
+                          <Activity size={14} className="text-[var(--rose-500)]" />
+                          {symptom?.label}
+                        </div>
+                      );
+                    })}
                   </div>
 
+                  {Object.keys(followUpAnswers).length > 0 && (
+                    <div className="bg-[var(--warm-50)] rounded-2xl p-5 border border-[var(--warm-100)] space-y-4">
+                      {Object.entries(followUpAnswers).map(([id, answer]) => {
+                        const symptom = symptoms.find((s) => s.id === id);
+                        return (
+                          <div key={id} className="flex justify-between items-start gap-4">
+                            <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-tight shrink-0 mt-0.5">{symptom?.label} detail:</span>
+                            <span className="text-xs font-extrabold text-[var(--text-primary)] text-right">{id === 'fever' && answer === 'Under 100.4°F' ? "Chills or feeling feverish; temperature under 100.4°F" : answer}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   {selectedSymptoms.includes("headache") && riskLevel !== "high" && (
-                    <div className="mt-4 p-4 rounded-2xl bg-amber-100/50 border border-amber-200">
-                      <p className="text-[11px] text-amber-900 font-medium leading-relaxed">
-                        If the headache does not go away, gets worse, or comes with vision changes, swelling, dizziness, chest pain, or reduced baby movement, contact your healthcare provider or emergency care.
+                    <div className="mt-6 p-4 rounded-2xl bg-amber-50 border border-amber-100">
+                      <p className="text-[11px] text-amber-900 font-medium leading-relaxed italic">
+                        Note: If the headache does not go away, gets worse, or comes with vision changes, swelling, dizziness, chest pain, or reduced baby movement, contact your healthcare provider or emergency care.
                       </p>
                     </div>
                   )}
 
-                  <p className="text-[11px] text-[var(--text-tertiary)] italic leading-relaxed mt-4 font-medium opacity-80">
+                  <p className="text-[10px] text-[var(--text-tertiary)] italic leading-relaxed mt-5 font-medium opacity-70">
                     Mama Guard provides supportive risk guidance only. It does not diagnose or replace professional medical care.
                   </p>
                 </div>
-              </div>
 
-              <div className="md:col-span-8 lg:col-span-7 mt-5 md:mt-0 space-y-6">
-                <div className="bg-white border border-[var(--warm-200)] rounded-3xl p-6 shadow-sm">
-                  <div className="flex items-center gap-2 mb-4">
-                    <CalendarDays size={16} className="text-[var(--text-tertiary)]" />
-                    <h3 className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-[0.15em]">Check-in Summary · Today</h3>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    {selectedSymptoms.map((id) => {
-                      const symptom = symptoms.find((item) => item.id === id);
-                      const answer = followUpAnswers[id];
-                      return symptom ? (
-                        <div key={id} className="flex flex-col gap-2 p-3 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--warm-100)]">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[var(--text-primary)] font-bold text-sm">{symptom.label}</span>
-                            {(() => {
-                              let label = symptom.severity === 'high' ? 'Important' : 'Review';
-                              let color = symptom.severity === 'high' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700';
-                              
-                              if (id === 'headache') {
-                                const redFlags = ["vision", "swelling", "breathing", "bleeding", "movement", "self_harm"];
-                                const hasRedFlags = selectedSymptoms.some(sid => redFlags.includes(sid));
-                                if (answer === "7-10 (Severe or worsening)" || hasRedFlags) {
-                                  label = "Important";
-                                  color = "bg-rose-100 text-rose-700";
-                                }
-                                // Otherwise stays 'Review' with amber styling
-                              }
-                              
-                              return (
-                                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${color}`}>
-                                  {label}
-                                </span>
-                              );
-                            })()}
-                          </div>
-                          {answer && (
-                            <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] bg-white/60 rounded-xl px-3 py-2 border border-black/5">
-                              <Sparkles size={12} className="text-[var(--rose-500)]" />
-                              <span className="font-medium">
-                                {id === 'fever' && answer === 'Under 100.4°F' 
-                                  ? "Chills or feeling feverish; temperature under 100.4°F" 
-                                  : answer}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      ) : null;
-                    })}
-                    {selectedSymptoms.length === 0 && (
-                      <div className="flex items-center gap-3 py-4 text-emerald-700">
-                        <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                          <ShieldCheck size={20} />
-                        </div>
-                        <div className="text-sm font-bold italic">No concerning symptoms reported today.</div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Supportive Care Steps Card */}
+                {/* Care Steps Card */}
                 <motion.div 
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  className={`rounded-3xl p-5 border shadow-sm ${
+                  className={`rounded-3xl p-6 border shadow-premium ${
                     riskLevel === "high" 
                       ? "bg-rose-50/50 border-rose-100" 
                       : "bg-gradient-to-br from-[var(--warm-50)] to-white border-[var(--warm-200)]"
                   }`}
                 >
-                  <h3 className={`text-[10px] font-extrabold uppercase tracking-[0.2em] mb-4 flex items-center gap-2 ${
+                  <h3 className={`text-[11px] font-extrabold uppercase tracking-[0.2em] mb-5 flex items-center gap-2 ${
                     riskLevel === "high" ? "text-rose-700" : "text-[var(--text-muted)]"
                   }`}>
-                    {riskLevel === "high" ? <ShieldAlert size={14} /> : <Clock size={14} />}
+                    {riskLevel === "high" ? <ShieldAlert size={16} /> : <Clock size={16} />}
                     {riskLevel === "high" ? "Critical Next Steps" : "Care steps while monitoring"}
                   </h3>
                   
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {riskLevel === "high" ? (
                       <>
-                        <div className="flex gap-3">
-                          <div className="w-5 h-5 rounded-full bg-rose-100 flex items-center justify-center shrink-0 mt-0.5"><Check size={12} className="text-rose-600" /></div>
-                          <p className="text-xs text-rose-900 font-bold">Contact your healthcare provider or clinic immediately.</p>
+                        <div className="flex gap-4">
+                          <div className="w-6 h-6 rounded-full bg-rose-100 flex items-center justify-center shrink-0 mt-0.5"><Check size={14} className="text-rose-600" /></div>
+                          <p className="text-sm text-rose-950 font-bold">Contact your healthcare provider or clinic immediately.</p>
                         </div>
-                        <div className="flex gap-3">
-                          <div className="w-5 h-5 rounded-full bg-rose-100 flex items-center justify-center shrink-0 mt-0.5"><Check size={12} className="text-rose-600" /></div>
-                          <p className="text-xs text-rose-900 font-bold">Go to the nearest emergency care center if symptoms are severe.</p>
+                        <div className="flex gap-4">
+                          <div className="w-6 h-6 rounded-full bg-rose-100 flex items-center justify-center shrink-0 mt-0.5"><Check size={14} className="text-rose-600" /></div>
+                          <p className="text-sm text-rose-950 font-bold">Go to the nearest emergency care center if symptoms are severe.</p>
                         </div>
-                        <div className="flex gap-3">
-                          <div className="w-5 h-5 rounded-full bg-rose-100 flex items-center justify-center shrink-0 mt-0.5"><Check size={12} className="text-rose-600" /></div>
-                          <p className="text-xs text-rose-900 font-medium">Use the "Share Summary" button below to show your symptoms to the care team.</p>
+                        <div className="flex gap-4">
+                          <div className="w-6 h-6 rounded-full bg-rose-100 flex items-center justify-center shrink-0 mt-0.5"><Check size={14} className="text-rose-600" /></div>
+                          <p className="text-sm text-rose-950 font-medium">Use the "Share Summary" button below to show your symptoms to the care team.</p>
                         </div>
                       </>
                     ) : (
                       <>
-                        {selectedSymptoms.includes("fever") && followUpAnswers["fever"] === "Under 100.4°F" ? (
+                        {(selectedSymptoms.includes("fever") && followUpAnswers["fever"] === "Under 100.4°F") ? (
                           <>
-                            <div className="flex gap-3">
-                              <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-[var(--warm-200)]"><Check size={12} className="text-[var(--rose-500)]" /></div>
-                              <p className="text-xs text-[var(--text-secondary)] font-medium">Rest and drink plenty of water or clear fluids if able.</p>
+                            <div className="flex gap-4">
+                              <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-[var(--warm-200)]"><Check size={14} className="text-[var(--rose-500)]" /></div>
+                              <p className="text-sm text-[var(--text-secondary)] font-medium">Rest and drink plenty of water or clear fluids if able.</p>
                             </div>
-                            <div className="flex gap-3">
-                              <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-[var(--warm-200)]"><Check size={12} className="text-[var(--rose-500)]" /></div>
-                              <p className="text-xs text-[var(--text-secondary)] font-medium">Recheck your temperature every 2-4 hours and log changes.</p>
+                            <div className="flex gap-4">
+                              <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-[var(--warm-200)]"><Check size={14} className="text-[var(--rose-500)]" /></div>
+                              <p className="text-sm text-[var(--text-secondary)] font-medium">Recheck your temperature every 2-4 hours and log changes.</p>
                             </div>
-                            <div className="flex gap-3">
-                              <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-[var(--warm-200)]"><Check size={12} className="text-[var(--rose-500)]" /></div>
-                              <p className="text-xs text-[var(--text-secondary)] font-medium">Write down exactly when the feverish feeling started.</p>
+                            <div className="flex gap-4">
+                              <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-[var(--warm-200)]"><Check size={14} className="text-[var(--rose-500)]" /></div>
+                              <p className="text-sm text-[var(--text-secondary)] font-medium">Write down exactly when the feverish feeling started.</p>
                             </div>
                           </>
                         ) : (
                           <>
-                            <div className="flex gap-3">
-                              <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-[var(--warm-200)]"><Check size={12} className="text-[var(--rose-500)]" /></div>
-                              <p className="text-xs text-[var(--text-secondary)] font-medium">Monitor these symptoms closely and re-check if they change.</p>
+                            <div className="flex gap-4">
+                              <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-[var(--warm-200)]"><Check size={14} className="text-[var(--rose-500)]" /></div>
+                              <p className="text-sm text-[var(--text-secondary)] font-medium">Monitor these symptoms closely and re-check if they change.</p>
                             </div>
-                            <div className="flex gap-3">
-                              <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-[var(--warm-200)]"><Check size={12} className="text-[var(--rose-500)]" /></div>
-                              <p className="text-xs text-[var(--text-secondary)] font-medium">Keep a log of what you are feeling and when it worsens.</p>
+                            <div className="flex gap-4">
+                              <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-[var(--warm-200)]"><Check size={14} className="text-[var(--rose-500)]" /></div>
+                              <p className="text-sm text-[var(--text-secondary)] font-medium">Keep a log of what you are feeling and when it worsens.</p>
                             </div>
                           </>
                         )}
-                        <div className="flex gap-3 pt-1">
-                          <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-[var(--warm-200)]"><Check size={12} className="text-[var(--rose-500)]" /></div>
-                          <p className="text-xs text-[var(--text-secondary)] font-bold italic">Contact your provider if symptoms continue, worsen, or appear with warning signs.</p>
+                        <div className="flex gap-4 pt-2">
+                          <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm border border-[var(--warm-200)]"><Check size={14} className="text-[var(--rose-500)]" /></div>
+                          <p className="text-sm text-[var(--text-primary)] font-bold italic">Contact your provider if symptoms continue, worsen, or appear with warning signs.</p>
                         </div>
                       </>
                     )}
                   </div>
                 </motion.div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Primary Actions Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {riskLevel === "high" && (
                     <>
                       {userData.providerPhone ? (
@@ -1018,7 +1016,7 @@ function CheckInContent() {
                         alert("Clipboard access is not available on this browser. Please take a screenshot of your results.");
                       }
                     }}
-                    className={`w-full py-4 rounded-2xl border-2 transition-all font-bold flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] ${
+                    className={`w-full py-4 rounded-2xl border-2 transition-all font-bold flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] sm:col-span-2 ${
                       copied 
                         ? "bg-emerald-50 border-emerald-200 text-emerald-700" 
                         : "bg-white border-[var(--warm-200)] text-[var(--text-primary)] hover:border-[var(--warm-300)]"
@@ -1030,12 +1028,13 @@ function CheckInContent() {
                       </>
                     ) : (
                       <>
-                        <Share2 size={18} className="text-[var(--rose-500)]" /> Share Summary
+                        <Share2 size={18} className="text-[var(--rose-500)]" /> Share Summary for Provider
                       </>
                     )}
                   </button>
                 </div>
 
+                {/* Secondary Navigation */}
                 <div className="pt-6 border-t border-[var(--warm-100)] space-y-3">
                   <button
                     type="button"

@@ -151,50 +151,57 @@ export default function HomePage() {
           {/* Right Column: Actions & Education */}
           <div className="lg:col-span-5 space-y-6">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="mb-2">
-              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-4 px-1">Primary Actions</div>
+              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-4 px-1">Daily Safety Priority</div>
               <button onClick={() => router.push("/checkin")} className="w-full relative overflow-hidden rounded-[var(--radius-2xl)] bg-gradient-to-br from-[var(--rose-500)] to-[var(--rose-600)] p-6 text-left shadow-premium hover:scale-[1.02] transition-transform duration-300 group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8 group-hover:scale-110 transition-transform duration-500" />
+                <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-12 translate-x-12 group-hover:scale-110 transition-transform duration-700" />
                 <div className="relative flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 shadow-lg backdrop-blur-sm"><Activity size={28} className="text-white" /></div>
+                  <div className="flex items-center gap-5">
+                    <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center shrink-0 shadow-lg backdrop-blur-md border border-white/30"><Activity size={32} className="text-white" /></div>
                     <div>
-                      <div className="text-white font-bold text-xl mb-0.5 tracking-tight">Start Check-in</div>
-                      <div className="text-white/80 text-xs leading-snug max-w-[200px] font-medium">Log symptoms and create clearer information for your care team.</div>
+                      <div className="text-white font-bold text-2xl mb-0.5 tracking-tight">Daily Check-in</div>
+                      <div className="text-white/80 text-sm leading-snug max-w-[220px] font-medium italic">3 minutes to assess and organize your maternal safety.</div>
                     </div>
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                    <ChevronRight size={20} className="text-white" />
+                  <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors shadow-inner">
+                    <ChevronRight size={24} className="text-white" />
                   </div>
                 </div>
               </button>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="grid grid-cols-1 gap-4 mb-2">
-              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-2 px-1">Walkthrough Journey</div>
-              <div className="rounded-[var(--radius-2xl)] bg-gradient-to-br from-[var(--warm-50)] to-[var(--bg-cream)] p-5 border border-[var(--warm-200)]/60 shadow-sm">
-                <h3 className="text-sm font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
-                  <Sparkles size={16} className="text-[var(--rose-500)]" />
-                  Maternal Journey Guide
+              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-2 px-1">Investor Demo Walkthrough</div>
+              <div className="rounded-[var(--radius-2xl)] bg-gradient-to-br from-white to-[var(--bg-cream)] p-6 border border-[var(--warm-200)] shadow-premium relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-[0.03] scale-150"><Zap size={100} /></div>
+                <h3 className="text-sm font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+                  <Sparkles size={18} className="text-[var(--rose-500)]" />
+                  Your Safety Journey
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-5 relative">
+                  <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-[var(--warm-200)]/50" />
                   {[
-                    { step: "01", label: "Safety Check-in", desc: "Log symptoms and assess current risk level.", path: "/checkin" },
-                    { step: "02", label: "Care Team Summary", desc: "Prepare organized data for your next visit.", path: "/ai" },
-                    { step: "03", label: "Safety Protocol", desc: "Access emergency contacts and hospital info.", path: "/safety" }
+                    { step: "01", label: "Check-in", desc: "Report symptoms through our safety-validated assessment.", path: "/checkin", icon: Activity },
+                    { step: "02", label: "Understand Risk", desc: "Receive immediate, non-diagnostic risk-level guidance.", path: "/checkin", icon: Shield },
+                    { step: "03", label: "Prepare Care Team", desc: "Generate data-backed summaries for your provider.", path: "/ai", icon: FileText }
                   ].map((item, i) => (
                     <button 
                       key={i} 
                       onClick={() => router.push(item.path)}
-                      className="w-full flex items-start gap-3 group text-left transition-all active:scale-[0.98]"
+                      className="w-full flex items-start gap-4 group text-left transition-all active:scale-[0.98] relative z-10"
                     >
-                      <div className="w-6 h-6 rounded-lg bg-white border border-[var(--warm-200)] flex items-center justify-center text-[10px] font-bold text-[var(--text-tertiary)] shrink-0 group-hover:border-[var(--rose-300)] group-hover:text-[var(--rose-600)] transition-colors">
-                        {item.step}
+                      <div className="w-9 h-9 rounded-xl bg-white border border-[var(--warm-200)] flex items-center justify-center text-[10px] font-extrabold text-[var(--text-tertiary)] shrink-0 group-hover:border-[var(--rose-400)] group-hover:text-[var(--rose-600)] shadow-sm transition-all group-hover:shadow-md">
+                        <item.icon size={16} />
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-[var(--text-primary)] group-hover:text-[var(--rose-600)] transition-colors">{item.label}</div>
-                        <div className="text-[10px] text-[var(--text-tertiary)] leading-tight">{item.desc}</div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold text-[var(--rose-500)] uppercase tracking-widest">{item.step}</span>
+                          <div className="text-sm font-bold text-[var(--text-primary)] group-hover:text-[var(--rose-600)] transition-colors">{item.label}</div>
+                        </div>
+                        <div className="text-xs text-[var(--text-tertiary)] leading-tight mt-0.5 font-medium">{item.desc}</div>
                       </div>
-                      <ChevronRight size={14} className="ml-auto text-[var(--warm-300)] group-hover:text-[var(--rose-400)] transition-colors" />
+                      <div className="ml-auto w-8 h-8 rounded-full flex items-center justify-center text-[var(--warm-300)] group-hover:text-[var(--rose-400)] group-hover:bg-[var(--rose-50)] transition-all">
+                        <ChevronRight size={18} />
+                      </div>
                     </button>
                   ))}
                 </div>
