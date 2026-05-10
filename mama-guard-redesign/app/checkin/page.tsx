@@ -256,6 +256,20 @@ function CheckInContent() {
   const [followUpAnswers, setFollowUpAnswers] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState(false);
 
+  // Handle pre-selected symptom from AI Assistant
+  useState(() => {
+    if (incomingSymptom) {
+      // Find the symptom ID that matches the label or ID
+      const matchedSymptom = symptoms.find(s => 
+        s.id.toLowerCase() === incomingSymptom.toLowerCase() || 
+        s.label.toLowerCase().includes(incomingSymptom.toLowerCase())
+      );
+      if (matchedSymptom) {
+        setSelectedSymptoms([matchedSymptom.id]);
+      }
+    }
+  });
+
   const userData = safeStorage.get<UserData>(STORAGE_KEYS.ONBOARDING, { name: "", dueDate: "" });
   const week = getGestationalWeek(userData.dueDate);
 

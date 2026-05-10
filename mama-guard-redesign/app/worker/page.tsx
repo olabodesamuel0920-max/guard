@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Users, AlertTriangle, Clock, Phone, MessageSquare, Calendar, CheckCircle2, ChevronRight, Search, Filter, ShieldAlert, Stethoscope, MapPin, FileText } from "lucide-react";
+import { ArrowLeft, Users, AlertTriangle, Clock, Phone, MessageSquare, Calendar, CheckCircle2, ChevronRight, Search, Filter, ShieldAlert, Stethoscope, MapPin, FileText, Zap, Sparkles, Activity } from "lucide-react";
 
 interface Patient {
   id: string; name: string; week: number; risk: "low" | "medium" | "high";
