@@ -170,39 +170,43 @@ export default function HomePage() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="grid grid-cols-1 gap-4 mb-2">
-              <button onClick={() => router.push("/ai")} className="rounded-[var(--radius-2xl)] bg-white p-5 text-left shadow-md border border-[var(--warm-200)]/60 hover-lift flex items-center gap-4 group">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--rose-100)] to-[var(--rose-200)] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"><Sparkles size={24} className="text-[var(--rose-600)]" /></div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <div className="font-bold text-[var(--text-primary)] text-base">Mama Guard Assistant</div>
-                    <ChevronRight size={18} className="text-[var(--text-tertiary)] group-hover:translate-x-1 transition-transform" />
-                  </div>
-                  <div className="text-xs text-[var(--text-tertiary)] leading-relaxed font-medium">Understand warning signs and prepare provider summaries.</div>
-                  <div className="text-[9px] text-[var(--rose-500)] font-bold uppercase tracking-wider mt-1.5 flex items-center gap-1.5">
-                    <span className="w-1 h-1 rounded-full bg-[var(--rose-400)] animate-ping" />
-                    Supportive guidance only
-                  </div>
+              <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] mb-2 px-1">Walkthrough Journey</div>
+              <div className="rounded-[var(--radius-2xl)] bg-gradient-to-br from-[var(--warm-50)] to-[var(--bg-cream)] p-5 border border-[var(--warm-200)]/60 shadow-sm">
+                <h3 className="text-sm font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
+                  <Sparkles size={16} className="text-[var(--rose-500)]" />
+                  Maternal Journey Guide
+                </h3>
+                <div className="space-y-4">
+                  {[
+                    { step: "01", label: "Safety Check-in", desc: "Log symptoms and assess current risk level.", path: "/checkin" },
+                    { step: "02", label: "Care Team Summary", desc: "Prepare organized data for your next visit.", path: "/ai" },
+                    { step: "03", label: "Safety Protocol", desc: "Access emergency contacts and hospital info.", path: "/safety" }
+                  ].map((item, i) => (
+                    <button 
+                      key={i} 
+                      onClick={() => router.push(item.path)}
+                      className="w-full flex items-start gap-3 group text-left transition-all active:scale-[0.98]"
+                    >
+                      <div className="w-6 h-6 rounded-lg bg-white border border-[var(--warm-200)] flex items-center justify-center text-[10px] font-bold text-[var(--text-tertiary)] shrink-0 group-hover:border-[var(--rose-300)] group-hover:text-[var(--rose-600)] transition-colors">
+                        {item.step}
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-[var(--text-primary)] group-hover:text-[var(--rose-600)] transition-colors">{item.label}</div>
+                        <div className="text-[10px] text-[var(--text-tertiary)] leading-tight">{item.desc}</div>
+                      </div>
+                      <ChevronRight size={14} className="ml-auto text-[var(--warm-300)] group-hover:text-[var(--rose-400)] transition-colors" />
+                    </button>
+                  ))}
                 </div>
-              </button>
-
-              <button onClick={() => router.push("/safety")} className="rounded-[var(--radius-2xl)] bg-white p-5 text-left shadow-md border border-[var(--warm-200)]/60 hover-lift flex items-center gap-4 group">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-100 to-rose-200 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"><Shield size={24} className="text-rose-600" /></div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <div className="font-bold text-[var(--text-primary)] text-base">Safety Plan</div>
-                    <ChevronRight size={18} className="text-[var(--text-tertiary)] group-hover:translate-x-1 transition-transform" />
-                  </div>
-                  <div className="text-xs text-[var(--text-tertiary)] leading-relaxed font-medium">Keep provider details and hospital info easy to find.</div>
-                </div>
-              </button>
+              </div>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="rounded-2xl bg-gradient-to-br from-[var(--sage-50)] to-[var(--sage-100)] p-6 mb-2 shadow-md border border-[var(--sage-200)]/50">
-              <div className="flex items-center gap-2 mb-3"><Zap size={15} className="text-[var(--sage-600)]" /><span className="text-xs font-bold text-[var(--sage-700)] uppercase tracking-wider">Today&apos;s Tip</span></div>
+              <div className="flex items-center gap-2 mb-3"><Zap size={15} className="text-[var(--sage-600)]" /><span className="text-xs font-bold text-[var(--sage-700)] uppercase tracking-wider">Education Spotlight</span></div>
               <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-4 font-medium">
                 {week < 12 ? "Stay hydrated and take your prenatal vitamins daily. Small, frequent meals can help with morning sickness." : week < 28 ? "Practice good posture to support your growing belly. Consider starting prenatal yoga or gentle stretching." : "Pack your hospital bag and finalize your birth plan. Rest as much as you can — you're in the home stretch!"}
               </p>
-              <button onClick={() => router.push("/learn")} className="text-xs font-bold text-[var(--sage-700)] flex items-center gap-1 hover:translate-x-1 transition-transform">Read more education <ArrowRight size={14} /></button>
+              <button onClick={() => router.push("/learn")} className="text-xs font-bold text-[var(--sage-700)] flex items-center gap-1 hover:translate-x-1 transition-transform">View Educational Modules <ArrowRight size={14} /></button>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className="rounded-2xl bg-[var(--surface-primary)] p-6 shadow-md border border-[var(--warm-200)]/60">

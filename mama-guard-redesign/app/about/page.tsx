@@ -17,7 +17,8 @@ import {
   Baby,
   Activity,
   AlertCircle,
-  Users
+  Users,
+  Sparkles
 } from "lucide-react";
 
 export default function AboutPage() {
@@ -54,18 +55,17 @@ export default function AboutPage() {
             <Zap size={12} /> Early Access Companion
           </div>
           <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-4 tracking-tight">
-            About Mama Guard
+            Our Mission
           </h1>
           <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-md mx-auto">
-            Mama Guard is a maternal safety companion designed to help mothers track symptoms, 
-            understand warning signs, and communicate effectively with healthcare providers.
+            Mama Guard is an <strong>early-access maternal safety companion</strong> dedicated to reducing preventable complications by empowering mothers with symptom tracking, warning-sign education, and provider-ready communication tools.
           </p>
         </motion.section>
 
         {/* What it Helps With */}
         <section className="mb-12">
           <h2 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-6 px-1">
-            How we support you
+            Evidence-Informed Support
           </h2>
           <div className="grid grid-cols-2 gap-4">
             {features.map((f, i) => (
@@ -76,30 +76,30 @@ export default function AboutPage() {
                 transition={{ delay: i * 0.05 }}
                 className="bg-[var(--surface-primary)] p-4 rounded-3xl border border-[var(--warm-200)] shadow-sm"
               >
-                <div className="w-9 h-9 rounded-xl bg-[var(--warm-100)] flex items-center justify-center mb-3">
-                  <f.icon size={18} className="text-[var(--text-tertiary)]" />
+                <div className="w-9 h-9 rounded-xl bg-[var(--warm-100)] flex items-center justify-center mb-3 shadow-inner">
+                  <f.icon size={18} className="text-[var(--rose-500)]" />
                 </div>
                 <h3 className="text-xs font-bold text-[var(--text-primary)] mb-1">{f.title}</h3>
-                <p className="text-[10px] text-[var(--text-tertiary)] leading-normal">{f.desc}</p>
+                <p className="text-[10px] text-[var(--text-tertiary)] leading-normal font-medium">{f.desc}</p>
               </motion.div>
             ))}
           </div>
         </section>
 
         {/* How It Works */}
-        <section className="mb-12 bg-[var(--surface-primary)] rounded-[32px] p-6 border border-[var(--warm-200)] shadow-sm">
+        <section className="mb-12 bg-white/50 backdrop-blur-sm rounded-[32px] p-6 border border-[var(--warm-200)] shadow-sm">
           <h2 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-6">
-            The Process
+            The User Journey
           </h2>
           <div className="space-y-6">
             {steps.map((s, i) => (
-              <div key={s.title} className="flex gap-4">
-                <div className="text-xl font-black text-[var(--warm-200)] leading-none pt-0.5">
+              <div key={s.title} className="flex gap-4 group">
+                <div className="text-xl font-black text-[var(--warm-200)] leading-none pt-0.5 group-hover:text-[var(--rose-200)] transition-colors">
                   {s.number}
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-[var(--text-primary)] mb-1">{s.title}</h3>
-                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">{s.desc}</p>
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-medium">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -109,20 +109,20 @@ export default function AboutPage() {
         {/* Safety Boundaries */}
         <section className="mb-12">
           <h2 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4 px-1">
-            Safety Boundaries
+            Medical Safety Governance
           </h2>
           <div className="bg-rose-50 rounded-3xl p-5 border border-rose-100 space-y-4">
             {[
-              "Does not provide medical diagnosis",
-              "Does not replace doctors or midwives",
-              "Does not contact emergency services",
-              "Does not store data on remote servers"
+              "Provides supportive guidance, not clinical diagnosis",
+              "Complements, never replaces, licensed clinical care",
+              "Educational only: Does not contact emergency services",
+              "Privacy First: Zero remote server data storage"
             ].map((text) => (
               <div key={text} className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+                <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm border border-rose-100">
                   <div className="w-1.5 h-1.5 rounded-full bg-rose-400" />
                 </div>
-                <p className="text-xs font-medium text-rose-700">{text}</p>
+                <p className="text-xs font-bold text-rose-800">{text}</p>
               </div>
             ))}
           </div>
@@ -130,65 +130,49 @@ export default function AboutPage() {
 
         {/* Data & Privacy */}
         <section className="mb-12">
-          <div className="bg-[var(--warm-900)] rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
+          <div className="bg-[var(--text-primary)] rounded-[32px] p-6 text-white shadow-xl relative overflow-hidden">
+            <div className="absolute -right-6 -top-6 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
             <Lock className="absolute -right-4 -top-4 w-24 h-24 text-white/5" />
             <h2 className="text-xs font-bold uppercase tracking-widest mb-4 opacity-70">
-              Data & Privacy
+              Data Sovereignty
             </h2>
-            <p className="text-xs leading-relaxed mb-4 opacity-90">
-              In this early-access phase, Mama Guard uses a <strong>privacy-first architecture</strong> where your data is stored locally on your device.
+            <p className="text-xs leading-relaxed mb-4 opacity-90 font-medium">
+              Mama Guard uses a <strong>Privacy-First Architecture</strong> where all personal health data is stored exclusively on your device.
             </p>
-            <ul className="space-y-2 mb-6">
-              <li className="flex gap-2 text-[10px] opacity-80">
-                <CheckCircle size={12} className="flex-shrink-0" />
-                <span>Clearing browser data may remove saved records.</span>
+            <ul className="space-y-2 mb-2">
+              <li className="flex gap-2 text-[10px] opacity-80 font-medium">
+                <CheckCircle size={12} className="flex-shrink-0 text-emerald-400" />
+                <span>Zero-knowledge client-side storage model.</span>
               </li>
-              <li className="flex gap-2 text-[10px] opacity-80">
-                <CheckCircle size={12} className="flex-shrink-0" />
-                <span>Secure cloud sync is planned for future versions.</span>
+              <li className="flex gap-2 text-[10px] opacity-80 font-medium">
+                <CheckCircle size={12} className="flex-shrink-0 text-emerald-400" />
+                <span>Encrypted cloud synchronization roadmap.</span>
               </li>
-              <li className="flex gap-2 text-[10px] opacity-80">
-                <CheckCircle size={12} className="flex-shrink-0" />
-                <span>Export or delete data anytime in your Profile.</span>
+              <li className="flex gap-2 text-[10px] opacity-80 font-medium">
+                <CheckCircle size={12} className="flex-shrink-0 text-emerald-400" />
+                <span>Absolute user control over data export/deletion.</span>
               </li>
             </ul>
-          </div>
-        </section>
-
-        {/* AI Positioning */}
-        <section className="mb-12 px-1">
-          <div className="flex items-center gap-2 mb-3">
-            <Zap size={16} className="text-[var(--rose-500)]" />
-            <h2 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest">
-              AI Positioning
-            </h2>
-          </div>
-          <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-3">
-            The Mama Guard Assistant provides supportive guidance to help you organize symptoms and understand warning signs.
-          </p>
-          <div className="bg-[var(--warm-50)] p-3 rounded-xl border border-[var(--warm-100)] flex gap-3">
-            <Info size={16} className="text-[var(--text-muted)] flex-shrink-0" />
-            <p className="text-[10px] text-[var(--text-tertiary)] font-medium italic">
-              "Assistant is not an AI doctor and does not provide medical diagnosis or prescriptions."
-            </p>
           </div>
         </section>
 
         {/* Product Roadmap */}
         <section className="mb-12 px-1">
           <h2 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">
-            Product Roadmap
+            Development Roadmap
           </h2>
-          <div className="grid grid-cols-1 gap-2">
+          <div className="grid grid-cols-1 gap-3">
             {[
-              "Secure accounts & cross-device cloud sync",
-              "Expanded multilingual support (Pidgin, Yoruba, etc.)",
-              "Healthcare provider collaboration interface",
-              "Independent medical/safety review of educational modules"
-            ].map((text) => (
-              <div key={text} className="flex items-center gap-3 text-[11px] text-[var(--text-secondary)]">
-                <ArrowRight size={12} className="text-[var(--warm-300)]" />
-                <span>{text}</span>
+              { text: "Secure accounts & encrypted cloud sync", done: false },
+              { text: "Multilingual localization (Pidgin, Yoruba, etc.)", done: false },
+              { text: "Healthcare provider collaboration gateway", done: false },
+              { text: "Independent medical/safety audit of modules", done: true, highlight: true }
+            ].map((item, i) => (
+              <div key={i} className={`flex items-center gap-3 p-3 rounded-2xl border ${item.highlight ? 'bg-[var(--rose-50)] border-[var(--rose-100)]' : 'bg-white border-[var(--warm-200)]'} transition-colors`}>
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${item.highlight ? 'bg-[var(--rose-100)] text-[var(--rose-600)]' : 'bg-[var(--warm-100)] text-[var(--text-tertiary)]'}`}>
+                  {item.highlight ? <Sparkles size={12} /> : <ArrowRight size={12} />}
+                </div>
+                <span className={`text-[11px] font-bold ${item.highlight ? 'text-[var(--rose-700)]' : 'text-[var(--text-secondary)]'}`}>{item.text}</span>
               </div>
             ))}
           </div>

@@ -49,35 +49,35 @@ export default function WorkerPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[var(--bg-primary)] via-[var(--bg-secondary)] to-[var(--bg-cream)]">
-      <header className="sticky top-0 z-40 bg-[var(--surface-glass)] backdrop-blur-xl border-b border-[var(--warm-200)]/50 px-5 py-3">
+      <header className="sticky top-0 z-40 bg-[var(--surface-glass)] backdrop-blur-xl border-b border-[var(--warm-200)]/50 px-5 py-4 shadow-sm">
         <div className="max-w-lg mx-auto flex items-center gap-3">
-          <button onClick={() => router.back()} className="w-9 h-9 rounded-full bg-[var(--warm-100)] flex items-center justify-center active:scale-95"><ArrowLeft size={18} className="text-[var(--text-secondary)]" /></button>
+          <button onClick={() => router.back()} className="w-10 h-10 rounded-full bg-white/50 border border-[var(--warm-200)]/60 flex items-center justify-center active:scale-95 shadow-sm transition-all hover:bg-white"><ArrowLeft size={18} className="text-[var(--text-secondary)]" /></button>
           <div className="flex-1">
-            <h1 className="font-bold text-[var(--text-primary)] text-base">Stakeholder Preview: Worker Portal</h1>
-            <p className="text-[11px] text-[var(--text-tertiary)]">Preview-only sample data for future care team workflows</p>
+            <h1 className="font-bold text-[var(--text-primary)] text-base tracking-tight">Stakeholder Preview</h1>
+            <p className="text-[10px] text-[var(--text-tertiary)] font-medium leading-none mt-0.5">Worker Portal · Conceptual Demo</p>
           </div>
-          <div className="w-9 h-9 rounded-full bg-[var(--sage-100)] flex items-center justify-center"><Stethoscope size={18} className="text-[var(--sage-600)]" /></div>
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[var(--sage-400)] to-[var(--sage-600)] flex items-center justify-center shadow-lg shadow-sage-500/20 text-white"><Stethoscope size={20} /></div>
         </div>
       </header>
 
-      <div className="bg-[var(--text-primary)] text-white text-[10px] py-1.5 px-5 text-center font-bold tracking-widest uppercase">
-        Stakeholder preview only. This page uses sample data and is not connected to real patients, hospitals, or emergency services.
+      <div className="bg-[var(--text-primary)] text-white text-[9px] py-2 px-5 text-center font-bold tracking-[0.2em] uppercase">
+        Live Stakeholder Preview Only · Sample Data
       </div>
 
-      <main className="px-5 py-4 pb-10">
-        <div className="bg-[var(--surface-primary)] rounded-2xl p-4 mb-5 border border-[var(--warm-200)] shadow-sm relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-2 opacity-5">
-            <ShieldAlert size={60} />
+      <main className="px-5 py-6 pb-12 max-w-lg mx-auto">
+        <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-5 mb-6 border border-[var(--warm-200)] shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-5">
+            <ShieldAlert size={80} />
           </div>
-          <div className="flex items-start gap-3 relative z-10">
-            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0 text-amber-600">
-              <ShieldAlert size={20} />
+          <div className="flex items-start gap-4 relative z-10">
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center flex-shrink-0 text-amber-600 border border-amber-100">
+              <ShieldAlert size={24} />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-amber-800 uppercase tracking-widest mb-1">Safety & Demo Notice</h3>
-              <p className="text-[11px] text-amber-700 leading-relaxed font-medium">
-                This portal demonstrates how health workers could monitor alerts. 
-                In a real deployment, access controls, privacy safeguards, and healthcare governance would be required before use.
+              <h3 className="text-[10px] font-bold text-amber-800 uppercase tracking-[0.2em] mb-1.5">Safety & Demo Notice</h3>
+              <p className="text-[11px] text-amber-800 leading-relaxed font-medium">
+                This interface demonstrates how community health workers could monitor prioritized alerts. 
+                Full deployment would require healthcare governance and secure data gateways.
               </p>
             </div>
           </div>
