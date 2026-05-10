@@ -266,14 +266,33 @@ function CheckInContent() {
   };
 
   const calculateRisk = (currentSymptoms: string[], answers: Record<string, string>): RiskLevel => {
-    const selected = symptoms.filter((symptom) =>
-      currentSymptoms.includes(symptom.id)
-    );
+    // 1. Check for immediate high-risk symptoms that don't have nuanced logic yet
+    const highRiskSymptoms = symptoms.filter(s => s.severity === "high" && s.id !== "fever" && s.id !== "headache");
+    if (currentSymptoms.some(id => highRiskSymptoms.map(s => s.id).includes(id))) {
+      return "high";
+    }
 
-    // High severity symptoms like fever still trigger high risk immediately
-    if (selected.some((symptom) => symptom.severity === "high")) return "high";
+    // 2. Nuanced Fever Logic
+    if (currentSymptoms.includes("fever")) {
+      const feverAnswer = answers["fever"];
+      // Fever + 100.4 or higher = NEEDS CARE
+      if (feverAnswer === "100.4°F or higher") return "high";
+      
+      // Fever + Under 100.4 + other red flags = NEEDS CARE
+      const redFlags = ["vision", "bleeding", "movement", "breathing", "nausea", "leg_pain", "swelling", "cramps", "self_harm"];
+      if (currentSymptoms.some(id => redFlags.includes(id))) return "high";
 
-    // Nuanced Headache Logic
+      // Fever + Under 100.4 + Headache nuance
+      if (currentSymptoms.includes("headache")) {
+        const headacheAnswer = answers["headache"];
+        if (headacheAnswer === "7-10 (Severe or worsening)") return "high";
+      }
+
+      // Fever + Under 100.4 (no other high signs) = REVIEW
+      return "medium";
+    }
+
+    // 3. Nuanced Headache Logic (if no fever)
     if (currentSymptoms.includes("headache")) {
       const headacheAnswer = answers["headache"];
       
@@ -293,6 +312,10 @@ function CheckInContent() {
       return "medium";
     }
 
+    // 4. Medium severity fallback
+    const selected = symptoms.filter((symptom) =>
+      currentSymptoms.includes(symptom.id)
+    );
     if (selected.some((symptom) => symptom.severity === "medium")) return "medium";
 
     return "low";
