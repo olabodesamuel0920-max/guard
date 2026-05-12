@@ -14,8 +14,8 @@ Mama Guard is a high-fidelity web application prototype designed to help mothers
 ## 🚀 Key Features for Review
 1. **Safety-Validated Assistant**: An AI-guided interface providing structured, deterministic next-step guidance for common concerns.
 2. **Safe Handoff Protocol**: A unique handoff from AI to Check-in where suggested symptoms are highlighted but **never auto-selected**, maintaining user agency.
-3. **Risk-Informed Check-in**: A symptom assessment flow that distinguishes between normal pregnancy changes and clinical red flags.
-4. **Clinical Summary Generation**: A tool that transforms reported symptoms into a professional report for healthcare providers.
+3. **Risk-Informed Check-in**: A symptom assessment flow that distinguishes between normal pregnancy changes and concerning red flags.
+4. **Provider Summary Generation**: A tool that transforms reported symptoms into an organized report for healthcare providers.
 
 ## 🛠️ 5-Minute Guided Review
 1. **Start**: Visit the [Landing Page](https://guard-pink.vercel.app/) to view the maternal-safe design system.

@@ -1,7 +1,7 @@
 # Mama Guard — Stakeholder Review Pack 📁
 
 ## 📝 Overview
-Mama Guard is a premium early-access maternal safety platform. It aims to bridge the gap between symptom onset and clinical consultation by empowering mothers with educational tools and structured symptom reporting.
+Mama Guard is a premium early-access maternal safety platform. It aims to bridge the gap between symptom onset and healthcare consultation by empowering mothers with educational tools and structured symptom reporting.
 
 ## 👥 Who Should Review This?
 - **Medical Professionals**: To evaluate the safety of the guidance and the utility of the provider summaries.
@@ -14,7 +14,7 @@ To experience the core value of Mama Guard in one sitting:
 2. **Dashboard**: View your pregnancy progress and baby size on the [Home Dashboard](https://guard-pink.vercel.app/home).
 3. **AI Interaction**: Ask the [Assistant](https://guard-pink.vercel.app/ai) about a symptom (e.g., "I feel dizzy").
 4. **Safety Handoff**: Follow the prompt to the [Check-in](https://guard-pink.vercel.app/checkin).
-5. **Clinical Summary**: Complete the check-in and click "Share Summary" to see the professional report generated for your doctor.
+5. **Provider Summary**: Complete the check-in and click "Share Summary" to see the organized report generated for your doctor.
 
 ## 📍 Key Routes
 - **Live URL**: https://guard-pink.vercel.app/
@@ -26,7 +26,7 @@ To experience the core value of Mama Guard in one sitting:
 We are specifically looking for feedback on:
 - **Tone**: Does the language feel supportive without being alarmist?
 - **Speed**: Is the transition from concern (AI) to assessment (Check-in) efficient?
-- **Utility**: Would a doctor find the generated "Provider Summary" useful in a clinical setting?
+- **Utility**: Would a healthcare provider find the generated "Provider Summary" useful in a healthcare setting?
 - **Design**: Does the visual style feel "premium" and "maternal"?
 
 ## 🚧 Known Limitations & Safety
