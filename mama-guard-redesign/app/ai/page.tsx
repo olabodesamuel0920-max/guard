@@ -92,10 +92,10 @@ function generateResponse(input: string): {
         title: "Monitoring Feverish Feelings",
         subtitle: "Your temperature is currently below the urgent threshold of 100.4°F (38°C).",
         sections: [
-          { label: "What to track", content: "Check your temperature every 2–4 hours. Note when the feverish feeling started and if you develop a cough, body aches, or a rash." },
-          { label: "What to tell your provider", content: "Tell them: 'I've been feeling feverish since [time]. My highest temperature was [temp] and I am also feeling [other symptoms].'" },
-          { label: "When to seek urgent care", content: "If your temperature reaches 100.4°F (38°C) or higher, or if you experience severe pain, difficulty breathing, or confusion." },
-          { label: "Next step in Mama Guard", content: "Use the 'Start Check-in' button below to log your temperature and symptoms for your Provider Summary." }
+          { label: "1. Track", content: "Check your temperature every 2–4 hours. Note when the feverish feeling started and if you develop a cough, body aches, or a rash." },
+          { label: "2. Tell your provider", content: "Tell them: 'I've been feeling feverish since [time]. My highest temperature was [temp] and I am also feeling [other symptoms].'" },
+          { label: "3. Urgent signs", content: "If your temperature reaches 100.4°F (38°C) or higher, or if you experience severe pain, difficulty breathing, or confusion." },
+          { label: "4. Next step", content: "Use the 'Start Check-in' button below to log your temperature and symptoms for your Provider Summary. Rest and stay hydrated." }
         ]
       }
     };
@@ -114,10 +114,10 @@ function generateResponse(input: string): {
         title: "Urgent: High Fever",
         subtitle: "A temperature of 100.4°F (38°C) or higher during pregnancy or postpartum requires immediate review.",
         sections: [
-          { label: "What to track", content: "Note the exact temperature and the time it was taken. Monitor for chills, dizziness, or any localized pain." },
-          { label: "What to tell your provider", content: "Tell them: 'I have a fever of [temp] and I am [weeks] weeks pregnant/postpartum. I need to be evaluated.'" },
-          { label: "When to seek urgent care", content: "Seek care immediately. A high fever can be a sign of an infection that needs prompt treatment." },
-          { label: "Next step in Mama Guard", content: "Call your provider immediately using the button below. Then, use the Provider Summary to show your recent health data." }
+          { label: "1. Track", content: "Note the exact temperature and the time it was taken. Monitor for chills, dizziness, or any localized pain." },
+          { label: "2. Tell your provider", content: "Tell them: 'I have a fever of [temp] and I am [weeks] weeks pregnant/postpartum. I need to be evaluated immediately.'" },
+          { label: "3. Urgent signs", content: "Seek care immediately. A high fever can be a sign of an infection that needs prompt treatment." },
+          { label: "4. Next step", content: "Call your provider immediately using the button below. If you cannot reach them, go to the nearest emergency room." }
         ]
       }
     };
@@ -136,10 +136,10 @@ function generateResponse(input: string): {
         title: "Urgent: Preeclampsia Warning Signs",
         subtitle: "Severe headaches, vision changes, or facial swelling can be signs of high blood pressure (preeclampsia).",
         sections: [
-          { label: "What to track", content: "Is the headache 'the worst of your life'? Are you seeing spots, stars, or having blurry vision? Is there new swelling in your face or hands?" },
-          { label: "What to tell your provider", content: "Tell them: 'I have a severe headache/vision changes and I am concerned about my blood pressure. I need to be seen today.'" },
-          { label: "When to seek urgent care", content: "Seek care immediately if the headache does not go away with rest, or if you have any vision loss or upper abdominal pain." },
-          { label: "Next step in Mama Guard", content: "Contact your provider now. Use the 'Safety Plan' to find your nearest hospital if you cannot reach them." }
+          { label: "1. Track", content: "Is the headache 'the worst of your life'? Are you seeing spots, stars, or having blurry vision? Is there new swelling in your face or hands?" },
+          { label: "2. Tell your provider", content: "Tell them: 'I have a severe headache/vision changes and I am concerned about my blood pressure. I need to be seen today.'" },
+          { label: "3. Urgent signs", content: "Seek care immediately if the headache does not go away with rest, or if you have any vision loss or upper abdominal pain." },
+          { label: "4. Next step", content: "Contact your provider now. Use the 'Safety Plan' to find your nearest hospital if you cannot reach them." }
         ]
       }
     };
@@ -158,17 +158,17 @@ function generateResponse(input: string): {
         title: "Urgent: Change in Movement",
         subtitle: "A significant decrease in your baby's normal movement pattern should always be reported.",
         sections: [
-          { label: "What to track", content: "Try a 'kick count': lie on your side and count how long it takes to feel 10 movements. It should usually take less than 2 hours." },
-          { label: "What to tell your provider", content: "Tell them: 'I have noticed my baby is moving less than usual today. I would like a fetal heart rate check.'" },
-          { label: "When to seek urgent care", content: "If you feel no movement at all or if you do not reach 10 movements within 2 hours of focused tracking." },
-          { label: "Next step in Mama Guard", content: "Perform a kick count now. If you are concerned, call your provider immediately." }
+          { label: "1. Track", content: "Try a 'kick count': lie on your side and count how long it takes to feel 10 movements. It should usually take less than 2 hours." },
+          { label: "2. Tell your provider", content: "Tell them: 'I have noticed my baby is moving less than usual today. I would like a fetal heart rate check.'" },
+          { label: "3. Urgent signs", content: "If you feel no movement at all or if you do not reach 10 movements within 2 hours of focused tracking." },
+          { label: "4. Next step", content: "Perform a kick count now. If you are concerned after one hour, call your provider immediately." }
         ]
       }
     };
   }
 
   // 5. Bleeding or Leaking Fluid
-  if (lower.includes("bleed") || lower.includes("leak") || lower.includes("fluid") || lower.includes("gush")) {
+  if (lower.includes("bleed") || lower.includes("leak") || lower.includes("fluid") || lower.includes("gush") || lower.includes("discharge")) {
     return {
       content: "Bleeding or Leaking Fluid",
       type: "warning",
@@ -180,10 +180,10 @@ function generateResponse(input: string): {
         title: "Urgent: Bleeding or Leaking",
         subtitle: "Any vaginal bleeding or a gush/constant trickle of fluid needs immediate clinical evaluation.",
         sections: [
-          { label: "What to track", content: "Note the color (bright red, pink, clear) and the amount (spotting vs. soaking a pad). Check for any accompanying cramps or pain." },
-          { label: "What to tell your provider", content: "Tell them: 'I am experiencing bleeding/leaking fluid. I need to know if I should come in for an exam.'" },
-          { label: "When to seek urgent care", content: "Go to emergency care if bleeding is heavy (soaking a pad in an hour) or if you are also in significant pain." },
-          { label: "Next step in Mama Guard", content: "Place a clean pad to monitor the amount, and call your healthcare provider immediately." }
+          { label: "1. Track", content: "Note the color (bright red, pink, clear) and the amount (spotting vs. soaking a pad). Check for any accompanying cramps or pain." },
+          { label: "2. Tell your provider", content: "Tell them: 'I am experiencing bleeding/leaking fluid. I need to know if I should come in for an exam right away.'" },
+          { label: "3. Urgent signs", content: "Go to emergency care if bleeding is heavy (soaking a pad in an hour) or if you are also in significant pain." },
+          { label: "4. Next step", content: "Place a clean pad to monitor the amount, and call your healthcare provider or hospital immediately." }
         ]
       }
     };
@@ -202,10 +202,10 @@ function generateResponse(input: string): {
         title: "Urgent: Breathing or Chest Concerns",
         subtitle: "Difficulty breathing or chest pain can be serious and requires immediate medical rule-out.",
         sections: [
-          { label: "What to track", content: "Is the pain sharp? Does it get worse when you breathe in? Are you coughing up anything? Note any leg swelling or pain as well." },
-          { label: "What to tell your provider", content: "Tell them: 'I am having chest pain/difficulty breathing and I need an immediate evaluation.'" },
-          { label: "When to seek urgent care", content: "Seek emergency care immediately. Do not wait for a callback if you are struggling to breathe." },
-          { label: "Next step in Mama Guard", content: "Go to the nearest Emergency Room or call for emergency assistance immediately." }
+          { label: "1. Track", content: "Is the pain sharp? Does it get worse when you breathe in? Are you coughing up anything? Note any leg swelling or pain as well." },
+          { label: "2. Tell your provider", content: "Tell them: 'I am having chest pain/difficulty breathing and I need an immediate evaluation.'" },
+          { label: "3. Urgent signs", content: "Seek emergency care immediately. Do not wait for a callback if you are struggling to breathe." },
+          { label: "4. Next step", content: "Go to the nearest Emergency Room or call for emergency assistance immediately." }
         ]
       }
     };
@@ -224,17 +224,17 @@ function generateResponse(input: string): {
         title: "Monitoring Abdominal Pain",
         subtitle: "While some mild stretching is normal, intense or regular cramping needs to be checked.",
         sections: [
-          { label: "What to track", content: "Are the cramps regular (like contractions)? Does the pain stay in one spot or move? Is there any bleeding or fever?" },
-          { label: "What to tell your provider", content: "Tell them: 'I am having significant abdominal pain/cramping that feels like [description]. It started at [time].'" },
-          { label: "When to seek urgent care", content: "Seek care if pain is severe, constant, or accompanied by bleeding, fever, or if you are less than 37 weeks pregnant." },
-          { label: "Next step in Mama Guard", content: "Use 'Start Check-in' to track the timing and intensity of the pain to share with your provider." }
+          { label: "1. Track", content: "Are the cramps regular (like contractions)? Does the pain stay in one spot or move? Is there any bleeding or fever?" },
+          { label: "2. Tell your provider", content: "Tell them: 'I am having significant abdominal pain/cramping that feels like [description]. It started at [time].'" },
+          { label: "3. Urgent signs", content: "Seek care if pain is severe, constant, or accompanied by bleeding, fever, or if you are less than 37 weeks pregnant." },
+          { label: "4. Next step", content: "Use 'Start Check-in' to track the timing and intensity of the pain to share with your provider. Drink water and rest on your side." }
         ]
       }
     };
   }
 
   // 8. Preparing what to tell provider
-  if (lower.includes("prepare") && lower.includes("tell") && lower.includes("provider")) {
+  if (lower.includes("prepare") || lower.includes("tell") || lower.includes("doctor") || lower.includes("provider")) {
     return {
       content: "Preparing for your Provider",
       type: "text",
@@ -246,17 +246,17 @@ function generateResponse(input: string): {
         title: "Provider Preparation Guide",
         subtitle: "Being prepared helps your provider give you the best possible care.",
         sections: [
-          { label: "What to track", content: "Review your recent Mama Guard check-ins. Note the exact time symptoms started and any 'red flags' like vision changes." },
-          { label: "What to tell your provider", content: "Use the 'I' statement: 'I am experiencing [symptom] since [time]. It feels like [description]. I am concerned because [reason].'" },
-          { label: "When to seek urgent care", content: "If you cannot reach your provider and your symptoms are worsening, go to the nearest emergency facility." },
-          { label: "Next step in Mama Guard", content: "Tap 'Provider Summary' below to copy a structured report of your symptoms to your clipboard." }
+          { label: "1. Track", content: "Review your recent Mama Guard check-ins. Note the exact time symptoms started and any 'red flags' like vision changes." },
+          { label: "2. Tell your provider", content: "Use the 'I' statement: 'I am experiencing [symptom] since [time]. It feels like [description]. I am concerned because [reason].'" },
+          { label: "3. Urgent signs", content: "If you cannot reach your provider and your symptoms are worsening, go to the nearest emergency facility." },
+          { label: "4. Next step", content: "Tap 'Provider Summary' below to copy a structured report of your symptoms to your clipboard." }
         ]
       }
     };
   }
 
   // 9. What symptoms should I not ignore?
-  if (lower.includes("ignore") || lower.includes("watch for") || lower.includes("warning signs")) {
+  if (lower.includes("ignore") || lower.includes("watch for") || lower.includes("warning signs") || lower.includes("dangerous")) {
     return {
       content: "Critical Warning Signs",
       type: "warning",
@@ -268,10 +268,10 @@ function generateResponse(input: string): {
         title: "Symptoms You Should Never Ignore",
         subtitle: "If you experience any of these, contact your provider or seek urgent care immediately.",
         sections: [
-          { label: "Physical Signs", content: "Severe headache, vision changes, facial/hand swelling, bleeding, leaking fluid, or high fever (100.4°F+)." },
-          { label: "Baby's Signs", content: "A significant decrease or change in your baby's normal movement pattern." },
-          { label: "Urgent Feelings", content: "Shortness of breath, chest pain, or a strong sense that 'something is just not right'." },
-          { label: "Next step in Mama Guard", content: "Review your 'Safety Plan' now so you know exactly where to go and who to call if these occur." }
+          { label: "1. Track", content: "Severe headache, vision changes, facial/hand swelling, bleeding, leaking fluid, or high fever (100.4°F+)." },
+          { label: "2. Tell your provider", content: "Tell them exactly which warning sign you noticed and when it started. Use the word 'urgent' if you feel it is." },
+          { label: "3. Urgent signs", content: "Shortness of breath, chest pain, or a strong sense that 'something is just not right'." },
+          { label: "4. Next step", content: "Review your 'Safety Plan' now so you know exactly where to go and who to call if these occur." }
         ]
       }
     };
@@ -301,14 +301,15 @@ function generateResponse(input: string): {
         title: `Urgent Notice: ${matchedCritical.label}`,
         subtitle: "This may need urgent medical attention. Mama Guard cannot diagnose this.",
         sections: [
-          { label: "What to track", content: `Monitor the frequency and severity of ${matchedCritical.label.toLowerCase()}. Note any other symptoms occurring at the same time.` },
-          { label: "What to tell your provider", content: `Tell them: 'I am having ${matchedCritical.label.toLowerCase()} and I'm concerned. I need to be evaluated.'` },
-          { label: "When to seek urgent care", content: "Seek care immediately if symptoms are severe, prevent you from daily activities, or if you feel unsafe." },
-          { label: "Next step in Mama Guard", content: "Contact your healthcare provider immediately. Use 'Start Check-in' to log these details." }
+          { label: "1. Track", content: `Monitor the frequency and severity of ${matchedCritical.label.toLowerCase()}. Note any other symptoms occurring at the same time.` },
+          { label: "2. Tell your provider", content: `Tell them: 'I am having ${matchedCritical.label.toLowerCase()} and I'm concerned. I need to be evaluated today.'` },
+          { label: "3. Urgent signs", content: "Seek care immediately if symptoms are severe, prevent you from daily activities, or if you feel unsafe." },
+          { label: "4. Next step", content: "Contact your healthcare provider immediately. Use 'Start Check-in' to log these details for the call." }
         ]
       }
     };
   }
+
 
   if (lower.includes("safety plan") || lower.includes("emergency plan") || lower.includes("hospital") || lower.includes("provider") || lower.includes("care contact")) {
     const onboarding = safeStorage.get<UserProfile | null>(STORAGE_KEYS.ONBOARDING, null);
@@ -470,7 +471,10 @@ This summary was prepared by Mama Guard to help organize information. It is supp
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[var(--rose-400)] to-[var(--rose-600)] flex items-center justify-center shadow-glow"><Sparkles size={20} className="text-white" /></div>
             <div>
               <div className="font-bold text-[var(--text-primary)] text-sm tracking-tight">Supportive guidance</div>
-              <div className="text-[10px] text-[var(--text-tertiary)] flex items-center gap-1.5 font-medium"><span className="w-1.5 h-1.5 rounded-full bg-[var(--sage-500)] inline-block animate-pulse" />Early Access · No Diagnosis</div>
+              <div className="text-[10px] text-[var(--text-tertiary)] flex items-center gap-1.5 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--rose-500)] inline-block animate-pulse" />
+                Guided demo assistant · Supportive only
+              </div>
             </div>
           </div>
         </div>

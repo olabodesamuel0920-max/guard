@@ -1012,17 +1012,72 @@ function CheckInContent() {
                       const trimester = getTrimester(week);
                       const stageText = userData.dueDate ? `Week ${week}, ${trimester}` : "Not added yet";
                       
-                      const summary = `Mama Guard Check-in Summary\n\nName: ${userData.name || "Not added yet"}\nPregnancy stage: ${stageText}\nDate: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}\n\nResult status: ${statusText}\n\nReported symptom(s):\n${selectedSymptoms.map(id => {
-                        const s = symptoms.find(item => item.id === id);
-                        return `• ${s ? s.label : id}`;
-                      }).join("\n") || "No symptoms reported"}\n\nSeverity/details:\n${selectedSymptoms.map(id => {
-                        const s = symptoms.find(item => item.id === id);
-                        let answer = followUpAnswers[id];
-                        if (id === 'fever' && answer === 'Under 100.4°F') {
-                          answer = "Chills or feeling feverish; temperature under 100.4°F";
-                        }
-                        return `• ${s?.label}: ${answer || "Standard severity"}`;
-                      }).join("\n") || "No details"}\n\nSuggested next step:\n${adviceText}\n\nCare team contact:\n- Provider phone: ${userData.providerPhone || "Not added yet"}\n- Nearest hospital: ${userData.nearestHospital || "Not added yet"}\n\nImportant note:\nMama Guard provides supportive organization and risk guidance only. It does not diagnose or replace professional medical care.`;
+                      // Detailed care steps based on risk
+                      let careSteps = "";
+                      if (riskLevel === "high") {
+                        careSteps = "• Contact healthcare provider immediately\n• Go to nearest emergency care if symptoms are severe\n• Have your Safety Plan ready";
+                      } else if (riskLevel === "medium") {
+                        careSteps = "• Monitor symptoms closely for changes\n• Rest and maintain high hydration\n• Re-check and log symptoms every 2-4 hours";
+                      } else {
+                        careSteps = "• Continue routine monitoring\n• Stay hydrated and rest\n• Log any new changes immediately";
+                      }
+
+                      // Contextual red flags
+                      let redFlags = "Severe headache, vision changes, hand/face swelling, bleeding, leaking fluid, or decreased movement.";
+                      
+                      // Suggested questions for provider
+                      let providerQuestions = "";
+                      if (riskLevel === "high") {
+                        providerQuestions = "• Are these symptoms expected for my current stage?\n• Do I need an immediate physical exam or fetal monitoring?\n• What specific signs should trigger an emergency room visit?";
+                      } else {
+                        providerQuestions = "• Are these symptoms common at this stage of pregnancy?\n• What changes in these symptoms should I call you about?\n• Is there anything I should change in my daily routine?";
+                      }
+
+                      const summary = `MAMA GUARD: CLINICAL SUMMARY REPORT
+Generated: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}
+
+PATIENT PROFILE
+Name: ${userData.name || "Not added yet"}
+Pregnancy stage: ${stageText}
+
+ASSESSMENT RESULT: ${statusText}
+Priority: ${riskLevel === "high" ? "Urgent Priority" : riskLevel === "medium" ? "Monitoring Review" : "Routine Wellness"}
+
+REPORTED SYMPTOM(S)
+${selectedSymptoms.map(id => {
+  const s = symptoms.find(item => item.id === id);
+  return `• ${s ? s.label : id}`;
+}).join("\n") || "No symptoms reported"}
+
+SEVERITY & DETAILS
+${selectedSymptoms.map(id => {
+  const s = symptoms.find(item => item.id === id);
+  let answer = followUpAnswers[id];
+  if (id === 'fever' && answer === 'Under 100.4°F') {
+    answer = "Chills or feeling feverish; temperature under 100.4°F";
+  }
+  return `• ${s?.label}: ${answer || "Standard severity"}`;
+}).join("\n") || "No specific details logged"}
+
+RECOMMENDED NEXT STEPS
+${adviceText}
+
+CARE STEPS WHILE MONITORING
+${careSteps}
+
+RED FLAGS TO WATCH FOR
+${redFlags}
+
+QUESTIONS FOR YOUR PROVIDER
+${providerQuestions}
+
+CARE TEAM CONTACTS
+• Provider Phone: ${userData.providerPhone || "Not added yet"}
+• Nearest Hospital: ${userData.nearestHospital || "Not added yet"}
+
+--------------------------------------------------
+DISCLAIMER: Mama Guard provides supportive risk organization and guidance only. It does not diagnose or replace professional medical advice, clinical judgment, or emergency services. If you feel unsafe, contact emergency services or your provider immediately.
+--------------------------------------------------`;
                       
                       if (navigator.clipboard) {
                         navigator.clipboard.writeText(summary)
@@ -1034,7 +1089,7 @@ function CheckInContent() {
                             alert("Clipboard copy failed. Please take a screenshot of your results.");
                           });
                       } else {
-                        alert("Clipboard access is not available on this browser. Please take a screenshot of your results.");
+                        alert("Clipboard access is not available on this browser. Please take a screenshot.");
                       }
                     }}
                     className={`w-full py-4 rounded-2xl border-2 transition-all font-bold flex items-center justify-center gap-2 shadow-sm active:scale-[0.98] sm:col-span-2 ${
