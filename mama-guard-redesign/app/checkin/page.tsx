@@ -247,6 +247,7 @@ function CheckInContent() {
   const incomingSymptom = searchParams.get("symptom");
 
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
+  const [noSymptoms, setNoSymptoms] = useState(false);
   const [suggestedSymptomId, setSuggestedSymptomId] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<
     "symptoms" | "severity" | "result"
@@ -275,12 +276,19 @@ function CheckInContent() {
   const week = getGestationalWeek(userData.dueDate);
 
   const toggleSymptom = (id: string) => {
+    setNoSymptoms(false);
     setSelectedSymptoms((prev) =>
       prev.includes(id) ? prev.filter((symptomId) => symptomId !== id) : [...prev, id]
     );
   };
 
+  const toggleNoSymptoms = () => {
+    setNoSymptoms(!noSymptoms);
+    setSelectedSymptoms([]);
+  };
+
   const calculateRisk = (currentSymptoms: string[], answers: Record<string, string>): RiskLevel => {
+    if (noSymptoms) return "low";
     // 1. Check for immediate high-risk symptoms that don't have nuanced logic yet
     const highRiskSymptoms = symptoms.filter(s => s.severity === "high" && s.id !== "fever" && s.id !== "headache");
     if (currentSymptoms.some(id => highRiskSymptoms.map(s => s.id).includes(id))) {
@@ -337,6 +345,13 @@ function CheckInContent() {
   };
 
   const handleSubmitSymptoms = () => {
+    if (noSymptoms) {
+      setRiskLevel("low");
+      saveCheckIn("low", {});
+      setCurrentStep("result");
+      return;
+    }
+
     const risk = calculateRisk(selectedSymptoms, {});
     setRiskLevel(risk);
     
@@ -353,7 +368,7 @@ function CheckInContent() {
     const checkInRecord: CheckInRecord = {
       date: new Date().toISOString(),
       risk,
-      symptoms: selectedSymptoms.map(
+      symptoms: noSymptoms ? ["No symptoms reported"] : selectedSymptoms.map(
         (id) => symptoms.find((symptom) => symptom.id === id)?.label || id
       ),
       followUpAnswers: answers,
@@ -394,6 +409,7 @@ function CheckInContent() {
 
   const resetCheckIn = () => {
     setSelectedSymptoms([]);
+    setNoSymptoms(false);
     setCurrentStep("symptoms");
     setCurrentSeverityIndex(0);
     setRiskLevel("low");
@@ -510,7 +526,7 @@ function CheckInContent() {
                   </div>
                 </div>
 
-                {selectedSymptoms.length > 0 && (
+                {(selectedSymptoms.length > 0 || noSymptoms) && (
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -518,15 +534,22 @@ function CheckInContent() {
                   >
                     <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-3">Currently Selected</div>
                     <div className="flex flex-wrap gap-2">
-                      {selectedSymptoms.map(id => {
-                        const symptom = symptoms.find(s => s.id === id);
-                        return (
-                          <span key={id} className="px-3 py-1.5 rounded-xl bg-[var(--bg-secondary)] text-[var(--text-primary)] text-xs font-semibold border border-[var(--warm-200)] flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[var(--rose-500)]" />
-                            {symptom?.label}
-                          </span>
-                        );
-                      })}
+                      {noSymptoms ? (
+                         <span className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            No symptoms right now
+                         </span>
+                      ) : (
+                        selectedSymptoms.map(id => {
+                          const symptom = symptoms.find(s => s.id === id);
+                          return (
+                            <span key={id} className="px-3 py-1.5 rounded-xl bg-[var(--bg-secondary)] text-[var(--text-primary)] text-xs font-semibold border border-[var(--warm-200)] flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[var(--rose-500)]" />
+                              {symptom?.label}
+                            </span>
+                          );
+                        })
+                      )}
                     </div>
                   </motion.div>
                 )}
@@ -534,6 +557,52 @@ function CheckInContent() {
 
               <div className="md:col-span-8 lg:col-span-8 mt-8 md:mt-0">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-8">
+                  {/* "No Symptoms" Proper Selectable Option */}
+                  <motion.button
+                    type="button"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    onClick={toggleNoSymptoms}
+                    className={`relative flex items-center gap-4 p-5 rounded-[var(--radius-3xl)] text-left transition-all duration-300 border-2 hover-lift group ${
+                      noSymptoms
+                        ? "border-emerald-400 bg-emerald-50 shadow-premium"
+                        : "border-[var(--warm-200)] glass-card hover:border-emerald-200"
+                    }`}
+                  >
+                    <div
+                      className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all shadow-inner ${
+                        noSymptoms
+                          ? "bg-emerald-500 text-white scale-105 shadow-glow"
+                          : "bg-[var(--bg-secondary)] text-[var(--text-tertiary)]"
+                      }`}
+                    >
+                      <ThumbsUp size={24} className={noSymptoms ? "text-white" : "text-emerald-500/70"} />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center flex-wrap gap-2 mb-0.5">
+                        <span className={`font-bold text-base tracking-tight ${noSymptoms ? "text-emerald-700" : "text-[var(--text-primary)]"}`}>
+                          No symptoms right now
+                        </span>
+                      </div>
+                      <p className={`text-xs leading-snug font-medium ${noSymptoms ? "text-emerald-600" : "text-[var(--text-tertiary)]"}`}>
+                        Continue with a routine wellness check-in.
+                      </p>
+                    </div>
+
+                    {noSymptoms ? (
+                      <motion.div
+                        initial={{ scale: 0, rotate: -45 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/30"
+                      >
+                        <Check size={16} className="text-white" strokeWidth={4} />
+                      </motion.div>
+                    ) : (
+                      <div className="w-7 h-7 rounded-full border-2 border-[var(--warm-200)] flex-shrink-0 transition-colors group-hover:border-emerald-200 group-hover:bg-emerald-50" />
+                    )}
+                  </motion.button>
+
                   {[...symptoms]
                     .sort((a, b) => (a.id === suggestedSymptomId ? -1 : b.id === suggestedSymptomId ? 1 : 0))
                     .map((symptom, index) => {
@@ -548,7 +617,7 @@ function CheckInContent() {
                         key={symptom.id}
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.03 }}
+                        transition={{ delay: (index + 1) * 0.03 }}
                         onClick={() => toggleSymptom(symptom.id)}
                         className={`relative flex items-center gap-4 p-5 rounded-[var(--radius-3xl)] text-left transition-all duration-300 border-2 hover-lift group ${
                           isSelected
@@ -603,7 +672,7 @@ function CheckInContent() {
                 </div>
 
                 <div className="md:hidden">
-                  {selectedSymptoms.length > 0 && (
+                  {(selectedSymptoms.length > 0 || noSymptoms) && (
                     <motion.div 
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -611,14 +680,20 @@ function CheckInContent() {
                     >
                       <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">Selected Symptoms</div>
                       <div className="flex flex-wrap gap-2">
-                        {selectedSymptoms.map(id => {
-                          const symptom = symptoms.find(s => s.id === id);
-                          return (
-                            <span key={id} className="px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-primary)] text-[11px] font-medium border border-[var(--warm-200)]">
-                              {symptom?.label}
-                            </span>
-                          );
-                        })}
+                        {noSymptoms ? (
+                          <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-medium border border-emerald-100">
+                            No symptoms right now
+                          </span>
+                        ) : (
+                          selectedSymptoms.map(id => {
+                            const symptom = symptoms.find(s => s.id === id);
+                            return (
+                              <span key={id} className="px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-primary)] text-[11px] font-medium border border-[var(--warm-200)]">
+                                {symptom?.label}
+                              </span>
+                            );
+                          })
+                        )}
                       </div>
                     </motion.div>
                   )}
@@ -628,22 +703,25 @@ function CheckInContent() {
                   <div className="max-w-lg mx-auto md:max-w-none md:grid md:grid-cols-3 md:gap-4 md:space-y-0 space-y-3">
                     <button
                       type="button"
-                      onClick={() => setSelectedSymptoms([])}
+                      onClick={() => {
+                        setSelectedSymptoms([]);
+                        setNoSymptoms(false);
+                      }}
                       className={`w-full py-3 md:py-4 rounded-2xl text-center font-bold text-[10px] md:text-xs uppercase tracking-[0.2em] transition-all md:col-span-1 shadow-sm ${
-                        selectedSymptoms.length === 0
-                          ? "bg-[var(--sage-50)] text-[var(--sage-600)] border border-[var(--sage-100)]"
+                        selectedSymptoms.length === 0 && !noSymptoms
+                          ? "bg-[var(--bg-secondary)] text-[var(--text-tertiary)] border border-dashed border-[var(--warm-200)] opacity-50"
                           : "bg-white text-[var(--text-tertiary)] border border-dashed border-[var(--warm-200)]"
                       }`}
                     >
-                      {selectedSymptoms.length === 0 ? "✅ I'm feeling fine" : "Clear Selection"}
+                      Clear Selection
                     </button>
 
                     <button
                       type="button"
-                      disabled={selectedSymptoms.length === 0}
+                      disabled={selectedSymptoms.length === 0 && !noSymptoms}
                       onClick={handleSubmitSymptoms}
                       className={`w-full py-4 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-premium md:col-span-2 ${
-                        selectedSymptoms.length > 0
+                        selectedSymptoms.length > 0 || noSymptoms
                           ? "bg-gradient-to-r from-[var(--rose-500)] to-[var(--rose-600)] text-white shadow-rose-500/30 active:scale-[0.98] hover:opacity-90"
                           : "bg-[var(--warm-200)] text-[var(--text-muted)] cursor-not-allowed opacity-60"
                       }`}
@@ -799,7 +877,7 @@ function CheckInContent() {
                           <span className={`text-[10px] font-extrabold uppercase tracking-[0.2em] ${
                             riskLevel === "high" ? "text-rose-600" : riskLevel === "medium" ? "text-amber-600" : "text-emerald-600"
                           }`}>
-                            {riskLevel === "high" ? "Urgent Priority" : riskLevel === "medium" ? "Monitoring Review" : "Routine Wellness"}
+                            {riskLevel === "high" ? "Urgent Priority" : riskLevel === "medium" ? "Monitoring Review" : (noSymptoms ? "Routine Check-in" : "Routine Wellness")}
                           </span>
                         </div>
 
@@ -808,7 +886,7 @@ function CheckInContent() {
                             ? "Provider Review Required"
                             : riskLevel === "medium"
                             ? "Active Monitoring"
-                            : "Healthy Baseline"}
+                            : (noSymptoms ? "Routine check-in" : "Healthy Baseline")}
                         </h2>
                       </div>
                     </div>
@@ -821,7 +899,9 @@ function CheckInContent() {
                         <p className={`text-sm leading-relaxed font-bold ${
                           riskLevel === "high" ? "text-rose-950" : riskLevel === "medium" ? "text-amber-950" : "text-emerald-950"
                         }`}>
-                          {getRiskAdvice(riskLevel, week)}
+                          {noSymptoms 
+                            ? "No concerning symptoms were reported in this check-in. Continue monitoring how you feel and contact your provider if anything changes."
+                            : getRiskAdvice(riskLevel, week)}
                         </p>
                       </div>
                     </div>
